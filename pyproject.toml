@@ -1,0 +1,26 @@
+[project]
+name = "pharmacloud-backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "datswhaaan",email = "datswhaaan@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi (>=0.124.4,<0.125.0)",
+    "uvicorn (>=0.38.0,<0.39.0)",
+    "sqlalchemy (>=2.0.45,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "psycopg[binary] (>=3.3.2,<4.0.0)",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.poetry]
+packages = [{include = "app", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

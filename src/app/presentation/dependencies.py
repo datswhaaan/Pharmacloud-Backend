@@ -1,0 +1,16 @@
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from app.infrastructure.db.database import SessionLocal
+from app.infrastructure.repositories.drug_repository_impl import DrugRepositoryImpl
+from app.application.use_cases.drug_service import DrugService
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_drug_service(db: Session = Depends(get_db)):
+    repo = DrugRepositoryImpl(db)
+    return DrugService(repo)
