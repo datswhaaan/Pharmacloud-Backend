@@ -11,6 +11,6 @@ def get_db():
     finally:
         db.close()
 
-def get_drug_service(db: Session = Depends(get_db)):
+def get_drug_metadata_service(db: Session = Depends(get_db)):
     repo = DrugMetadataRepositoryImpl(db)
     return DrugMetadataService(repo)
