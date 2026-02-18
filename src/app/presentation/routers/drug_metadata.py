@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.presentation.schemas.drug import DrugBase, DrugSchema, DrugListSchema
+from app.presentation.schemas.drug_metadata import DrugMetadataBase, DrugMetadataSchema, DrugMetadataListSchema
 from app.presentation.dependencies import get_drug_service
-from app.application.use_cases.drug_service import DrugService
-from app.presentation.mappers.drug_mapper import _base_to_drug_dto, _schema_to_drug_dto
+from app.application.use_cases.drug_metadata_service import DrugMetadataService
+from app.presentation.mappers.drug_metadata_mapper import _base_to_drug_dto, _schema_to_drug_dto
 
 router = APIRouter(prefix="/drugs", tags=["drugs"])
 
-@router.post("/", response_model=DrugSchema)
+@router.post("/", response_model=DrugMetadataSchema)
 def create_drug(
-    drug: DrugSchema,
-    service: DrugService = Depends(get_drug_service),
+    drug: DrugMetadataSchema,
+    service: DrugMetadataService = Depends(get_drug_service),
 ):
     try:
         return service.create(_schema_to_drug_dto(drug))
@@ -17,10 +17,10 @@ def create_drug(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/{drug_code}", response_model=DrugSchema)
+@router.get("/{drug_code}", response_model=DrugMetadataSchema)
 def get_drug(
     drug_code: str,
-    service: DrugService = Depends(get_drug_service),
+    service: DrugMetadataService = Depends(get_drug_service),
 ):
     try:
         
@@ -30,11 +30,11 @@ def get_drug(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/", response_model=DrugListSchema)
+@router.get("/", response_model=DrugMetadataListSchema)
 def get_all_drugs(
     skip: int = 0,
     limit: int = 100,
-    service: DrugService = Depends(get_drug_service),
+    service: DrugMetadataService = Depends(get_drug_service),
 ):
     try:
         drug = service.get_all(skip=skip, limit=limit)
@@ -43,11 +43,11 @@ def get_all_drugs(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.put("/{drug_code}", response_model=DrugSchema)
+@router.put("/{drug_code}", response_model=DrugMetadataSchema)
 def update_drug(
     drug_code: str,
-    drug: DrugBase,
-    service: DrugService = Depends(get_drug_service),
+    drug: DrugMetadataBase,
+    service: DrugMetadataService = Depends(get_drug_service),
 ):
     try:
         dto = _base_to_drug_dto(drug_code, drug)
@@ -60,7 +60,7 @@ def update_drug(
 @router.delete("/{drug_code}", status_code=204)
 def delete_drug(
     drug_code: str,
-    service: DrugService = Depends(get_drug_service),
+    service: DrugMetadataService = Depends(get_drug_service),
 ):
     try:
         service.delete(drug_code)

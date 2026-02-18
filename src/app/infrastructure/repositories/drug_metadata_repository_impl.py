@@ -1,20 +1,20 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from app.infrastructure.models.drug import DrugORM
+from app.infrastructure.models.drug_metadata import DrugMetadataORM
 from app.domain.exception.drug import DrugAlreadyExistsError, RepositoryError, DrugNotFoundError
-from app.domain.entities.drug import Drug, DrugList
-from app.domain.repositories.drug import DrugRepository
-from app.infrastructure.mappers.drug_mapper import _to_drug, _to_drug_list, _to_drug_orm
+from app.domain.entities.drug_metadata import DrugMetadata, DrugMetadataList
+from app.domain.repositories.drug_metadata import DrugMetadataRepository
+from app.infrastructure.mappers.drug_metadata_mapper import _to_drug, _to_drug_list, _to_drug_orm
 
-class DrugRepositoryImpl(DrugRepository):
+class DrugMetadataRepositoryImpl(DrugMetadataRepository):
     def __init__(self, session: Session):
         self.session = session
 
-    def get_by_drug_code(self, drug_code: str) -> Drug | None:
+    def get_by_drug_code(self, drug_code: str) -> DrugMetadata | None:
         row = (
             self.session
-            .query(DrugORM)
-            .filter(DrugORM.drug_code == drug_code)
+            .query(DrugMetadataORM)
+            .filter(DrugMetadataORM.drug_code == drug_code)
             .first()
         )
 
@@ -30,11 +30,11 @@ class DrugRepositoryImpl(DrugRepository):
         *,
         skip: int = 0,
         limit: int = 100
-    ) -> DrugList:
+    ) -> DrugMetadataList:
         
         rows = (
             self.session
-            .query(DrugORM)
+            .query(DrugMetadataORM)
             .offset(skip)
             .limit(limit)
             .all()
@@ -42,7 +42,7 @@ class DrugRepositoryImpl(DrugRepository):
 
         return _to_drug_list(rows)
     
-    def create(self, drug: Drug) -> Drug:
+    def create(self, drug: DrugMetadata) -> DrugMetadata:
         orm = _to_drug_orm(drug)
 
         try:
@@ -59,11 +59,11 @@ class DrugRepositoryImpl(DrugRepository):
             raise RepositoryError(str(e))
         
 
-    def update(self, drug: Drug) -> Drug:
+    def update(self, drug: DrugMetadata) -> DrugMetadata:
         row = (
             self.session
-            .query(DrugORM)
-            .filter(DrugORM.drug_code == drug.drug_code)
+            .query(DrugMetadataORM)
+            .filter(DrugMetadataORM.drug_code == drug.drug_code)
             .first()
         )
 
@@ -88,8 +88,8 @@ class DrugRepositoryImpl(DrugRepository):
     def delete(self, drug_code: str) -> None:
         orm = (
             self.session
-            .query(DrugORM)
-            .filter(DrugORM.drug_code == drug_code)
+            .query(DrugMetadataORM)
+            .filter(DrugMetadataORM.drug_code == drug_code)
             .first()
         )
 

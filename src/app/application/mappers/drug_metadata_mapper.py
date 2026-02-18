@@ -1,8 +1,8 @@
-from app.domain.entities.drug import Drug, DrugList
-from app.application.dto.drug_dto import DrugDTO, DrugListDTO
+from app.domain.entities.drug_metadata import DrugMetadata, DrugMetadataList
+from app.application.dto.drug_metadata_dto import DrugMetadataDTO, DrugMetadataListDTO
 
-def _to_drug(dto: DrugDTO) -> Drug:
-    return Drug(
+def _to_drug(dto: DrugMetadataDTO) -> DrugMetadata:
+    return DrugMetadata(
         drug_code = dto.drug_code,
         width_mm = dto.width_mm,
         length_mm = dto.length_mm,
@@ -16,8 +16,8 @@ def _to_drug(dto: DrugDTO) -> Drug:
         image_front_path2 = dto.image_front_path2
     )
 
-def _to_dto(drug: Drug) -> DrugDTO:
-    return DrugDTO(
+def _to_dto(drug: DrugMetadata) -> DrugMetadataDTO:
+    return DrugMetadataDTO(
         drug_code = drug.drug_code,
         width_mm = drug.width_mm,
         length_mm = drug.length_mm,
@@ -31,8 +31,8 @@ def _to_dto(drug: Drug) -> DrugDTO:
         image_front_path2 = drug.image_front_path2
     )
 
-def _to_dto_list(drugs: DrugList) -> DrugListDTO:
-    return DrugListDTO(
+def _to_dto_list(drugs: DrugMetadataList) -> DrugMetadataListDTO:
+    return DrugMetadataListDTO(
         drugs = [
             _to_dto(drug)
             for drug in drugs.drugs

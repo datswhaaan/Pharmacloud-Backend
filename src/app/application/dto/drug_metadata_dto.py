@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
+# Used for both input and output
 @dataclass
-class Drug:
+class DrugMetadataDTO:
     drug_code: str
     width_mm: float | None = None
     length_mm: float | None = None
@@ -15,5 +16,5 @@ class Drug:
     image_front_path2: str | None = None
 
 @dataclass
-class DrugList:
-    drugs: list[Drug]
+class DrugMetadataListDTO:
+    drugs: list[DrugMetadataDTO]

@@ -1,8 +1,8 @@
-from app.infrastructure.models.drug import DrugORM
-from app.domain.entities.drug import Drug, DrugList
+from app.infrastructure.models.drug_metadata import DrugMetadataORM
+from app.domain.entities.drug_metadata import DrugMetadata, DrugMetadataList
 
-def _to_drug(orm: DrugORM) -> Drug:
-    return Drug(
+def _to_drug(orm: DrugMetadataORM) -> DrugMetadata:
+    return DrugMetadata(
         drug_code = orm.drug_code,
         width_mm = orm.width_mm,
         length_mm = orm.length_mm,
@@ -16,16 +16,16 @@ def _to_drug(orm: DrugORM) -> Drug:
         image_front_path2 = orm.image_front_path2
     )
 
-def _to_drug_list(ormlist: list[DrugORM]) -> DrugList:
-    return DrugList(
+def _to_drug_list(ormlist: list[DrugMetadataORM]) -> DrugMetadataList:
+    return DrugMetadataList(
         drugs = [
             _to_drug(item)
             for item in ormlist
         ]
     )
 
-def _to_drug_orm(drug: Drug) -> DrugORM:
-    return DrugORM(
+def _to_drug_orm(drug: DrugMetadata) -> DrugMetadataORM:
+    return DrugMetadataORM(
             drug_code = drug.drug_code,
             width_mm = drug.width_mm,
             length_mm = drug.length_mm,

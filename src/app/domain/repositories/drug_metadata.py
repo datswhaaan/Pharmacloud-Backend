@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from app.domain.entities.drug import Drug, DrugList
+from app.domain.entities.drug_metadata import DrugMetadata, DrugMetadataList
 
-class DrugRepository(ABC):
+class DrugMetadataRepository(ABC):
 
     @abstractmethod
-    def get_by_drug_code(self, drug_code: int) -> Drug | None:
+    def get_by_drug_code(self, drug_code: int) -> DrugMetadata | None:
         """Return a drug by its drug code or None if not found"""
         raise NotImplementedError
 
@@ -14,17 +14,17 @@ class DrugRepository(ABC):
         *,
         skip: int = 0,
         limit: int = 100
-    ) -> DrugList:
+    ) -> DrugMetadataList:
         """Return list of drugs"""
         raise NotImplementedError
 
     @abstractmethod
-    def create(self, drug: Drug) -> Drug:
+    def create(self, drug: DrugMetadata) -> DrugMetadata:
         """Persist and return created drug"""
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, drug: Drug) -> Drug:
+    def update(self, drug: DrugMetadata) -> DrugMetadata:
         """Update and return drug"""
         raise NotImplementedError
 

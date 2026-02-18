@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class DrugBase(BaseModel):
+class DrugMetadataBase(BaseModel):
     width_mm: float | None = None
     length_mm: float | None = None
     height_mm: float | None = None
@@ -15,9 +15,9 @@ class DrugBase(BaseModel):
     class Config:
         from_attributes = True
 
-class DrugSchema(DrugBase):
+class DrugMetadataSchema(DrugMetadataBase):
     drug_code: str
 
-class DrugListSchema(BaseModel):
-    drugs: list[DrugSchema]
+class DrugMetadataListSchema(BaseModel):
+    drugs: list[DrugMetadataSchema]
 

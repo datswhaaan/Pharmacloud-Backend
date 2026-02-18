@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
-class DrugORM(Base):
+class DrugMetadataORM(Base):
     __tablename__ = "drugs"
     drug_code = Column(String, primary_key=True, index=True)
     width_mm = Column(Float, index=True)
