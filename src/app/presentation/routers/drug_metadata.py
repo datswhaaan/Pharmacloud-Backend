@@ -4,7 +4,7 @@ from app.presentation.dependencies import get_drug_metadata_service
 from app.application.use_cases.drug_metadata_service import DrugMetadataService
 from app.presentation.mappers.drug_metadata_mapper import _base_to_drug_dto, _schema_to_drug_dto
 
-router = APIRouter(prefix="/drugs", tags=["drugs"])
+router = APIRouter(prefix="/metadata", tags=["metadata"])
 
 @router.post("/", response_model=DrugMetadataSchema)
 def create_drug(
