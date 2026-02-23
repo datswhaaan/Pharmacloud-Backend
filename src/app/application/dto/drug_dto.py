@@ -10,11 +10,9 @@ class DrugDTO:
     item_nick_name: str | None = None
     b_item_subgroup_id: str | None = None
     b_item_billing_subgroup_id: str | None = None
-    item_printable: str | None = None
-    item_secret: str | None = None
     b_item_16_group_id: str | None = None
-    f_item_lab_type_id: str | None = None
-    b_specimen_id: str | None = None
+    images: list[dict] = None
+    instructions: list[dict] = None
 
 @dataclass
 class DrugListDTO:

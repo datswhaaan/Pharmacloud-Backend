@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from app.infrastructure.models.drug import DrugORM
+from app.infrastructure.models.drug import DrugORM, DrugImageORM, ImageVariantORM
 from app.domain.exception.drug import RepositoryError, DrugNotFoundError
 from app.domain.entities.drug import Drug, DrugList
 from app.domain.repositories.drug import DrugRepository
@@ -14,6 +14,11 @@ class DrugRepositoryImpl(DrugRepository):
         row = (
             self.session
             .query(DrugORM)
+            .options(
+                selectinload(DrugORM.images)
+                .selectinload(DrugImageORM.variant)
+                .selectinload(DrugORM.instructions)
+            )
             .filter(DrugORM.b_item_id == id)
             .first()
         )

@@ -11,11 +11,9 @@ def _to_drug(dto: DrugDTO) -> Drug:
         item_active = dto.item_active,
         b_item_subgroup_id = dto.b_item_subgroup_id,
         b_item_billing_subgroup_id = dto.b_item_billing_subgroup_id,   
-        item_printable = dto.item_printable,
-        item_secret = dto.item_secret,
         b_item_16_group_id = dto.b_item_16_group_id,
-        f_item_lab_type_id = dto.f_item_lab_type_id,
-        b_specimen_id = dto.b_specimen_id
+        images = dto.images,
+        instructions = dto.instructions
     )
 
 def _to_dto(drug: Drug) -> DrugDTO:
@@ -27,12 +25,10 @@ def _to_dto(drug: Drug) -> DrugDTO:
         item_nick_name = drug.item_nick_name,   
         item_active = drug.item_active,
         b_item_subgroup_id = drug.b_item_subgroup_id,
-        b_item_billing_subgroup_id = drug.b_item_billing_subgroup_id,   
-        item_printable = drug.item_printable,
-        item_secret = drug.item_secret,
+        b_item_billing_subgroup_id = drug.b_item_billing_subgroup_id,
         b_item_16_group_id = drug.b_item_16_group_id,
-        f_item_lab_type_id = drug.f_item_lab_type_id,
-        b_specimen_id = drug.b_specimen_id
+        images = drug.images,
+        instructions = drug.instructions
     )
 
 def _to_dto_list(drugs: DrugList) -> DrugListDTO:
