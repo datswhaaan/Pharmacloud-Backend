@@ -16,6 +16,7 @@ class DrugInstruction:
     item_drug_description: str
     item_drug_special_prescription_text: str
     instruction_text: str
+    high_alert: bool
 
 @dataclass
 class Drug:

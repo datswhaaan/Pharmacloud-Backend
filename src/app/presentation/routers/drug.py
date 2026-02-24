@@ -20,12 +20,14 @@ def get_drug(
 
 @router.get("/", response_model=DrugListSchema)
 def get_all_drugs(
+    search: str | None = None,
+    high_alert: bool | None = None,
     skip: int = 0,
     limit: int = 100,
     service: DrugService = Depends(get_drug_service),
 ):
     try:
-        drug = service.get_all(skip=skip, limit=limit)
+        drug = service.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return drug
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

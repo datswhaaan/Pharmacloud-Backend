@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from app.infrastructure.models.drug import DrugORM, DrugImageORM, ImageVariantORM
+from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImageORM, ImageVariantORM
 from app.domain.exception.drug import RepositoryError, DrugNotFoundError
 from app.domain.entities.drug import Drug, DrugList
 from app.domain.repositories.drug import DrugRepository
@@ -32,7 +32,9 @@ class DrugRepositoryImpl(DrugRepository):
 
     def get_all(
         self,
+        search: str | None = None,
         *,
+        high_alert: bool,
         skip: int = 0,
         limit: int = 100
     ) -> DrugList:
@@ -40,6 +42,16 @@ class DrugRepositoryImpl(DrugRepository):
         rows = (
             self.session
             .query(DrugORM)
+            .filter(
+                DrugORM.item_common_name.ilike(f"%{search}%")
+                | DrugORM.b_item_id.ilike(f"%{search}%")
+                | DrugORM.item_trade_name.ilike(f"%{search}%")
+                | DrugORM.item_nick_name.ilike(f"%{search}%")
+                | DrugORM.item_number.ilike(f"%{search}%")
+            ) if search else True
+            .filter(
+                DrugInstructionORM.height_alert == "Y"
+            ) if high_alert else True
             .offset(skip)
             .limit(limit)
             .all()

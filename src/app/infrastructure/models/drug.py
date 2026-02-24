@@ -37,6 +37,7 @@ class DrugInstructionORM(Base):
     b_item_drug_instruction_id = Column(String, ForeignKey("b_item_drug_instruction.b_item_drug_instruction_id"), index=True)
     item_drug_description = Column(String)
     item_drug_special_prescription_text = Column(String)
+    height_alert = Column(String)
     drug = relationship("DrugORM", back_populates="instructions")
     instruction = relationship("InstructionORM", back_populates="drug_instructions")
 

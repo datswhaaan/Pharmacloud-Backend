@@ -14,11 +14,13 @@ class DrugService:
 
     def get_all(
         self,
+        search: str | None = None,
         *,
+        high_alert: bool | None = None,
         skip: int = 0,
         limit: int = 100
     ) -> DrugListDTO:
-        drugs = self.repository.get_all(skip=skip, limit=limit)
+        drugs = self.repository.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return _to_dto_list(drugs)
     
     def update(self, input: DrugDTO) -> DrugDTO:

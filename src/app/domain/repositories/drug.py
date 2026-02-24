@@ -11,7 +11,9 @@ class DrugRepository(ABC):
     @abstractmethod
     def get_all(
         self,
+        search: str | None = None,
         *,
+        high_alert: bool | None = None,
         skip: int = 0,
         limit: int = 100
     ) -> DrugList:

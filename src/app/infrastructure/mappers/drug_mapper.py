@@ -17,7 +17,8 @@ def _to_drug_instruction(orm: DrugInstructionORM) -> DrugInstruction:
         b_item_drug_instruction_id = orm.b_item_drug_instruction_id,
         item_drug_description = orm.item_drug_description,
         item_drug_special_prescription_text = orm.item_drug_special_prescription_text,
-        instruction_text = orm.instruction.item_drug_instruction_description
+        instruction_text = orm.instruction.item_drug_instruction_description,
+        high_alert = orm.height_alert == "Y"
     )
 
 def _to_drug(orm: DrugORM) -> Drug:

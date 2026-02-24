@@ -14,6 +14,7 @@ class DrugInstructionSchema(BaseModel):
     item_drug_description: str
     item_drug_special_prescription_text: str
     instruction_text: str
+    high_alert: bool
 class DrugSchema(BaseModel):
     b_item_id: str
     item_number: str
