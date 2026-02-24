@@ -22,8 +22,3 @@ class DrugService:
     ) -> DrugListDTO:
         drugs = self.repository.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return _to_dto_list(drugs)
-    
-    def update(self, input: DrugDTO) -> DrugDTO:
-        drug = _to_drug(input)
-        updated = self.repository.update(drug)
-        return _to_dto(updated)

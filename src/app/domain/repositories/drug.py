@@ -19,8 +19,3 @@ class DrugRepository(ABC):
     ) -> DrugList:
         """Return list of drugs"""
         raise NotImplementedError
-
-    @abstractmethod
-    def update(self, drug: Drug) -> Drug:
-        """Update and return drug"""
-        raise NotImplementedError

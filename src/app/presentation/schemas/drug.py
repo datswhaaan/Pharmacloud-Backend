@@ -28,15 +28,5 @@ class DrugSchema(BaseModel):
     images: list[DrugImageSchema] = None
     instructions: list[DrugInstructionSchema] = None
 
-class DrugUpdateSchema(BaseModel):
-    item_number: str | None = None
-    item_common_name: str | None = None
-    item_trade_name: str | None = None
-    item_nick_name: str | None = None
-    b_item_subgroup_id: str | None = None
-    b_item_billing_subgroup_id: str | None = None
-    b_item_16_group_id: str | None = None
-    b_specimen_id: str | None = None
-
 class DrugListSchema(BaseModel):
     drugs: list[DrugSchema]

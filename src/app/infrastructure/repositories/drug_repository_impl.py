@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImageORM, ImageVariantORM
+from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImageORM
 from app.domain.exception.drug import RepositoryError, DrugNotFoundError
 from app.domain.entities.drug import Drug, DrugList
 from app.domain.repositories.drug import DrugRepository
@@ -58,29 +58,3 @@ class DrugRepositoryImpl(DrugRepository):
         )
 
         return _to_drug_list(rows)
-
-    def update(self, drug: Drug) -> Drug:
-        row = (
-            self.session
-            .query(DrugORM)
-            .filter(DrugORM.b_item_id == drug.b_item_id)
-            .first()
-        )
-
-        if row is None:
-            raise DrugNotFoundError(
-                f"Item with id {drug.b_item_id} not found"
-            )
-        
-        for key, value in vars(drug).items():
-            if value is not None:
-                setattr(row, key, value)
-        
-        try:
-            self.session.commit()
-            self.session.refresh(row)
-        except SQLAlchemyError as e:
-            self.session.rollback()
-            raise RepositoryError(str(e))
-
-        return row 
