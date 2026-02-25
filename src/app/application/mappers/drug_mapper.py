@@ -9,9 +9,9 @@ def _to_drug(dto: DrugDTO) -> Drug:
         item_trade_name = dto.item_trade_name,
         item_nick_name = dto.item_nick_name,   
         item_active = dto.item_active,
-        b_item_subgroup_id = dto.b_item_subgroup_id,
-        b_item_billing_subgroup_id = dto.b_item_billing_subgroup_id,   
-        b_item_16_group_id = dto.b_item_16_group_id,
+        b_item_subgroup = dto.b_item_subgroup,
+        b_item_billing_subgroup = dto.b_item_billing_subgroup,   
+        b_item_16_group = dto.b_item_16_group,
         images = dto.images,
         instructions = dto.instructions
     )
@@ -32,9 +32,9 @@ def _to_dto(drug: Drug) -> DrugDTO:
         item_trade_name = drug.item_trade_name,
         item_nick_name = drug.item_nick_name,   
         item_active = drug.item_active,
-        b_item_subgroup_id = drug.b_item_subgroup_id,
-        b_item_billing_subgroup_id = drug.b_item_billing_subgroup_id,
-        b_item_16_group_id = drug.b_item_16_group_id,
+        b_item_subgroup = drug.b_item_subgroup,
+        b_item_billing_subgroup = drug.b_item_billing_subgroup,
+        b_item_16_group = drug.b_item_16_group,
         images = list[DrugImageDTO](
             _to_image_dto(image) for image in drug.images
         ) if drug.images else None,

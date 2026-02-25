@@ -18,7 +18,10 @@ class DrugRepositoryImpl(DrugRepository):
             .options(
                 selectinload(DrugORM.images)
                     .selectinload(DrugImageORM.variant),
-                selectinload(DrugORM.instructions)
+                selectinload(DrugORM.instructions),
+                selectinload(DrugORM.subgroup),
+                selectinload(DrugORM.billing_subgroup),
+                selectinload(DrugORM.group_16) 
             )
             .filter(DrugORM.b_item_id == id)
             .first()

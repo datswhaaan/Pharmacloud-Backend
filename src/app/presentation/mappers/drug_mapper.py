@@ -19,9 +19,9 @@ def _to_drug_response(dto: DrugDTO) -> DrugResponse:
         item_trade_name = dto.item_trade_name,
         item_nick_name = dto.item_nick_name,   
         item_active = dto.item_active,
-        b_item_subgroup_id = dto.b_item_subgroup_id,
-        b_item_billing_subgroup_id = dto.b_item_billing_subgroup_id,
-        b_item_16_group_id = dto.b_item_16_group_id,
+        b_item_subgroup = dto.b_item_subgroup,
+        b_item_billing_subgroup = dto.b_item_billing_subgroup,
+        b_item_16_group = dto.b_item_16_group,
         images=[
             _to_drug_image_response(img)
             for img in (dto.images or [])

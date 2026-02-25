@@ -26,9 +26,9 @@ class DrugDTO(BaseModel):
     item_active: str
     item_trade_name: str | None = None
     item_nick_name: str | None = None
-    b_item_subgroup_id: str | None = None
-    b_item_billing_subgroup_id: str | None = None
-    b_item_16_group_id: str | None = None
+    b_item_subgroup: str | None = None
+    b_item_billing_subgroup: str | None = None
+    b_item_16_group: str | None = None
     images: list[DrugImageDTO] | None = None
     instructions: list[DrugInstructionDTO] = None
     

@@ -34,9 +34,9 @@ def _to_drug(orm: DrugORM) -> Drug:
         item_trade_name = orm.item_trade_name,
         item_nick_name = orm.item_nick_name,   
         item_active = orm.item_active,
-        b_item_subgroup_id = orm.b_item_subgroup_id,
-        b_item_billing_subgroup_id = orm.b_item_billing_subgroup_id,   
-        b_item_16_group_id = orm.b_item_16_group_id,
+        b_item_subgroup = orm.subgroup.item_subgroup_number + " " + orm.subgroup.item_subgroup_description if orm.subgroup else None,
+        b_item_billing_subgroup = orm.billing_subgroup.item_billing_subgroup_number + " " + orm.billing_subgroup.item_billing_subgroup_description if orm.billing_subgroup else None,
+        b_item_16_group = orm.group_16.item_16_group_number + " " + orm.group_16.item_16_group_description if orm.group_16 else None,
         images = [
             _to_drug_image(image) for image in orm.images],
         instructions = [
@@ -63,9 +63,9 @@ def _to_drug_orm(drug: Drug) -> DrugORM:
             item_trade_name = drug.item_trade_name,
             item_nick_name = drug.item_nick_name,   
             item_active = drug.item_active,
-            b_item_subgroup_id = drug.b_item_subgroup_id,
-            b_item_billing_subgroup_id = drug.b_item_billing_subgroup_id,   
-            b_item_16_group_id = drug.b_item_16_group_id,
+            b_item_subgroup = drug.b_item_subgroup,
+            b_item_billing_subgroup = drug.b_item_billing_subgroup,   
+            b_item_16_group = drug.b_item_16_group,
         )
 
 def to_image_variant_list(ormlist: list[ImageVariantORM]) -> ImageVariantList:

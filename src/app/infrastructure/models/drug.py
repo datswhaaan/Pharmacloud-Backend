@@ -51,8 +51,33 @@ class DrugORM(Base):
     item_trade_name = Column(String, index=True)
     item_nick_name = Column(String, index=True)
     item_active = Column(String, index=True)
-    b_item_subgroup_id = Column(String, index=True)
-    b_item_billing_subgroup_id = Column(String, index=True)
-    b_item_16_group_id = Column(String, index=True)
+    b_item_subgroup_id = Column(String, ForeignKey("b_item_subgroup.b_item_subgroup_id"), index=True)
+    b_item_billing_subgroup_id = Column(String, ForeignKey("b_item_billing_subgroup.b_item_billing_subgroup_id"), index=True)
+    b_item_16_group_id = Column(String, ForeignKey("b_item_16_group.b_item_16_group_id"), index=True)
+
     images = relationship("DrugImageORM", back_populates="drug")
     instructions = relationship("DrugInstructionORM", back_populates="drug")
+    subgroup = relationship("ItemSubGroupORM", back_populates="drugs")
+    billing_subgroup = relationship("ItemBillingSubGroupORM", back_populates="drugs")
+    group_16 = relationship("Item16GroupORM", back_populates="drugs")
+
+class ItemSubGroupORM(Base):
+    __tablename__ = "b_item_subgroup"
+    b_item_subgroup_id = Column(String, primary_key=True, index=True)
+    item_subgroup_number = Column(String)
+    item_subgroup_description = Column(String)
+    drugs = relationship("DrugORM", back_populates="subgroup")
+
+class ItemBillingSubGroupORM(Base):
+    __tablename__ = "b_item_billing_subgroup"
+    b_item_billing_subgroup_id = Column(String, primary_key=True, index=True)
+    item_billing_subgroup_number = Column(String)
+    item_billing_subgroup_description = Column(String)
+    drugs = relationship("DrugORM", back_populates="billing_subgroup")
+
+class Item16GroupORM(Base):
+    __tablename__ = "b_item_16_group"
+    b_item_16_group_id = Column(String, primary_key=True, index=True)
+    item_16_group_number = Column(String)
+    item_16_group_description = Column(String)
+    drugs = relationship("DrugORM", back_populates="group_16")
