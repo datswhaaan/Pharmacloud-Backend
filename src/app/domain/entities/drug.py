@@ -1,11 +1,28 @@
 from dataclasses import dataclass
 
 @dataclass
+class ImageVariant:
+    variant_id: int
+    view_type: str
+    position: int
+    lighting: str
+    description: str
+
+@dataclass
+class ImageVariantList:
+    variants: list[ImageVariant]
+@dataclass
 class DrugImage:
-    b_item_image_id: str
+    image_url: str
+    view_type: str
+    position: int
+    lighting: str
+    variant_id: int | None = None
+
+@dataclass
+class DrugImageList:
     b_item_id: str
-    item_image_url: str
-    f_image_variant_id: str
+    images: list[DrugImage]
 
 @dataclass
 class DrugInstruction:

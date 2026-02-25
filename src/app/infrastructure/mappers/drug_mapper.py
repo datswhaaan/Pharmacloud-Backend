@@ -1,12 +1,18 @@
-from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, InstructionORM
-from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction
+from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, ImageVariantORM, InstructionORM
+from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList
 
 def _to_drug_image(orm: DrugImageORM) -> DrugImage:
     return DrugImage(
-        b_item_image_id = orm.b_item_image_id,
         b_item_id = orm.b_item_id,
-        item_image_url = orm.item_image_url,
-        f_image_variant_id = orm.f_image_variant_id
+        image_url = orm.image_url,
+        variant_id = orm.variant_id
+    )
+
+def _to_drug_image_orm(id: str, drug_image: DrugImage) -> DrugImageORM:
+    return DrugImageORM(
+        b_item_id = id,
+        image_url = drug_image.image_url,
+        variant_id = drug_image.variant_id
     )
 
 def _to_drug_instruction(orm: DrugInstructionORM) -> DrugInstruction:
@@ -58,3 +64,16 @@ def _to_drug_orm(drug: Drug) -> DrugORM:
             b_item_billing_subgroup_id = drug.b_item_billing_subgroup_id,   
             b_item_16_group_id = drug.b_item_16_group_id,
         )
+
+def to_image_variant_list(ormlist: list[ImageVariantORM]) -> ImageVariantList:
+    return ImageVariantList(
+        variants=[
+            ImageVariant(
+                variant_id=orm.variant_id,
+                view_type=orm.view_type,
+                position=orm.position,
+                lighting=orm.lighting,
+                description=orm.description
+        )
+        for orm in ormlist
+    ])

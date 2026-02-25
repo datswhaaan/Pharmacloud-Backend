@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.presentation.schemas.drug import DrugSchema, DrugListSchema
+from app.presentation.schemas.drug import DrugImageListDTO, DrugSchema, DrugListSchema
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
-from app.presentation.mappers.drug_mapper import _base_to_drug_dto
+from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto
 
 router = APIRouter(prefix="/drugs", tags=["drugs"])
 
@@ -29,5 +29,18 @@ def get_all_drugs(
     try:
         drug = service.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return drug
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/{drug_id}/images")
+def add_drug_image(
+    drug_id: str,
+    images: DrugImageListDTO,
+    service: DrugService = Depends(get_drug_service),
+):
+    try:
+        drug_images = _to_drug_image_list_dto(drug_id, images)
+        service.add_drug_image(drug_id, drug_images)
+        return {"message": "Images added successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.domain.entities.drug import Drug, DrugList
+from app.domain.entities.drug import Drug, DrugImage, DrugList
 
 class DrugRepository(ABC):
 
@@ -18,4 +18,9 @@ class DrugRepository(ABC):
         limit: int = 100
     ) -> DrugList:
         """Return list of drugs"""
+        raise NotImplementedError
+    
+    @abstractmethod
+    def add_drug_image(self, drug_id: str, images: list[DrugImage]) -> None:
+        """Add images to a drug"""
         raise NotImplementedError

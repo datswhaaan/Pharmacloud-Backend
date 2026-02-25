@@ -1,6 +1,17 @@
 from dataclasses import dataclass
 
 @dataclass
+class DrugImageDTO:
+    image_url: str
+    view_type: str
+    position: int
+    lighting: str
+
+@dataclass
+class DrugImageListDTO:
+    images: list[DrugImageDTO]
+    
+@dataclass
 class DrugDTO:
     b_item_id: str
     item_number: str
@@ -11,7 +22,7 @@ class DrugDTO:
     b_item_subgroup_id: str | None = None
     b_item_billing_subgroup_id: str | None = None
     b_item_16_group_id: str | None = None
-    images: list[dict] = None
+    images: list[DrugImageDTO] = None
     instructions: list[dict] = None
 
 @dataclass

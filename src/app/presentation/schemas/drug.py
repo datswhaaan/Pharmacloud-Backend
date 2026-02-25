@@ -1,10 +1,13 @@
 from pydantic import BaseModel
 
-class DrugImageSchema(BaseModel):
-    b_item_image_id: str
-    b_item_id: str
+class DrugImageDTO(BaseModel):
     image_url: str
-    variant: dict | None = None
+    view_type: str
+    position: int
+    lighting: str
+
+class DrugImageListDTO(BaseModel):
+    images: list[DrugImageDTO]
 
 class DrugInstructionSchema(BaseModel):
     b_item_drug_id: str
@@ -15,6 +18,7 @@ class DrugInstructionSchema(BaseModel):
     item_drug_special_prescription_text: str
     instruction_text: str
     high_alert: bool
+    
 class DrugSchema(BaseModel):
     b_item_id: str
     item_number: str
@@ -25,7 +29,7 @@ class DrugSchema(BaseModel):
     b_item_subgroup_id: str | None = None
     b_item_billing_subgroup_id: str | None = None
     b_item_16_group_id: str | None = None
-    images: list[DrugImageSchema] = None
+    images: DrugImageListDTO | None = None
     instructions: list[DrugInstructionSchema] = None
 
 class DrugListSchema(BaseModel):

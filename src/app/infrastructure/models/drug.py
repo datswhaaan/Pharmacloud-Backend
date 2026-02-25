@@ -8,7 +8,9 @@ Base = declarative_base()
 class ImageVariantORM(Base):
     __tablename__ = "image_variants"
     variant_id = Column(Integer, primary_key=True, index=True)
-    variant_name = Column(String)
+    view_type = Column(String)
+    position = Column(Integer)
+    lighting = Column(String)
     description = Column(String)
     images = relationship("DrugImageORM", back_populates="variant")
 
