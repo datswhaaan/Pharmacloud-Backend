@@ -1,3 +1,4 @@
+from sqlalchemy import func, case
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImageORM, ImageVariantORM
@@ -16,8 +17,8 @@ class DrugRepositoryImpl(DrugRepository):
             .query(DrugORM)
             .options(
                 selectinload(DrugORM.images)
-                .selectinload(DrugImageORM.variant)
-                .selectinload(DrugORM.instructions)
+                    .selectinload(DrugImageORM.variant),
+                selectinload(DrugORM.instructions)
             )
             .filter(DrugORM.b_item_id == id)
             .first()
@@ -39,19 +40,48 @@ class DrugRepositoryImpl(DrugRepository):
         limit: int = 100
     ) -> DrugList:
         
+        high_alert_subq = (
+            self.session.query(
+                DrugInstructionORM.b_item_id,
+                func.max(
+                    case(
+                        (DrugInstructionORM.height_alert == "Y", 1),
+                        else_=0
+                    )
+                ).label("has_high_alert")
+            )
+            .group_by(DrugInstructionORM.b_item_id)
+            .subquery()
+        )
+
+        query = (
+            self.session.query(
+                DrugORM.item_number,
+                DrugORM.item_common_name,
+                func.coalesce(high_alert_subq.c.has_high_alert, 0).label("high_alert")
+            )
+            .outerjoin(
+                high_alert_subq,
+                DrugORM.b_item_id == high_alert_subq.c.b_item_id
+            )
+        )
+
+        if search:
+            query = query.filter(
+                DrugORM.item_common_name.ilike(f"%{search}%") |
+                DrugORM.b_item_id.ilike(f"%{search}%") |
+                DrugORM.item_trade_name.ilike(f"%{search}%") |
+                DrugORM.item_nick_name.ilike(f"%{search}%") |
+                DrugORM.item_number.ilike(f"%{search}%")
+            )
+
+        if high_alert:
+            query = query.filter(
+                high_alert_subq.c.has_high_alert == 1
+            )
+
         rows = (
-            self.session
-            .query(DrugORM)
-            .filter(
-                DrugORM.item_common_name.ilike(f"%{search}%")
-                | DrugORM.b_item_id.ilike(f"%{search}%")
-                | DrugORM.item_trade_name.ilike(f"%{search}%")
-                | DrugORM.item_nick_name.ilike(f"%{search}%")
-                | DrugORM.item_number.ilike(f"%{search}%")
-            ) if search else True
-            .filter(
-                DrugInstructionORM.height_alert == "Y"
-            ) if high_alert else True
+            query
             .offset(skip)
             .limit(limit)
             .all()

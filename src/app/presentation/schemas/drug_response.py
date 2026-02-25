@@ -1,31 +1,17 @@
-from dataclasses import dataclass
 
-@dataclass
-class ImageVariant:
-    variant_id: int
-    view_type: str
-    position: int
-    lighting: str
-    description: str
+from pydantic import BaseModel, ConfigDict
 
-@dataclass
-class ImageVariantList:
-    variants: list[ImageVariant]
-@dataclass
-class DrugImage:
+class DrugImageResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     image_url: str
     view_type: str | None = None
     position: int | None = None
     lighting: str | None = None
-    variant_id: int | None = None
 
-@dataclass
-class DrugImageList:
-    b_item_id: str
-    images: list[DrugImage]
+class DrugInstructionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
-@dataclass
-class DrugInstruction:
     b_item_drug_id: str
     b_item_id: str
     item_drug_caution: str
@@ -35,8 +21,9 @@ class DrugInstruction:
     instruction_text: str
     high_alert: bool
 
-@dataclass
-class Drug:
+class DrugResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     b_item_id: str
     item_number: str
     item_common_name: str
@@ -46,15 +33,15 @@ class Drug:
     b_item_subgroup_id: str | None = None
     b_item_billing_subgroup_id: str | None = None
     b_item_16_group_id: str | None = None
-    images: list[DrugImage] | None = None
-    instructions: list[DrugInstruction] = None
+    images: list[DrugImageResponse] | None = None
+    instructions: list[DrugInstructionResponse] | None = None
 
-@dataclass
-class DrugListItem:
+class DrugListItemResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     item_number: str
     item_common_name: str
     high_alert: bool
 
-@dataclass
-class DrugList:
-    drugs: list[DrugListItem]
+class DrugListResponse(BaseModel):
+    drugs: list[DrugListItemResponse]

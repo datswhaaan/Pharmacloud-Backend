@@ -1,8 +1,7 @@
-from app.domain.entities.drug import DrugImage, ImageVariantList
+from app.domain.entities.drug import Drug, DrugList, DrugImageList
 from app.domain.repositories.drug import DrugRepository
-from app.application.dto.drug_dto import DrugDTO, DrugImageListDTO, DrugListDTO
 from app.application.mappers.drug_mapper import _to_dto, _to_dto_list
-from app.domain.entities.drug import DrugImageList, ImageVariantList
+from app.application.dto.drug_dto import DrugDTO, DrugListDTO
 
 class DrugService:
     def __init__(self, repository: DrugRepository):

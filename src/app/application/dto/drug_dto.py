@@ -10,7 +10,7 @@ class DrugImageDTO:
 @dataclass
 class DrugImageListDTO:
     images: list[DrugImageDTO]
-    
+
 @dataclass
 class DrugDTO:
     b_item_id: str
@@ -22,8 +22,14 @@ class DrugDTO:
     b_item_subgroup_id: str | None = None
     b_item_billing_subgroup_id: str | None = None
     b_item_16_group_id: str | None = None
-    images: list[DrugImageDTO] = None
+    images: list[DrugImageDTO] | None = None
     instructions: list[dict] = None
+
+@dataclass
+class DrugListItemDTO:
+    item_number: str
+    item_common_name: str
+    high_alert: bool
 
 @dataclass
 class DrugListDTO:
