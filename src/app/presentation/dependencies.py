@@ -5,6 +5,8 @@ from app.infrastructure.repositories.drug_metadata_repository_impl import DrugMe
 from app.infrastructure.repositories.drug_repository_impl import DrugRepositoryImpl
 from app.application.use_cases.drug_metadata_service import DrugMetadataService
 from app.application.use_cases.drug_service import DrugService
+from app.infrastructure.repositories.prescription_repository_impl import PrescriptionRepositoryImpl
+from app.application.use_cases.prescription_service import PrescriptionService
 
 def get_db():
     db = SessionLocal()
@@ -20,3 +22,7 @@ def get_drug_metadata_service(db: Session = Depends(get_db)):
 def get_drug_service(db: Session = Depends(get_db)):
     repo = DrugRepositoryImpl(db)
     return DrugService(repo)
+
+def get_prescription_service(db: Session = Depends(get_db)):
+    repo = PrescriptionRepositoryImpl(db)
+    return PrescriptionService(repo)
