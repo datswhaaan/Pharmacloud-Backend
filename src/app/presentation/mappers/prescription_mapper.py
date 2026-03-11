@@ -1,6 +1,6 @@
 
-from app.application.dto.prescription_dto import PrescriptionDTO
-from app.presentation.schemas.prescription_response import PrescriptionResponse, RiskFactorResponse, OrderDrugResponse
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
 
@@ -40,4 +40,20 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
         visit_patient_age=dto.visit_patient_age,
         risk_factors=risk_factors,
         order_drugs=order_drugs
+    )
+
+def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionListResponse:
+    return PrescriptionListResponse(
+        prescriptions=[
+            PrescriptionItemResponse(
+                visit_id=item.visit_id,
+                visit_hn=item.visit_hn,
+                visit_vn=item.visit_vn,
+                patient_prefix=item.f_patient_prefix,
+                patient_firstname=item.patient_firstname,
+                patient_lastname=item.patient_lastname,
+                visit_begin_visit_time=item.visit_begin_visit_time
+            )
+            for item in dto.prescriptions
+        ]
     )

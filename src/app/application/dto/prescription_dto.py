@@ -31,3 +31,17 @@ class PrescriptionDTO:
     visit_patient_age: str
     risk_factors: list[RiskFactorDTO]
     order_drugs: list[OrderDrugDTO]
+
+@dataclass
+class PrescriptionItemDTO:
+    visit_id: str
+    visit_hn: str
+    visit_vn: str
+    f_patient_prefix: str
+    patient_firstname: str
+    patient_lastname: str
+    visit_begin_visit_time: str
+
+@dataclass
+class PrescriptionListDTO:
+    prescriptions: list[PrescriptionItemDTO]

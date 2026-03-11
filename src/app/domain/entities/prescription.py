@@ -31,3 +31,17 @@ class Prescription:
     visit_patient_age: str
     risk_factors: list[RiskFactor]
     order_drugs: list[OrderDrug]
+
+@dataclass
+class PrescriptionItem:
+    t_visit_id: str
+    visit_hn: str
+    visit_vn: str
+    f_patient_prefix: str
+    patient_firstname: str
+    patient_lastname: str
+    visit_begin_visit_time: str
+
+@dataclass
+class PrescriptionList:
+    prescriptions: list[PrescriptionItem]

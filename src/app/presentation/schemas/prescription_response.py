@@ -28,3 +28,15 @@ class PrescriptionResponse(BaseModel):
     visit_patient_age: str
     risk_factors: list[RiskFactorResponse]
     order_drugs: list[OrderDrugResponse]
+
+class PrescriptionItemResponse(BaseModel):
+    visit_id: str
+    visit_hn: str
+    visit_vn: str
+    patient_prefix: str
+    patient_firstname: str
+    patient_lastname: str
+    visit_begin_visit_time: str
+
+class PrescriptionListResponse(BaseModel):
+    prescriptions: list[PrescriptionItemResponse]

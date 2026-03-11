@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM
-from app.infrastructure.mappers.prescription_mapper import _to_prescription
-from app.domain.entities.prescription import Prescription
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM
+from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list
+from app.domain.entities.prescription import Prescription, PrescriptionList
 from app.domain.exception.prescription import PrescriptionNotFoundException
 
 class PrescriptionRepositoryImpl:
@@ -37,3 +37,30 @@ class PrescriptionRepositoryImpl:
             )
         
         return _to_prescription(row)
+
+    def get_all_prescriptions(self, start_time: str, end_time: str, limit: int, skip: int, order: str) -> PrescriptionList:
+        query = self.session.query(
+            PrescriptionORM.t_visit_id,
+            PrescriptionORM.visit_hn,
+            PrescriptionORM.visit_vn,
+            PatientPrefixORM.patient_prefix_description,
+            PatientORM.patient_firstname,
+            PatientORM.patient_lastname,
+            PrescriptionORM.visit_begin_visit_time
+        )
+        
+        rows = (
+            query
+            .join(PrescriptionORM.patient)
+            .join(PatientORM.prefix)
+            .filter(
+                PrescriptionORM.visit_begin_visit_time >= start_time if start_time else True,
+                PrescriptionORM.visit_begin_visit_time <= end_time if end_time else True
+            )
+            .order_by(PrescriptionORM.visit_begin_visit_time.asc() if order == "asc" else PrescriptionORM.visit_begin_visit_time.desc())
+            .limit(limit)
+            .offset(skip)
+            .all()
+        )
+
+        return _to_prescription_list(rows)

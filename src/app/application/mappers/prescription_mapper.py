@@ -1,5 +1,5 @@
-from app.domain.entities.prescription import Prescription
-from app.application.dto.prescription_dto import PrescriptionDTO
+from app.domain.entities.prescription import Prescription, PrescriptionList
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO
 
 def _to_prescription_dto(prescription: Prescription) -> PrescriptionDTO:
     return PrescriptionDTO(
@@ -20,4 +20,20 @@ def _to_prescription_dto(prescription: Prescription) -> PrescriptionDTO:
         visit_patient_age=prescription.visit_patient_age,
         risk_factors=prescription.risk_factors,
         order_drugs=prescription.order_drugs
+    )
+
+def _to_prescription_list_dto(prescription_list: PrescriptionList) -> PrescriptionListDTO:
+    return PrescriptionListDTO(
+        prescriptions=[
+            PrescriptionItemDTO(
+                visit_id=prescription.t_visit_id,
+                visit_hn=prescription.visit_hn,
+                visit_vn=prescription.visit_vn,
+                f_patient_prefix=prescription.f_patient_prefix,
+                patient_firstname=prescription.patient_firstname,
+                patient_lastname=prescription.patient_lastname,
+                visit_begin_visit_time=prescription.visit_begin_visit_time
+            )
+            for prescription in prescription_list.prescriptions
+        ]
     )

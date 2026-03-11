@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.application.use_cases.prescription_service import PrescriptionService
 from app.presentation.dependencies import get_prescription_service
-from app.presentation.mappers.prescription_mapper import _to_prescription_response
+from app.presentation.mappers.prescription_mapper import _to_prescription_response, _to_prescription_list_response
 
 router = APIRouter(prefix="/prescriptions", tags=["prescriptions"])
 
@@ -13,5 +13,20 @@ def get_prescription(
     try:
         prescription = service.get_by_id(id)
         return _to_prescription_response(prescription)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/")
+def get_all_prescriptions(
+    start_time: str | None = None,
+    end_time: str | None = None,
+    limit: int = 10,
+    skip: int = 0,
+    order: str = "desc",
+    service: PrescriptionService = Depends(get_prescription_service),
+):
+    try:
+        prescription_list = service.get_all(start_time, end_time, limit, skip, order)
+        return _to_prescription_list_response(prescription_list)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -1,4 +1,4 @@
-from app.domain.entities.prescription import Prescription, RiskFactor, OrderDrug
+from app.domain.entities.prescription import Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem
 from app.infrastructure.models.prescription import PrescriptionORM
 
 def _to_risk_factor(orm: PrescriptionORM) -> list[RiskFactor]:
@@ -42,4 +42,20 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
         visit_patient_age=orm.visit_patient_age, 
         risk_factors=_to_risk_factor(orm),
         order_drugs=_to_order_drug(orm)
+    )
+
+def _to_prescription_list(orms: list[PrescriptionORM]) -> PrescriptionList:
+    return PrescriptionList(
+        prescriptions=[
+            PrescriptionItem(
+                t_visit_id=orm.t_visit_id,
+                visit_hn=orm.visit_hn,
+                visit_vn=orm.visit_vn,
+                f_patient_prefix = orm.patient_prefix_description,
+                patient_firstname = orm.patient_firstname,
+                patient_lastname = orm.patient_lastname,
+                visit_begin_visit_time=orm.visit_begin_visit_time
+            )
+            for orm in orms
+        ]
     )
