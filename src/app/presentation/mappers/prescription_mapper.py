@@ -52,7 +52,8 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
                 patient_prefix=item.f_patient_prefix,
                 patient_firstname=item.patient_firstname,
                 patient_lastname=item.patient_lastname,
-                visit_begin_visit_time=item.visit_begin_visit_time
+                visit_begin_visit_time=item.visit_begin_visit_time,
+                status=item.status
             )
             for item in dto.prescriptions
         ]

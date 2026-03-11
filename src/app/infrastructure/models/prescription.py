@@ -26,6 +26,13 @@ class PatientPrefixORM(Base):
     sex = relationship("SexORM", back_populates="patient_prefix")
     patient_prefix = relationship("PatientORM", back_populates="prefix")
 
+class OrderStatusORM(Base):
+    __tablename__ = "f_order_status"
+    f_order_status_id = Column(String, primary_key=True, index=True)
+    order_status_description = Column(String)
+
+    orders = relationship("OrderORM", back_populates="status")
+
 class PatientORM(Base):
     __tablename__ = "t_patient"
     t_patient_id = Column(String, primary_key=True, index=True)
@@ -84,10 +91,12 @@ class OrderORM(Base):
     order_secret = Column(String)
     order_common_name = Column(String)
     order_qty = Column(Float)
+    f_order_status_id = Column(String, ForeignKey("f_order_status.f_order_status_id", ondelete="CASCADE"), index=True)
 
     visit = relationship("PrescriptionORM", back_populates="orders")
     item = relationship("ItemORM", back_populates="orders")
-    order_drugs = relationship("OrderDrugORM", back_populates="order")
+    order_drugs = relationship("OrderDrugORM", back_populates="orders")
+    status = relationship("OrderStatusORM", back_populates="orders")
 
 class OrderDrugORM(Base):
     __tablename__ = "t_order_drug"
@@ -97,7 +106,7 @@ class OrderDrugORM(Base):
     b_item_drug_uom_id_purch = Column(String, ForeignKey("b_item_drug_uom.b_item_drug_uom_id", ondelete="CASCADE"), index=True)
     order_drug_dose = Column(Float)
 
-    order = relationship("OrderORM", back_populates="order_drugs")
+    orders = relationship("OrderORM", back_populates="order_drugs")
     item = relationship("ItemORM", back_populates="order_drugs")
     item_drug_uom = relationship("ItemDrugUOMORM", back_populates="order_drugs")
 

@@ -41,6 +41,7 @@ class PrescriptionItem:
     patient_firstname: str
     patient_lastname: str
     visit_begin_visit_time: str
+    status: str
 
 @dataclass
 class PrescriptionList:

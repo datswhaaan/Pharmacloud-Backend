@@ -51,10 +51,11 @@ def _to_prescription_list(orms: list[PrescriptionORM]) -> PrescriptionList:
                 t_visit_id=orm.t_visit_id,
                 visit_hn=orm.visit_hn,
                 visit_vn=orm.visit_vn,
-                f_patient_prefix = orm.patient_prefix_description,
-                patient_firstname = orm.patient_firstname,
-                patient_lastname = orm.patient_lastname,
-                visit_begin_visit_time=orm.visit_begin_visit_time
+                f_patient_prefix=orm.patient_prefix_description,
+                patient_firstname=orm.patient_firstname,
+                patient_lastname=orm.patient_lastname,
+                visit_begin_visit_time=orm.visit_begin_visit_time,
+                status = orm.order_status_description
             )
             for orm in orms
         ]

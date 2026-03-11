@@ -37,6 +37,7 @@ class PrescriptionItemResponse(BaseModel):
     patient_firstname: str
     patient_lastname: str
     visit_begin_visit_time: str
+    status: str
 
 class PrescriptionListResponse(BaseModel):
     prescriptions: list[PrescriptionItemResponse]

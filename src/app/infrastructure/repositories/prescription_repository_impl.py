@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM
 from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list
 from app.domain.entities.prescription import Prescription, PrescriptionList
 from app.domain.exception.prescription import PrescriptionNotFoundException
@@ -46,12 +46,15 @@ class PrescriptionRepositoryImpl:
             PatientPrefixORM.patient_prefix_description,
             PatientORM.patient_firstname,
             PatientORM.patient_lastname,
-            PrescriptionORM.visit_begin_visit_time
+            PrescriptionORM.visit_begin_visit_time,
+            OrderStatusORM.order_status_description
         )
         
         rows = (
             query
             .join(PrescriptionORM.patient)
+            .join(PrescriptionORM.orders)
+            .join(OrderORM.status)
             .join(PatientORM.prefix)
             .filter(
                 PrescriptionORM.visit_begin_visit_time >= start_time if start_time else True,

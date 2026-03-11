@@ -32,7 +32,8 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
                 f_patient_prefix=prescription.f_patient_prefix,
                 patient_firstname=prescription.patient_firstname,
                 patient_lastname=prescription.patient_lastname,
-                visit_begin_visit_time=prescription.visit_begin_visit_time
+                visit_begin_visit_time=prescription.visit_begin_visit_time,
+                status=prescription.status
             )
             for prescription in prescription_list.prescriptions
         ]
