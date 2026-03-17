@@ -41,3 +41,22 @@ class PrescriptionItemResponse(BaseModel):
 
 class PrescriptionListResponse(BaseModel):
     prescriptions: list[PrescriptionItemResponse]
+
+class DetectionItemResponse(BaseModel):
+    t_order_drug_id: str
+    detection_item_id: str
+    item_common_name: str
+    confidence: float
+    quantity: int
+    unit: str
+
+class DetectionResponse(BaseModel):
+    detection_id: str
+    verified_by: str
+    verified_at: str
+    matched: list[DetectionItemResponse]
+    missing: list[DetectionItemResponse]
+    extra: list[DetectionItemResponse]
+
+class DetectionListResponse(BaseModel):
+    detections: list[DetectionResponse]

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 @dataclass
 class RiskFactor:
@@ -46,3 +47,35 @@ class PrescriptionItem:
 @dataclass
 class PrescriptionList:
     prescriptions: list[PrescriptionItem]
+
+@dataclass
+class DetectionItem:
+    detection_item_id: str
+    b_item_id: str
+    item_common_name: str
+    confidence: str
+
+@dataclass
+class Detection:
+    detection_id: str
+    detected_at: datetime
+    image_url: str
+    verified_by: str
+    verified_at: datetime
+    detections: list[DetectionItem]
+
+@dataclass
+class DetectionList:
+    detections: list[Detection]
+
+@dataclass
+class OrderDrugItem:
+    t_order_drug_id: str
+    b_item_id: str
+    item_common_name: str
+    unit: str
+    quantity: str
+
+@dataclass
+class OrderList:
+    orders: list[OrderDrugItem]

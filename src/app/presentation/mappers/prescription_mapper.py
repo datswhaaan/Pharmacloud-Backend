@@ -1,6 +1,6 @@
 
-from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
-from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
 
@@ -56,5 +56,48 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
                 status=item.status
             )
             for item in dto.prescriptions
+        ]
+    )
+
+def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:
+    return DetectionListResponse(
+        detections=[
+            DetectionResponse(
+                detection_id=d.detection_id,
+                verified_by=d.verified_by,
+                verified_at=d.verified_at,
+                matched=[
+                    DetectionItemResponse(
+                        t_order_drug_id=item.t_order_drug_id,
+                        detection_item_id=item.detection_item_id,
+                        item_common_name=item.item_common_name,
+                        confidence=item.confidence,
+                        quantity=item.quantity,
+                        unit=item.unit
+                    )
+                    for item in d.matched
+                ],
+                missing=[
+                    DetectionItemResponse(
+                        detection_item_id=item.detection_item_id,
+                        item_common_name=item.item_common_name,
+                        confidence=item.confidence,
+                        quantity=item.quantity,
+                        unit=item.unit
+                    )
+                    for item in d.missing
+                ],
+                extra=[
+                    DetectionItemResponse(
+                        detection_item_id=item.detection_item_id,
+                        item_common_name=item.item_common_name,
+                        confidence=item.confidence,
+                        quantity=item.quantity,
+                        unit=item.unit
+                    )
+                    for item in d.extra
+                ]
+            )
+            for d in dto.detections
         ]
     )

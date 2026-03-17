@@ -1,5 +1,5 @@
-from app.domain.entities.prescription import Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem
-from app.infrastructure.models.prescription import PrescriptionORM
+from app.domain.entities.prescription import OrderDrugItem, Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem, DetectionItem, DetectionList, Detection, OrderList
+from app.infrastructure.models.prescription import PrescriptionORM, DetectionORM, OrderORM
 
 def _to_risk_factor(orm: PrescriptionORM) -> list[RiskFactor]:
     return [
@@ -58,5 +58,42 @@ def _to_prescription_list(orms: list[PrescriptionORM]) -> PrescriptionList:
                 status = orm.order_status_description
             )
             for orm in orms
+        ]
+    )
+
+def _to_detection_list(orms: list[DetectionORM]) -> DetectionList:
+    return DetectionList(
+        detections=[
+            Detection(
+                detection_id=orm.detection_id,
+                detected_at=orm.detected_at,
+                image_url=orm.image_url,
+                verified_by=orm.employee.employee_firstname + " " + orm.employee.employee_lastname,
+                verified_at=orm.verified_at,
+                detections=[
+                    DetectionItem(
+                        detection_item_id=di.detection_item_id,
+                        b_item_id=di.b_item_id,
+                        item_common_name=di.item.item_common_name,
+                        confidence=di.confidence
+                    )
+                    for di in orm.detection_item
+                ]
+            ) for orm in orms
+        ]
+    )
+
+def _to_order_list(orms: list[OrderORM]) -> OrderList:
+    return OrderList(
+        orders=[
+            OrderDrugItem(
+                t_order_drug_id=od.t_order_id,
+                b_item_id=od.item.b_item_id,
+                item_common_name=od.item.item_common_name,
+                unit=od.item_drug_uom.item_drug_uom_description,
+                quantity=od.order_drug_dose
+            )
+            for orm in orms
+            for od in orm.order_drugs
         ]
     )

@@ -1,4 +1,4 @@
-from sqlalchemy import UUID, Column, ForeignKey, Integer, String, Float
+from sqlalchemy import UUID, Column, ForeignKey, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -52,6 +52,7 @@ class EmployeeORM(Base):
     employee_lastname = Column(String)
 
     prescriptions = relationship("PrescriptionORM", back_populates="employee")
+    detection = relationship("DetectionORM", back_populates="employee")
 
 class PrescriptionORM(Base):
     __tablename__ = "t_visit"
@@ -97,6 +98,7 @@ class OrderORM(Base):
     item = relationship("ItemORM", back_populates="orders")
     order_drugs = relationship("OrderDrugORM", back_populates="orders")
     status = relationship("OrderStatusORM", back_populates="orders")
+    detection = relationship("DetectionORM", back_populates="orders")
 
 class OrderDrugORM(Base):
     __tablename__ = "t_order_drug"
@@ -109,6 +111,7 @@ class OrderDrugORM(Base):
     orders = relationship("OrderORM", back_populates="order_drugs")
     item = relationship("ItemORM", back_populates="order_drugs")
     item_drug_uom = relationship("ItemDrugUOMORM", back_populates="order_drugs")
+    detection_item = relationship("DetectionItemORM", back_populates="order_drugs")
 
 class ItemORM(Base):
     __tablename__ = "b_item"
@@ -117,6 +120,7 @@ class ItemORM(Base):
 
     orders = relationship("OrderORM", back_populates="item")
     order_drugs = relationship("OrderDrugORM", back_populates="item")
+    detection_item = relationship("DetectionItemORM", back_populates="item")
 
 class ItemDrugUOMORM(Base):
     __tablename__ = "b_item_drug_uom"
@@ -124,3 +128,28 @@ class ItemDrugUOMORM(Base):
     item_drug_uom_description = Column(String)
 
     order_drugs = relationship("OrderDrugORM", back_populates="item_drug_uom")
+
+class DetectionORM(Base):
+    __tablename__ = "detection"
+    detection_id = Column(String, primary_key=True, index=True)
+    t_order_id = Column(String, ForeignKey("t_order.t_order_id", ondelete="CASCADE"), index=True)
+    detected_at = Column(DateTime)
+    image_url = Column(String)
+    verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
+    verified_at = Column(DateTime)
+
+    orders = relationship("OrderORM", back_populates="detection")
+    detection_item = relationship("DetectionItemORM", back_populates="detection")
+    employee = relationship("EmployeeORM", back_populates="detection")
+
+class DetectionItemORM(Base):
+    __tablename__ = "detection_item"
+    detection_item_id = Column(String, primary_key= True, index=True)
+    detection_id = Column(String, ForeignKey("detection.detection_id"))
+    t_order_drug_id = Column(String, ForeignKey("t_order_drug.t_order_drug_id"))
+    b_item_id = Column(String, ForeignKey("b_item.b_item_id"))
+    confidence = Column(Float)
+
+    detection = relationship("DetectionORM", back_populates="detection_item")
+    order_drugs = relationship("OrderDrugORM", back_populates="detection_item")
+    item = relationship("ItemORM", back_populates="detection_item")

@@ -1,6 +1,6 @@
 from app.domain.repositories.prescription import PrescriptionRepository
-from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
-from app.application.mappers.prescription_mapper import _to_prescription_dto, _to_prescription_list_dto
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
+from app.application.mappers.prescription_mapper import _to_detection_item_dto, _to_prescription_dto, _to_prescription_list_dto, _to_detection_dto
 
 class PrescriptionService:
     def __init__(self, prescription_repository: PrescriptionRepository):
@@ -15,3 +15,32 @@ class PrescriptionService:
     def get_all(self, start_time: str, end_time: str, limit: int, skip: int, order: str) -> PrescriptionListDTO:
         prescription_list = self.repository.get_all_prescriptions(start_time, end_time, limit, skip, order)
         return _to_prescription_list_dto(prescription_list)
+
+    def compare_detections(self, order_id: str) -> DetectionListDTO:
+        order_list = self.repository.get_orders_by_order_id(order_id)
+        detection_list = self.repository.get_detections_by_order_id(order_id)
+
+        dto = []
+
+        order_map = [order_item.b_item_id for order_item in order_list.orders]
+        
+        for d in detection_list.detections:
+            detection_map = [detection_item.b_item_id for detection_item in d.detections]
+
+            matched = []
+            missing = []
+            extra = []
+
+            for od in order_map:
+                if od in detection_map:
+                    matched.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
+                    detection_map.remove(od)
+                else: 
+                    missing.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
+
+            for dm in detection_map:
+                extra.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
+            
+            dto.append(_to_detection_dto(d, matched, missing, extra))
+
+        return DetectionListDTO(detections=dto)

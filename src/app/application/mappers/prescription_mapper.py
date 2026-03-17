@@ -1,5 +1,5 @@
-from app.domain.entities.prescription import Prescription, PrescriptionList
-from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO
+from app.domain.entities.prescription import DetectionItem, OrderDrugItem, Prescription, PrescriptionList
+from app.application.dto.prescription_dto import DetectionItemDTO, PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO, DetectionDTO
 
 def _to_prescription_dto(prescription: Prescription) -> PrescriptionDTO:
     return PrescriptionDTO(
@@ -37,4 +37,24 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
             )
             for prescription in prescription_list.prescriptions
         ]
+    )
+
+def _to_detection_item_dto(ordered: OrderDrugItem, detected: DetectionItem) -> DetectionItemDTO:
+    return DetectionItemDTO(
+        t_order_drug_id=ordered.t_order_drug_id,
+        detection_item_id=detected.detection_item_id,
+        item_common_name=detected.item_common_name,
+        confidence=detected.confidence,
+        quantity=ordered.quantity,
+        unit=ordered.unit
+    )
+
+def _to_detection_dto(detection, matched, missing, extra) -> DetectionDTO:
+    return DetectionDTO(
+        detection_id=detection.detection_id,
+        verified_at=str(detection.verified_at),
+        verified_by=detection.verified_by,
+        matched=matched,
+        missing=missing,
+        extra=extra
     )

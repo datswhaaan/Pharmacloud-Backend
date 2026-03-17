@@ -46,3 +46,25 @@ class PrescriptionItemDTO:
 @dataclass
 class PrescriptionListDTO:
     prescriptions: list[PrescriptionItemDTO]
+
+@dataclass
+class DetectionItemDTO:
+    t_order_drug_id: str
+    detection_item_id: str
+    item_common_name: str
+    confidence: str
+    quantity: str
+    unit: str
+
+@dataclass
+class DetectionDTO:
+    detection_id: str
+    verified_by: str
+    verified_at: str
+    matched: list[DetectionItemDTO]
+    missing: list[DetectionItemDTO]
+    extra: list[DetectionItemDTO]
+
+@dataclass
+class DetectionListDTO:
+    detections: list[DetectionDTO]

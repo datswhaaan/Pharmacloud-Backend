@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM
-from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list
-from app.domain.entities.prescription import Prescription, PrescriptionList
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM
+from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_detection_list, _to_order_list
+from app.domain.entities.prescription import Prescription, PrescriptionList, DetectionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
 
 class PrescriptionRepositoryImpl:
@@ -67,3 +67,43 @@ class PrescriptionRepositoryImpl:
         )
 
         return _to_prescription_list(rows)
+
+    def get_orders_by_order_id(self, order_id: str) -> OrderList:
+        rows = (
+            self.session
+            .query(OrderORM)
+            .options(
+                selectinload(OrderORM.order_drugs)
+                    .selectinload(OrderDrugORM.item_drug_uom),
+                selectinload(OrderORM.item)
+            )
+            .filter(
+                OrderORM.t_order_id == order_id
+            )
+            .all()
+        )
+
+        return _to_order_list(rows)
+
+    def get_detections_by_order_id(self, order_id: str) -> DetectionList:
+        
+        rows = (
+            self.session
+            .query(DetectionORM)
+            .options(
+                selectinload(DetectionORM.detection_item)
+                    .selectinload(DetectionItemORM.order_drugs)
+                    .selectinload(OrderDrugORM.item_drug_uom),
+                selectinload(DetectionORM.detection_item)
+                    .selectinload(DetectionItemORM.item),
+                selectinload(DetectionORM.orders),
+                selectinload(DetectionORM.employee)
+            )
+            .filter(
+                DetectionORM.t_order_id == order_id
+            )
+            .order_by(DetectionORM.verified_at.desc())
+            .all()
+        )
+
+        return _to_detection_list(rows)
