@@ -10,6 +10,8 @@ from app.application.use_cases.prescription_service import PrescriptionService
 from app.application.use_cases.auth_service import AuthService
 from app.infrastructure.security.password_hasher_impl import PasswordHasherImpl
 from app.infrastructure.security.token_impl import TokenImpl
+from app.infrastructure.repositories.user_repository_impl import UserRepositoryImpl
+from app.application.use_cases.user_service import UserService
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -36,6 +38,10 @@ def get_prescription_service(db: Session = Depends(get_db)):
 
 def get_auth_service():
     return AuthService(password = PasswordHasherImpl(), token = TokenImpl())
+
+def get_user_service(db: Session = Depends(get_db)):
+    repo = UserRepositoryImpl(db)
+    return UserService(repo)
 
 def get_current_user_email(
         token: str = Depends(api_key_scheme),

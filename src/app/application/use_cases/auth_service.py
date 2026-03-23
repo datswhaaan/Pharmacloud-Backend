@@ -2,7 +2,7 @@ from app.domain.security.token import Token
 from app.domain.security.password_hasher import PasswordHasher
 from app.domain.exception.security import AuthenticationError
 from app.domain.entities.user import FAKE_DB
-from app.application.dto.user_dto import UserResponseDTO
+from app.application.dto.user_dto import UserDTO
 from app.application.mappers.user_mapper import _to_user_response_dto
 
 class AuthService:
@@ -31,6 +31,6 @@ class AuthService:
         access_token = self.token.create_access_token({"email": user.email, "role": user.role}, remember_me=remember_me)
         return access_token
     
-    def decode_access_token(self, access_token: str) -> UserResponseDTO:
+    def decode_access_token(self, access_token: str) -> UserDTO:
         user = self.token.decode_access_token(access_token)
         return _to_user_response_dto(user)
