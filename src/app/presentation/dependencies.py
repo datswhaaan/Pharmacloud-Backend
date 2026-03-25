@@ -46,20 +46,25 @@ def get_auth_service(db: Session = Depends(get_db)):
     user = UserRepositoryImpl(db)
     return AuthService(password, token, user)
 
-def get_current_user_email(
-        token: str = Depends(api_key_scheme),
-        auth_service: AuthService = Depends(get_auth_service)
-    ):
-    if not token:
-        raise HTTPException(status_code=401, detail="Token missing")
+def get_current_user_id(
+    token: str = Depends(api_key_scheme), 
+    auth_service: AuthService = Depends(get_auth_service)
+):
+    
     try:
+        if not token:
+            raise HTTPException(status_code=401, detail="Token missing")
+
         payload = auth_service.decode_access_token(token)
 
-        if payload is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        return {
-            "email": payload.email,
-            "role": payload.role
-        }
-    except JWTError:
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+        return payload.user_id
+
+    except JWTError as e:
+        print(f"JWT Error: {str(e)}")
         raise HTTPException(status_code=401, detail="Could not validate credentials")
+    except Exception as e:
+        print(f"Unexpected Error: {str(e)}")
+        raise HTTPException(status_code=400, detail="Bad Request")
