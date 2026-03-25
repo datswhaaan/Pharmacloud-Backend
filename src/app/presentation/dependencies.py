@@ -36,12 +36,15 @@ def get_prescription_service(db: Session = Depends(get_db)):
     repo = PrescriptionRepositoryImpl(db)
     return PrescriptionService(repo)
 
-def get_auth_service():
-    return AuthService(password = PasswordHasherImpl(), token = TokenImpl())
-
 def get_user_service(db: Session = Depends(get_db)):
     repo = UserRepositoryImpl(db)
     return UserService(repo)
+
+def get_auth_service(db: Session = Depends(get_db)):
+    password = PasswordHasherImpl()
+    token = TokenImpl()
+    user = UserRepositoryImpl(db)
+    return AuthService(password, token, user)
 
 def get_current_user_email(
         token: str = Depends(api_key_scheme),

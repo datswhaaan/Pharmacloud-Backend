@@ -11,14 +11,13 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/login")
 def login(
     form_data: LoginRequest,
-    remember_me: bool,
     service: AuthService = Depends(get_auth_service)
 ):
     try:
-        access_token = service.login_user(form_data.email, form_data.password, remember_me)
+        access_token = service.login_user(form_data.username, form_data.password, form_data.remember_me)
         
         if not access_token:
-            raise HTTPException(status_code=401, detail="Invalid email or password")
+            raise HTTPException(status_code=401, detail="Invalid username or password")
 
         return {"access_token": access_token, "token_type": "bearer"}
         
@@ -36,4 +35,4 @@ def logout(response: Response):
 
 @router.get("/protected")
 def protected_route(user = Depends(get_current_user_email)):
-    return {"message": f"Hello {user['email']} with role {user['role']}"}
+    return {"message": f"Hello {user['username']} with role {user['role']}"}

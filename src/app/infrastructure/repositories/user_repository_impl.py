@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.domain.repositories.user import UserRepository
-from app.infrastructure.models.user import EmployeeORM, EmployeeRuleORM, EmployeeLevelORM, EmployeeAuthenticationORM
+from app.infrastructure.models.user import EmployeeORM
 from app.infrastructure.mappers.user_mapper import _to_user
 from app.domain.exception.user import UserNotFoundException
 
@@ -9,7 +9,7 @@ class UserRepositoryImpl(UserRepository):
     def __init__(self, session: Session):
         self.session = session
 
-    def get_user(self, id: str):
+    def get_user(self, username: str):
         row = (
             self.session
             .query(EmployeeORM)
@@ -20,7 +20,7 @@ class UserRepositoryImpl(UserRepository):
             )
             .filter(
                 EmployeeORM.employee_active == "1",
-                EmployeeORM.b_employee_id == id
+                EmployeeORM.employee_login == username
             )
             .first()
         )
