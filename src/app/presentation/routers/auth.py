@@ -14,12 +14,12 @@ def login(
     service: AuthService = Depends(get_auth_service)
 ):
     try:
-        access_token = service.login_user(form_data.username, form_data.password, form_data.remember_me)
+        access_token, user = service.login_user(form_data.username, form_data.password, form_data.remember_me)
         
         if not access_token:
             raise HTTPException(status_code=401, detail="Invalid username or password")
 
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "user": user}
         
     except AuthenticationError as e:
         raise HTTPException(

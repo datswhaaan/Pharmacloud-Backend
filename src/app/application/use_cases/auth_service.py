@@ -20,7 +20,7 @@ class AuthService:
             raise AuthenticationError("Invalid password")
         return user
 
-    def login_user(self, username: str, password: str, remember_me: bool) -> str:
+    def login_user(self, username: str, password: str, remember_me: bool) -> {str, UserDTO}:
         user = self.user.get_user_by_username(username)
 
         if not user:
@@ -30,7 +30,7 @@ class AuthService:
             raise AuthenticationError("Invalid password")
         
         access_token = self.token.create_access_token({"sub": user.user_id}, remember_me=remember_me)
-        return access_token
+        return access_token, _to_user_dto(user)
     
     def decode_access_token(self, access_token: str) -> UserDTO:
         user = self.token.decode_access_token(access_token)
