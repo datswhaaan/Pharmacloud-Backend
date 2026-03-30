@@ -38,7 +38,10 @@ def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:
                 high_alert = drug.high_alert
             )
             for drug in dto.drugs
-        ]
+        ],
+        total = dto.total,
+        page = dto.page,
+        size = dto.size
     )
 
 def _to_drug_image_list_dto(id: str, input: DrugImageListDTO) -> DrugImageList:

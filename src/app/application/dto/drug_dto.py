@@ -34,3 +34,6 @@ class DrugListItemDTO:
 @dataclass
 class DrugListDTO:
     drugs: list[DrugDTO]
+    total: int
+    page: int
+    size: int

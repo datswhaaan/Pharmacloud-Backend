@@ -90,7 +90,18 @@ class DrugRepositoryImpl(DrugRepository):
             .all()
         )
 
-        return _to_drug_list(rows)
+        total = (
+            self.session.query(DrugORM.item_number)
+            .outerjoin(
+                high_alert_subq,
+                DrugORM.b_item_id == high_alert_subq.c.b_item_id
+            )
+            .count()
+        )
+
+        page = (skip // limit) + 1 if limit else 1
+
+        return _to_drug_list(rows, total, page, min(limit, total - skip))
     
     def add_drug_image(self, id: str, images: DrugImageList) -> None:
         try:

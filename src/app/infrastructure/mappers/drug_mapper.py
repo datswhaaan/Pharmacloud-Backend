@@ -43,7 +43,7 @@ def _to_drug(orm: DrugORM) -> Drug:
             _to_drug_instruction(instruction) for instruction in orm.instructions]
     )
 
-def _to_drug_list(ormlist: list[DrugORM]) ->  DrugList:
+def _to_drug_list(ormlist: list[DrugORM], total: int, page: int, size: int) ->  DrugList:
     return DrugList(
         drugs = [
             DrugListItem(
@@ -52,7 +52,10 @@ def _to_drug_list(ormlist: list[DrugORM]) ->  DrugList:
                 high_alert = orm.high_alert
             )
             for orm in ormlist
-        ]
+        ],
+        total = total,
+        page = page,
+        size = size
     )
 
 def _to_drug_orm(drug: Drug) -> DrugORM:

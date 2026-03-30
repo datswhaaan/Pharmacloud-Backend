@@ -58,3 +58,6 @@ class DrugListItem:
 @dataclass
 class DrugList:
     drugs: list[DrugListItem]
+    total: int
+    page: int
+    size: int

@@ -100,7 +100,7 @@ class PrescriptionRepositoryImpl:
 
         page = (skip // limit) + 1 if limit else 1
 
-        return _to_prescription_list(rows, total, page, limit)
+        return _to_prescription_list(rows, total, page, min(limit, total - skip))
 
     def get_orders_by_order_id(self, order_id: str) -> OrderList:
         rows = (

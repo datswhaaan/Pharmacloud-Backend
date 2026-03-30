@@ -50,5 +50,8 @@ def _to_dto_list(drugs: DrugList) -> DrugListDTO:
                 high_alert = drug.high_alert
             )
             for drug in drugs.drugs
-        ]
+        ],
+        total = drugs.total,
+        page = drugs.page,
+        size = drugs.size
     )

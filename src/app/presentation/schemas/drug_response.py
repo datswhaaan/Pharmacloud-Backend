@@ -45,3 +45,6 @@ class DrugListItemResponse(BaseModel):
 
 class DrugListResponse(BaseModel):
     drugs: list[DrugListItemResponse]
+    total: int
+    page: int
+    size: int
