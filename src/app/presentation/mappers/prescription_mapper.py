@@ -56,7 +56,10 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
                 status=item.status
             )
             for item in dto.prescriptions
-        ]
+        ],
+        total=dto.total,
+        page=dto.page,
+        size=dto.size
     )
 
 def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:

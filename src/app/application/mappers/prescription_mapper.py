@@ -33,10 +33,13 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
                 patient_firstname=prescription.patient_firstname,
                 patient_lastname=prescription.patient_lastname,
                 visit_begin_visit_time=prescription.visit_begin_visit_time,
-                status=prescription.status
+                status=_status_mapper(prescription.status)
             )
             for prescription in prescription_list.prescriptions
-        ]
+        ],
+        total=prescription_list.total,
+        page=prescription_list.page,
+        size=prescription_list.size
     )
 
 def _to_detection_item_dto(ordered: OrderDrugItem, detected: DetectionItem) -> DetectionItemDTO:
@@ -58,3 +61,14 @@ def _to_detection_dto(detection, matched, missing, extra) -> DetectionDTO:
         missing=missing,
         extra=extra
     )
+
+def _status_mapper(status_id: str) -> str:
+    mapping = {
+        '1': "completed",
+        '2': "waiting",
+        '6': "completed",
+        '4': "waiting",
+        '3': "completed",
+        '5': "cancelled"
+    }
+    return mapping.get(status_id, "unknown")

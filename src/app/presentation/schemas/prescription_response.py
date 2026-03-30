@@ -41,6 +41,9 @@ class PrescriptionItemResponse(BaseModel):
 
 class PrescriptionListResponse(BaseModel):
     prescriptions: list[PrescriptionItemResponse]
+    total: int
+    page: int
+    size: int
 
 class DetectionItemResponse(BaseModel):
     t_order_drug_id: str

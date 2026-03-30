@@ -47,6 +47,9 @@ class PrescriptionItem:
 @dataclass
 class PrescriptionList:
     prescriptions: list[PrescriptionItem]
+    total: int
+    page: int
+    size: int
 
 @dataclass
 class DetectionItem:

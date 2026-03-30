@@ -44,7 +44,7 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
         order_drugs=_to_order_drug(orm)
     )
 
-def _to_prescription_list(orms: list[PrescriptionORM]) -> PrescriptionList:
+def _to_prescription_list(orms: list[PrescriptionORM], total: int, page: int, size: int) -> PrescriptionList:
     return PrescriptionList(
         prescriptions=[
             PrescriptionItem(
@@ -55,10 +55,13 @@ def _to_prescription_list(orms: list[PrescriptionORM]) -> PrescriptionList:
                 patient_firstname=orm.patient_firstname,
                 patient_lastname=orm.patient_lastname,
                 visit_begin_visit_time=orm.visit_begin_visit_time,
-                status = orm.order_status_description
+                status = orm.f_order_status_id
             )
             for orm in orms
-        ]
+        ],
+        total=total,
+        page=page,
+        size=size
     )
 
 def _to_detection_list(orms: list[DetectionORM]) -> DetectionList:

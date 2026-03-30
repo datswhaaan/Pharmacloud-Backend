@@ -46,6 +46,9 @@ class PrescriptionItemDTO:
 @dataclass
 class PrescriptionListDTO:
     prescriptions: list[PrescriptionItemDTO]
+    total: int
+    page: int
+    size: int
 
 @dataclass
 class DetectionItemDTO:
