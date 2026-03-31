@@ -24,7 +24,7 @@ def get_all_drugs(
     search: str | None = None,
     high_alert: bool | None = None,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 7,
     service: DrugService = Depends(get_drug_service),
 ):
     try:

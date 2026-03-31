@@ -39,8 +39,9 @@ class DrugResponse(BaseModel):
 class DrugListItemResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    item_number: str
-    item_common_name: str
+    drug_id: str
+    drug_code: str
+    drug_common_name: str
     high_alert: bool
 
 class DrugListResponse(BaseModel):

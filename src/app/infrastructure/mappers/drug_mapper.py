@@ -47,8 +47,9 @@ def _to_drug_list(ormlist: list[DrugORM], total: int, page: int, size: int) ->  
     return DrugList(
         drugs = [
             DrugListItem(
-                item_number = orm.item_number,
-                item_common_name = orm.item_common_name,
+                drug_id = orm.b_item_id,
+                drug_code = orm.item_number,
+                drug_common_name = orm.item_common_name,
                 high_alert = orm.high_alert
             )
             for orm in ormlist

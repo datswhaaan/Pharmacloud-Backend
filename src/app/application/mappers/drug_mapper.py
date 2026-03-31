@@ -45,8 +45,9 @@ def _to_dto_list(drugs: DrugList) -> DrugListDTO:
     return DrugListDTO(
         drugs = [
             DrugListItemDTO(
-                item_number = drug.item_number,
-                item_common_name = drug.item_common_name,
+                drug_id = drug.drug_id,
+                drug_code = drug.drug_code,
+                drug_common_name = drug.drug_common_name,
                 high_alert = drug.high_alert
             )
             for drug in drugs.drugs

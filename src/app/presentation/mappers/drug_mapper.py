@@ -33,8 +33,9 @@ def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:
     return DrugListResponse(
         drugs = [
             DrugListItemResponse(
-                item_number = drug.item_number,
-                item_common_name = drug.item_common_name,
+                drug_id = drug.drug_id,
+                drug_code = drug.drug_code,
+                drug_common_name = drug.drug_common_name,
                 high_alert = drug.high_alert
             )
             for drug in dto.drugs

@@ -51,8 +51,9 @@ class Drug:
 
 @dataclass
 class DrugListItem:
-    item_number: str
-    item_common_name: str
+    drug_id: str
+    drug_code: str
+    drug_common_name: str
     high_alert: bool
 
 @dataclass
