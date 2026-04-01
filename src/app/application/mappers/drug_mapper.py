@@ -1,5 +1,5 @@
 from app.domain.entities.drug import Drug, DrugImage, DrugList
-from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugListDTO, DrugListItemDTO
+from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugListDTO, DrugListItemDTO, DrugNameDTO, DrugCategoryDTO, DrugFlagsDTO, DrugInstructionDTO
 
 def _to_drug(dto: DrugDTO) -> Drug:
     return Drug(
@@ -18,27 +18,42 @@ def _to_drug(dto: DrugDTO) -> Drug:
 
 def _to_image_dto(image: DrugImage) -> DrugImageDTO:
     return DrugImageDTO(
+        id = image.id,
         image_url = image.image_url,
         view_type = image.view_type,
         position = image.position,
-        lighting = image.lighting
+        lighting = image.lighting,
+        created_at = image.created_at
     )
 
 def _to_dto(drug: Drug) -> DrugDTO:
     return DrugDTO(
-        b_item_id = drug.b_item_id,
-        item_number = drug.item_number,
-        item_common_name = drug.item_common_name,
-        item_trade_name = drug.item_trade_name,
-        item_nick_name = drug.item_nick_name,   
-        item_active = drug.item_active,
-        b_item_subgroup = drug.b_item_subgroup,
-        b_item_billing_subgroup = drug.b_item_billing_subgroup,
-        b_item_16_group = drug.b_item_16_group,
+        id = drug.b_item_id,
+        code = drug.item_number,
+        names = DrugNameDTO(
+            generic = drug.item_common_name,
+            trade = drug.item_trade_name,
+            thai = drug.item_nick_name
+        ),
+        categories = DrugCategoryDTO(
+            therapeutic = drug.b_item_subgroup,
+            pharmacological = drug.b_item_billing_subgroup,
+            standard = drug.b_item_16_group
+        ),
+        flags = DrugFlagsDTO(
+            is_high_alert = any(instr.high_alert for instr in drug.instructions) if drug.instructions else False,
+            is_new_drug = False,
+            has_images = True if len(drug.images) > 0 else False
+        ),
         images = list[DrugImageDTO](
             _to_image_dto(image) for image in drug.images
         ) if drug.images else None,
-        instructions = drug.instructions
+        instructions = DrugInstructionDTO(
+            caution = drug.instructions[0].item_drug_caution if drug.instructions else "",
+            description = drug.instructions[0].item_drug_description if drug.instructions else "",
+            special_prescription = drug.instructions[0].item_drug_special_prescription_text if drug.instructions else "",
+            instruction = drug.instructions[0].instruction_text if drug.instructions else "",
+        )
     )
 
 def _to_dto_list(drugs: DrugList) -> DrugListDTO:

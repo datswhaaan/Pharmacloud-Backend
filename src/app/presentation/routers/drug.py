@@ -14,6 +14,7 @@ def get_drug(
 ):
     try:
         drug = service.get_by_id(id)
+        print(drug)
         return _to_drug_response(drug)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

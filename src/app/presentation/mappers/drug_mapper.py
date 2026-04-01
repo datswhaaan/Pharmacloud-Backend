@@ -1,32 +1,47 @@
 from app.domain.entities.drug import DrugImage, DrugImageList
 from app.presentation.schemas.drug import DrugImageListDTO
 from app.application.dto.drug_dto import DrugDTO, DrugImageListDTO, DrugListDTO, DrugImageDTO
-from app.presentation.schemas.drug_response import DrugImageResponse, DrugResponse, DrugListResponse, DrugListItemResponse
+from app.presentation.schemas.drug_response import DrugImageResponse, DrugResponse, DrugListResponse, DrugListItemResponse, DrugNameResponse, DrugCategoryResponse, DrugFlagsResponse, DrugInstructionResponse
 
 def _to_drug_image_response(image: DrugImageDTO) -> DrugImageResponse:
     return DrugImageResponse(
-        image_url = image.image_url,
+        id = image.id,
+        url = image.image_url,
         view_type = image.view_type,
         position = image.position,
-        lighting = image.lighting
+        lighting = image.lighting,
+        created_at = image.created_at
     )
 
 def _to_drug_response(dto: DrugDTO) -> DrugResponse:
     return DrugResponse(
-        b_item_id = dto.b_item_id,
-        item_number = dto.item_number,
-        item_common_name = dto.item_common_name,
-        item_trade_name = dto.item_trade_name,
-        item_nick_name = dto.item_nick_name,   
-        item_active = dto.item_active,
-        b_item_subgroup = dto.b_item_subgroup,
-        b_item_billing_subgroup = dto.b_item_billing_subgroup,
-        b_item_16_group = dto.b_item_16_group,
+        id = dto.id,
+        code = dto.code,
+        names = DrugNameResponse(
+            generic = dto.names.generic,
+            trade = dto.names.trade,
+            thai = dto.names.thai
+        ),
+        categories = DrugCategoryResponse(
+            therapeutic = dto.categories.therapeutic,
+            pharmacological = dto.categories.pharmacological,
+            standard = dto.categories.standard
+        ),
+        flags = DrugFlagsResponse(
+            is_high_alert = dto.flags.is_high_alert,
+            is_new_drug = dto.flags.is_new_drug,
+            has_images = dto.flags.has_images
+        ),
         images=[
             _to_drug_image_response(img)
             for img in (dto.images or [])
         ],
-        instructions=dto.instructions or []
+        instructions=DrugInstructionResponse(
+            caution = dto.instructions.caution,
+            description = dto.instructions.description,
+            special_prescription = dto.instructions.special_prescription,
+            instruction = dto.instructions.instruction
+        )
     )
 
 def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:

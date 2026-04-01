@@ -3,8 +3,12 @@ from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction,
 
 def _to_drug_image(orm: DrugImageORM) -> DrugImage:
     return DrugImage(
+        id = orm.drug_image_id,
         image_url = orm.image_url,
-        variant_id = orm.variant_id
+        view_type = orm.variant.view_type,
+        position = orm.variant.position,
+        lighting = orm.variant.lighting,
+        created_at = orm.created_at
     )
 
 def _to_drug_image_orm(id: str, drug_image: DrugImage) -> DrugImageORM:
@@ -16,10 +20,7 @@ def _to_drug_image_orm(id: str, drug_image: DrugImage) -> DrugImageORM:
 
 def _to_drug_instruction(orm: DrugInstructionORM) -> DrugInstruction:
     return DrugInstruction(
-        b_item_drug_id = orm.b_item_drug_id,
-        b_item_id = orm.b_item_id,
         item_drug_caution = orm.item_drug_caution,
-        b_item_drug_instruction_id = orm.b_item_drug_instruction_id,
         item_drug_description = orm.item_drug_description,
         item_drug_special_prescription_text = orm.item_drug_special_prescription_text,
         instruction_text = orm.instruction.item_drug_instruction_description,

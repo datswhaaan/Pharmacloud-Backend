@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import UUID, Column, ForeignKey, Integer, String
+from sqlalchemy import UUID, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -21,6 +21,7 @@ class DrugImageORM(Base):
     variant_id = Column(Integer, ForeignKey("image_variants.variant_id"), index=True)
     image_url = Column(String)
     description = Column(String)
+    created_at = Column(DateTime)
     drug = relationship("DrugORM", back_populates="images")
     variant = relationship("ImageVariantORM", back_populates="images")
 

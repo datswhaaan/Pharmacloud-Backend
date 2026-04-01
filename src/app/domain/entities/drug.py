@@ -13,11 +13,12 @@ class ImageVariantList:
     variants: list[ImageVariant]
 @dataclass
 class DrugImage:
+    id: str
     image_url: str
+    created_at: str
     view_type: str | None = None
     position: int | None = None
     lighting: str | None = None
-    variant_id: int | None = None
 
 @dataclass
 class DrugImageList:
@@ -26,10 +27,7 @@ class DrugImageList:
 
 @dataclass
 class DrugInstruction:
-    b_item_drug_id: str
-    b_item_id: str
     item_drug_caution: str
-    b_item_drug_instruction_id: str
     item_drug_description: str
     item_drug_special_prescription_text: str
     instruction_text: str
@@ -47,7 +45,7 @@ class Drug:
     b_item_billing_subgroup: str | None = None
     b_item_16_group: str | None = None
     images: list[DrugImage] | None = None
-    instructions: list[DrugInstruction] = None
+    instructions: DrugInstruction | None = None
 
 @dataclass
 class DrugListItem:

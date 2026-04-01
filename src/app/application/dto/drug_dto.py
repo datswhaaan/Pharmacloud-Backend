@@ -2,28 +2,51 @@ from dataclasses import dataclass
 
 @dataclass
 class DrugImageDTO:
+    id: str
     image_url: str
     view_type: str
     position: int
     lighting: str
+    created_at: str
 
 @dataclass
 class DrugImageListDTO:
     images: list[DrugImageDTO]
 
 @dataclass
+class DrugNameDTO:
+    generic: str
+    trade: str
+    thai: str
+
+@dataclass
+class DrugCategoryDTO:
+    therapeutic: str
+    pharmacological: str
+    standard: str
+
+@dataclass
+class DrugFlagsDTO:
+    is_high_alert: bool
+    is_new_drug: bool
+    has_images: bool
+
+@dataclass
+class DrugInstructionDTO:
+    caution: str
+    description: str
+    special_prescription: str
+    instruction: str
+
+@dataclass
 class DrugDTO:
-    b_item_id: str
-    item_number: str
-    item_common_name: str
-    item_active: str
-    item_trade_name: str | None = None
-    item_nick_name: str | None = None
-    b_item_subgroup: str | None = None
-    b_item_billing_subgroup: str | None = None
-    b_item_16_group: str | None = None
+    id: str
+    code: str
+    names: DrugNameDTO
+    categories: DrugCategoryDTO | None = None
+    flags: DrugFlagsDTO | None = None
     images: list[DrugImageDTO] | None = None
-    instructions: list[dict] = None
+    instructions: DrugInstructionDTO | None = None
 
 @dataclass
 class DrugListItemDTO:
