@@ -23,8 +23,8 @@ class DrugInstructionResponse(BaseModel):
 
 class DrugNameResponse(BaseModel):
     generic: str
-    trade: str
-    thai: str
+    trade: str | None = None
+    thai: str | None = None
 
 class DrugCategoryResponse(BaseModel):
     therapeutic: str
