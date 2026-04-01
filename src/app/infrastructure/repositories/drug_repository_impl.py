@@ -64,7 +64,7 @@ class DrugRepositoryImpl(DrugRepository):
                 DrugORM.item_common_name,
                 func.coalesce(high_alert_subq.c.has_high_alert, 0).label("high_alert")
             )
-            .outerjoin(
+            .join(
                 high_alert_subq,
                 DrugORM.b_item_id == high_alert_subq.c.b_item_id
             )
