@@ -1,5 +1,5 @@
-from app.domain.entities.drug import Drug, DrugImage, DrugList
-from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugListDTO, DrugListItemDTO, DrugNameDTO, DrugCategoryDTO, DrugFlagsDTO, DrugInstructionDTO
+from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, DrugImageUpload, ImageVariantList, DrugImageListUpload
+from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugImageListInputDTO, DrugListDTO, DrugListItemDTO, DrugNameDTO, DrugCategoryDTO, DrugFlagsDTO, DrugInstructionDTO, DrugImageInputDTO
 
 def _to_drug(dto: DrugDTO) -> Drug:
     return Drug(
@@ -70,4 +70,20 @@ def _to_dto_list(drugs: DrugList) -> DrugListDTO:
         total = drugs.total,
         page = drugs.page,
         size = drugs.size
+    )
+
+def _to_drug_image_upload(image: DrugImageInputDTO, variant_id: int) -> DrugImageUpload:
+    return DrugImageUpload(
+        content = image.content,
+        content_type = image.content_type,
+        variant_id = variant_id,
+        view_type = image.view_type,
+        position = image.position,
+        lighting = image.lighting
+    )
+
+def _to_drug_image_list_upload(id: str, images: list[DrugImageUpload]) -> DrugImageListUpload:
+    return DrugImageListUpload(
+        b_item_id = id,
+        images = images
     )

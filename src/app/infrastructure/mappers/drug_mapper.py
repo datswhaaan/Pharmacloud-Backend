@@ -1,5 +1,5 @@
 from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, ImageVariantORM, InstructionORM
-from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList, DrugListItem
+from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList, DrugListItem, DrugImageUpload
 
 def _to_drug_image(orm: DrugImageORM) -> DrugImage:
     return DrugImage(
@@ -11,10 +11,10 @@ def _to_drug_image(orm: DrugImageORM) -> DrugImage:
         created_at = orm.created_at
     )
 
-def _to_drug_image_orm(id: str, drug_image: DrugImage) -> DrugImageORM:
+def _to_drug_image_orm(drug_id: str, drug_image: DrugImageUpload, drug_image_url: str) -> DrugImageORM:
     return DrugImageORM(
-        b_item_id = id,
-        image_url = drug_image.image_url,
+        b_item_id = drug_id,
+        image_url = drug_image_url,
         variant_id = drug_image.variant_id
     )
 

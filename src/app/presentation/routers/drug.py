@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.presentation.schemas.drug import DrugImageListDTO, DrugDTO, DrugListDTO
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from app.presentation.schemas.drug_response import  DrugResponse, DrugListResponse
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
-from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response
+from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto
 
 router = APIRouter(prefix="/drugs", tags=["drugs"])
 
@@ -34,14 +33,30 @@ def get_all_drugs(
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.post("/{drug_id}/images")
-def add_drug_image(
+async def add_drug_image(
     drug_id: str,
-    images: DrugImageListDTO,
+    images: list[UploadFile],
+    view_type: str | None = None,
+    position: int | None = None,
+    lighting: str | None = None,
     service: DrugService = Depends(get_drug_service),
 ):
     try:
-        drug_images = _to_drug_image_list_dto(drug_id, images)
-        service.add_drug_image(drug_id, drug_images)
+        image_objs = []
+
+        for image in images:
+            image_objs.append(
+                _to_drug_image_input_dto(
+                    image=image,
+                    view_type=view_type,
+                    position=position,
+                    lighting=lighting
+                )
+            )
+
+        drug_images = _to_drug_image_list_dto(drug_id, image_objs)
+        
+        service.add_drug_image(drug_images)
         return {"message": "Images added successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

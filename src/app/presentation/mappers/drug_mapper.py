@@ -1,6 +1,7 @@
+from fastapi import UploadFile
 from app.domain.entities.drug import DrugImage, DrugImageList
 from app.presentation.schemas.drug import DrugImageListDTO
-from app.application.dto.drug_dto import DrugDTO, DrugImageListDTO, DrugListDTO, DrugImageDTO
+from app.application.dto.drug_dto import DrugDTO, DrugImageListDTO, DrugListDTO, DrugImageDTO, DrugImageInputDTO, DrugImageListInputDTO
 from app.presentation.schemas.drug_response import DrugImageResponse, DrugResponse, DrugListResponse, DrugListItemResponse, DrugNameResponse, DrugCategoryResponse, DrugFlagsResponse, DrugInstructionResponse
 
 def _to_drug_image_response(image: DrugImageDTO) -> DrugImageResponse:
@@ -60,19 +61,21 @@ def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:
         size = dto.size
     )
 
-def _to_drug_image_list_dto(id: str, input: DrugImageListDTO) -> DrugImageList:
+def _to_drug_image_list_dto(id: str, image_list: list[DrugImageInputDTO]) -> DrugImageListInputDTO:
 
-    domain_images = DrugImageList(
+    domain_images = DrugImageListInputDTO(
         b_item_id=id,
-        images=[
-            DrugImage(
-                image_url=i.image_url,
-                view_type=i.view_type,
-                position=i.position,
-                lighting=i.lighting
-            )
-            for i in input.images
-        ]
+        images=image_list
     )
     
     return domain_images
+
+def _to_drug_image_input_dto(image: UploadFile, view_type: str, position: int, lighting: str) -> DrugImageDTO:
+    content = image.file.read()
+    return DrugImageInputDTO(
+        content = content,
+        content_type = image.content_type,
+        view_type = view_type,
+        position = position,
+        lighting = lighting
+    )

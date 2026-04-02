@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class DrugImageDTO(BaseModel):
-    image_url: str
+    image: str
     view_type: str | None = None
     position: int | None = None
     lighting: str | None = None

@@ -1,4 +1,6 @@
 from fastapi import Depends, HTTPException
+import os
+from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from app.infrastructure.db.database import SessionLocal
 from app.infrastructure.repositories.drug_metadata_repository_impl import DrugMetadataRepositoryImpl
@@ -15,7 +17,14 @@ from app.application.use_cases.user_service import UserService
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
+from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
+
 api_key_scheme = APIKeyHeader(name="Authorization", auto_error=False)
+
+load_dotenv()
+GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
+GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID")
+GOOGLE_DRIVE_TOKEN_PATH = os.getenv("GOOGLE_DRIVE_TOKEN_PATH")
 
 def get_db():
     db = SessionLocal()
@@ -28,8 +37,14 @@ def get_drug_metadata_service(db: Session = Depends(get_db)):
     repo = DrugMetadataRepositoryImpl(db)
     return DrugMetadataService(repo)
 
-def get_drug_service(db: Session = Depends(get_db)):
-    repo = DrugRepositoryImpl(db)
+def get_google_drive_storage():
+    credentials_path = GOOGLE_DRIVE_CREDENTIALS_PATH
+    token_path=GOOGLE_DRIVE_TOKEN_PATH
+    folder_id = GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID
+    return GoogleDriveStorage(credentials_path, token_path, folder_id)
+
+def get_drug_service(db: Session = Depends(get_db), storage: GoogleDriveStorage = Depends(get_google_drive_storage)):
+    repo = DrugRepositoryImpl(db, storage)
     return DrugService(repo)
 
 def get_prescription_service(db: Session = Depends(get_db)):

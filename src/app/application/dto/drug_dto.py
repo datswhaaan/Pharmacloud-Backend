@@ -10,6 +10,19 @@ class DrugImageDTO:
     created_at: str
 
 @dataclass
+class DrugImageInputDTO:
+    content: bytes
+    content_type: str
+    view_type: str | None = None
+    position: int | None = None
+    lighting: str | None = None
+
+@dataclass
+class DrugImageListInputDTO:
+    b_item_id: str
+    images: list[DrugImageInputDTO]
+
+@dataclass
 class DrugImageListDTO:
     images: list[DrugImageDTO]
 

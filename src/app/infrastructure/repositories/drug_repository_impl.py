@@ -1,15 +1,22 @@
+from datetime import datetime
 from sqlalchemy import func, case
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImageORM, ImageVariantORM
 from app.domain.exception.drug import RepositoryError, DrugNotFoundError
-from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, ImageVariantList
+from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, ImageVariantList, DrugImageListUpload
 from app.domain.repositories.drug import DrugRepository
 from app.infrastructure.mappers.drug_mapper import _to_drug, _to_drug_list, _to_drug_image_orm, to_image_variant_list
+from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
 
 class DrugRepositoryImpl(DrugRepository):
-    def __init__(self, session: Session):
+    def __init__(
+            self, 
+            session: Session, 
+            google_drive_storage: GoogleDriveStorage
+        ):
         self.session = session
+        self.storage = google_drive_storage
 
     def get_by_id(self, id: str) -> Drug | None:
         row = (
@@ -100,30 +107,37 @@ class DrugRepositoryImpl(DrugRepository):
 
         return _to_drug_list(rows, total, page, min(limit, total - skip))
     
-    def add_drug_image(self, id: str, images: DrugImageList) -> None:
-        try:
-            drugORM = []
-            for image in images.images:
-                drugORM.append(_to_drug_image_orm(id, image))
 
-            drug = self.session.query(DrugORM).filter(DrugORM.b_item_id == id).first()
+    def add_drug_image(self, drug_id: str, images: DrugImageListUpload) -> None:
+        uploaded_files = []
+
+        try:
+            drug = self.session.query(DrugORM).filter(DrugORM.b_item_id == drug_id).first()
+
             if not drug:
-                raise DrugNotFoundError(f"Drug with id: {id} not found")
+                raise DrugNotFoundError(f"Drug with id: {drug_id} not found")
             
-            for image in drugORM:
-                new_image = DrugImageORM(
-                    b_item_id=image.b_item_id,
-                    image_url=image.image_url,
-                    variant_id=image.variant_id
-                )
-                self.session.add(new_image)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            for image in images.images:
+                file_name = f"{drug_id}_{image.view_type}_{image.position}_{image.lighting}_{timestamp}"
+                file_id = self.storage.upload(image, file_name)
+                uploaded_files.append(file_id)
+                
+                drug_image_url = self.storage.get_public_url(file_id)
+                self.session.add(_to_drug_image_orm(drug_id, image, drug_image_url))
 
             self.session.commit()
-        except IntegrityError as e:
+
+        except (IntegrityError, SQLAlchemyError) as e:
             self.session.rollback()
-            raise RepositoryError(f"Integrity error occurred: {str(e)}")
-        except SQLAlchemyError as e:
-            self.session.rollback()
+
+            for file_id in uploaded_files:
+                try:
+                    self.storage.delete(file_id)
+                except Exception:
+                    pass
+
             raise RepositoryError(f"Database error occurred: {str(e)}")
         
     def get_variant_map(self) -> ImageVariantList:

@@ -21,6 +21,20 @@ class DrugImage:
     lighting: str | None = None
 
 @dataclass
+class DrugImageUpload:
+    content: bytes
+    content_type: str
+    variant_id: int | None = None 
+    view_type: str | None = None
+    position: int | None = None
+    lighting: str | None = None
+
+@dataclass
+class DrugImageListUpload:
+    b_item_id: str
+    images: list[DrugImageUpload]
+
+@dataclass
 class DrugImageList:
     b_item_id: str
     images: list[DrugImage]
