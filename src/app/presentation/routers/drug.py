@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form
+import json
 from app.presentation.schemas.drug_response import  DrugResponse, DrugListResponse
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
@@ -36,21 +37,29 @@ def get_all_drugs(
 async def add_drug_image(
     drug_id: str,
     images: list[UploadFile],
-    view_type: str | None = None,
-    position: int | None = None,
-    lighting: str | None = None,
+    metadatas: str = Form(...),
     service: DrugService = Depends(get_drug_service),
 ):
     try:
+        metadata_list = json.loads(metadatas)
+
+        if len(metadata_list) != len(images):
+            raise HTTPException(
+                status_code=400,
+                detail="images and metadatas length mismatch"
+            )
+        
         image_objs = []
 
-        for image in images:
+        for i, image in enumerate(images):
+            meta = metadata_list[i]
+
             image_objs.append(
                 _to_drug_image_input_dto(
                     image=image,
-                    view_type=view_type,
-                    position=position,
-                    lighting=lighting
+                    view_type=meta.get("view_type"),
+                    position=meta.get("position"),
+                    lighting=meta.get("lighting")
                 )
             )
 
