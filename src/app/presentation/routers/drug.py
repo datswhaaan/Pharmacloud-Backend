@@ -33,6 +33,7 @@ def get_all_drugs(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
+    
 @router.post("/{drug_id}/images")
 async def add_drug_image(
     drug_id: str,
@@ -42,8 +43,6 @@ async def add_drug_image(
 ):
     try:
         metadata_list = json.loads(metadatas)
-
-        # print(metadata_list[0].get("view_type"))
 
         if len(metadata_list) != len(images):
             raise HTTPException(

@@ -68,7 +68,7 @@ class GoogleDriveStorage(Storage):
         return uploaded["id"]
 
     def get_public_url(self, file_id: str) -> str:
-        return f"https://drive.google.com/uc?id={file_id}"
+        return f"https://lh3.googleusercontent.com/d/{file_id}"
 
     def make_public(self, file_id: str) -> None:
         self.service.permissions().create(
