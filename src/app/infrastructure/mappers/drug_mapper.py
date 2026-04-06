@@ -1,13 +1,13 @@
 from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, ImageVariantORM, InstructionORM
 from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList, DrugListItem, DrugImageUpload
 
-def _to_drug_image(orm: DrugImageORM) -> DrugImage:
+def _to_drug_image(orm: DrugImageORM, image: DrugImageUpload, url: str) -> DrugImage:
     return DrugImage(
         id = orm.drug_image_id,
-        image_url = orm.image_url,
-        view_type = orm.variant.view_type,
-        position = orm.variant.position,
-        lighting = orm.variant.lighting,
+        image_url = url,
+        view_type = image.view_type,
+        position = image.position,
+        lighting = image.lighting,
         created_at = orm.created_at
     )
 

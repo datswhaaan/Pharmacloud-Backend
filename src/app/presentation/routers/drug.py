@@ -3,7 +3,7 @@ import json
 from app.presentation.schemas.drug_response import  DrugResponse, DrugListResponse
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
-from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto
+from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto, _to_drug_image_list_response
 
 router = APIRouter(prefix="/drugs", tags=["drugs"])
 
@@ -43,6 +43,8 @@ async def add_drug_image(
     try:
         metadata_list = json.loads(metadatas)
 
+        # print(metadata_list[0].get("view_type"))
+
         if len(metadata_list) != len(images):
             raise HTTPException(
                 status_code=400,
@@ -54,18 +56,19 @@ async def add_drug_image(
         for i, image in enumerate(images):
             meta = metadata_list[i]
 
-            image_objs.append(
-                _to_drug_image_input_dto(
-                    image=image,
-                    view_type=meta.get("view_type"),
-                    position=meta.get("position"),
-                    lighting=meta.get("lighting")
-                )
-            )
+            drug_image = _to_drug_image_input_dto(
+                            image=image,
+                            view_type=meta.get("view_type") if meta else None,
+                            position=meta.get("position") if meta else None,
+                            lighting=meta.get("lighting") if meta else None
+                        )
+
+            image_objs.append(drug_image)
 
         drug_images = _to_drug_image_list_dto(drug_id, image_objs)
         
-        service.add_drug_image(drug_images)
-        return {"message": "Images added successfully"}
+        response = service.add_drug_image(drug_images)
+        
+        return _to_drug_image_list_response(response)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

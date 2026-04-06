@@ -13,6 +13,9 @@ class DrugImageResponse(BaseModel):
     lighting: str | None = None
     created_at: datetime | None = None
 
+class DrugImageListResponse(BaseModel):
+    images: list[DrugImageResponse]
+
 class DrugInstructionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

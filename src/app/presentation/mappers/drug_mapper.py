@@ -2,7 +2,7 @@ from fastapi import UploadFile
 from app.domain.entities.drug import DrugImage, DrugImageList
 from app.presentation.schemas.drug import DrugImageListDTO
 from app.application.dto.drug_dto import DrugDTO, DrugImageListDTO, DrugListDTO, DrugImageDTO, DrugImageInputDTO, DrugImageListInputDTO
-from app.presentation.schemas.drug_response import DrugImageResponse, DrugResponse, DrugListResponse, DrugListItemResponse, DrugNameResponse, DrugCategoryResponse, DrugFlagsResponse, DrugInstructionResponse
+from app.presentation.schemas.drug_response import DrugImageListResponse, DrugImageResponse, DrugResponse, DrugListResponse, DrugListItemResponse, DrugNameResponse, DrugCategoryResponse, DrugFlagsResponse, DrugInstructionResponse
 
 def _to_drug_image_response(image: DrugImageDTO) -> DrugImageResponse:
     return DrugImageResponse(
@@ -78,4 +78,19 @@ def _to_drug_image_input_dto(image: UploadFile, view_type: str, position: int, l
         view_type = view_type,
         position = position,
         lighting = lighting
+    )
+
+def _to_drug_image_list_response(images: DrugImageListDTO) -> DrugImageListResponse:
+    return DrugImageListResponse(
+        images = [
+            DrugImageResponse(
+                id = image.id,
+                url = image.image_url,
+                view_type = image.view_type,
+                position = image.position,
+                lighting = image.lighting,
+                created_at = image.created_at
+            ) 
+            for image in images.images
+        ] ,
     )

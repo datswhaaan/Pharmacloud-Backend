@@ -1,5 +1,5 @@
 from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, DrugImageUpload, ImageVariantList, DrugImageListUpload
-from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugImageListInputDTO, DrugListDTO, DrugListItemDTO, DrugNameDTO, DrugCategoryDTO, DrugFlagsDTO, DrugInstructionDTO, DrugImageInputDTO
+from app.application.dto.drug_dto import DrugDTO, DrugImageDTO, DrugImageListDTO, DrugListDTO, DrugListItemDTO, DrugNameDTO, DrugCategoryDTO, DrugFlagsDTO, DrugInstructionDTO, DrugImageInputDTO
 
 def _to_drug(dto: DrugDTO) -> Drug:
     return Drug(
@@ -45,9 +45,10 @@ def _to_dto(drug: Drug) -> DrugDTO:
             is_new_drug = False,
             has_images = True if len(drug.images) > 0 else False
         ),
-        images = list[DrugImageDTO](
-            _to_image_dto(image) for image in drug.images
-        ) if drug.images else None,
+        images = [
+            _to_image_dto(image)
+            for image in drug.images
+        ] if drug.images else [],
         instructions = DrugInstructionDTO(
             caution = drug.instructions[0].item_drug_caution if drug.instructions else "",
             description = drug.instructions[0].item_drug_description if drug.instructions else "",
@@ -86,4 +87,19 @@ def _to_drug_image_list_upload(id: str, images: list[DrugImageUpload]) -> DrugIm
     return DrugImageListUpload(
         b_item_id = id,
         images = images
+    )
+
+def _to_drug_image_list_dto(images: DrugImageList) -> DrugImageListDTO:
+    return DrugImageListDTO(
+        images = [
+            DrugImage(
+                id = image.id,
+                image_url = image.image_url,
+                view_type = image.view_type,
+                position = image.position,
+                lighting = image.lighting,
+                created_at = image.created_at
+            )
+            for image in images.images
+        ]
     )

@@ -1,7 +1,7 @@
 from app.domain.entities.drug import Drug, DrugList, DrugImageList
 from app.domain.repositories.drug import DrugRepository
-from app.application.mappers.drug_mapper import _to_dto, _to_dto_list, _to_drug_image_upload, _to_drug_image_list_upload
-from app.application.dto.drug_dto import DrugDTO, DrugListDTO, DrugImageListInputDTO
+from app.application.mappers.drug_mapper import _to_dto, _to_dto_list, _to_drug_image_upload, _to_drug_image_list_upload, _to_drug_image_list_dto
+from app.application.dto.drug_dto import DrugDTO, DrugListDTO, DrugImageListInputDTO, DrugImageListDTO
 
 class DrugService:
     def __init__(self, repository: DrugRepository):
@@ -24,7 +24,7 @@ class DrugService:
         drugs = self.repository.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return _to_dto_list(drugs)
 
-    def add_drug_image(self, images: DrugImageListInputDTO) -> None:
+    def add_drug_image(self, images: DrugImageListInputDTO) -> DrugImageListDTO:
         variant_map = self.repository.get_variant_map()
         image_objs = []
 
@@ -41,4 +41,6 @@ class DrugService:
             
             image_objs.append(_to_drug_image_upload(image, variant_id))
 
-        self.repository.add_drug_image(images.b_item_id, _to_drug_image_list_upload(images.b_item_id, image_objs))
+        drug_images = self.repository.add_drug_image(images.b_item_id, _to_drug_image_list_upload(images.b_item_id, image_objs))
+
+        return _to_drug_image_list_dto(drug_images)

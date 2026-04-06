@@ -6,7 +6,7 @@ from app.infrastructure.models.drug import DrugInstructionORM, DrugORM, DrugImag
 from app.domain.exception.drug import RepositoryError, DrugNotFoundError
 from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, ImageVariantList, DrugImageListUpload
 from app.domain.repositories.drug import DrugRepository
-from app.infrastructure.mappers.drug_mapper import _to_drug, _to_drug_list, _to_drug_image_orm, to_image_variant_list
+from app.infrastructure.mappers.drug_mapper import _to_drug, _to_drug_list, _to_drug_image_orm, to_image_variant_list, _to_drug_image
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
 
 class DrugRepositoryImpl(DrugRepository):
@@ -108,8 +108,9 @@ class DrugRepositoryImpl(DrugRepository):
         return _to_drug_list(rows, total, page, min(limit, total - skip))
     
 
-    def add_drug_image(self, drug_id: str, images: DrugImageListUpload) -> None:
+    def add_drug_image(self, drug_id: str, images: DrugImageListUpload) -> DrugImageList:
         uploaded_files = []
+        created_images = []
 
         try:
             drug = self.session.query(DrugORM).filter(DrugORM.b_item_id == drug_id).first()
@@ -125,7 +126,13 @@ class DrugRepositoryImpl(DrugRepository):
                 uploaded_files.append(file_id)
                 
                 drug_image_url = self.storage.get_public_url(file_id)
-                self.session.add(_to_drug_image_orm(drug_id, image, drug_image_url))
+
+                orm = _to_drug_image_orm(drug_id, image, drug_image_url)
+
+                self.session.add(orm)
+                self.session.flush()
+
+                created_images.append(_to_drug_image(orm, image, drug_image_url))
 
             self.session.commit()
 
@@ -139,6 +146,10 @@ class DrugRepositoryImpl(DrugRepository):
                     pass
 
             raise RepositoryError(f"Database error occurred: {str(e)}")
+        return DrugImageList(
+            b_item_id = drug_id,
+            images = created_images
+        )
         
     def get_variant_map(self) -> ImageVariantList:
         try:

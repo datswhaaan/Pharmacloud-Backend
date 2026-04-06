@@ -21,6 +21,6 @@ class DrugRepository(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def add_drug_image(self, drug_id: str, images: DrugImageList) -> None:
+    def add_drug_image(self, drug_id: str, images: DrugImageList) -> DrugImageList:
         """Add images to a drug"""
         raise NotImplementedError
