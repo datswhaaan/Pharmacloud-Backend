@@ -132,7 +132,7 @@ class DrugRepositoryImpl(DrugRepository):
                 self.session.add(orm)
                 self.session.flush()
 
-                created_images.append(_to_drug_image(orm, image, drug_image_url))
+                created_images.append(_to_drug_image(orm))
 
             self.session.commit()
 
