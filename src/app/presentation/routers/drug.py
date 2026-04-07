@@ -74,7 +74,7 @@ async def add_drug_image(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete("/{drug_id}/images")
+@router.delete("/images")
 def delete_drug_image(
     images_id: DeleteImagesRequest,
     service: DrugService = Depends(get_drug_service),
