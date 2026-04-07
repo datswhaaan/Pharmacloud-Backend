@@ -8,6 +8,7 @@ from app.domain.entities.drug import Drug, DrugImage, DrugImageList, DrugList, I
 from app.domain.repositories.drug import DrugRepository
 from app.infrastructure.mappers.drug_mapper import _to_drug, _to_drug_list, _to_drug_image_orm, to_image_variant_list, _to_drug_image
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
+from googleapiclient.errors import HttpError
 
 class DrugRepositoryImpl(DrugRepository):
     def __init__(
@@ -150,6 +151,36 @@ class DrugRepositoryImpl(DrugRepository):
             b_item_id = drug_id,
             images = created_images
         )
+
+    def delete_drug_image(self, images_id: list[str]) -> None:
+        try:
+            images = (
+                self.session.query(DrugImageORM)
+                .filter(DrugImageORM.drug_image_id.in_(images_id))
+                .all()
+            )
+
+            if not images:
+                raise DrugNotFoundError(f"Image with ids: {images_id} not found")
+
+            
+            for img in images:
+                try:
+                    self.storage.delete(file_id=img.drug_image_id).execute()
+                except HttpError as e:
+                    if e.resp.status != 404:
+                        raise
+            
+            (
+                self.session.query(DrugImageORM)
+                .filter(DrugImageORM.drug_image_id.in_(images_id))
+                .delete(synchronize_session=False)
+            )
+            self.session.commit()
+
+        except (IntegrityError, SQLAlchemyError) as e:
+            self.session.rollback()
+            raise RepositoryError(f"Database error occurred: {str(e)}")
         
     def get_variant_map(self) -> ImageVariantList:
         try:

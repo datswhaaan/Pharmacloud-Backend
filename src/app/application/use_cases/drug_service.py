@@ -44,3 +44,6 @@ class DrugService:
         drug_images = self.repository.add_drug_image(images.b_item_id, _to_drug_image_list_upload(images.b_item_id, image_objs))
 
         return _to_drug_image_list_dto(drug_images)
+    
+    def delete_drug_image(self, images_id: list[str]) -> None:
+        return self.repository.delete_drug_image(images_id)

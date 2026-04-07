@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form
 import json
 from app.presentation.schemas.drug_response import  DrugResponse, DrugListResponse
+from app.presentation.schemas.drug_request import DeleteImagesRequest
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
 from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto, _to_drug_image_list_response
@@ -33,7 +34,7 @@ def get_all_drugs(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-    
+
 @router.post("/{drug_id}/images")
 async def add_drug_image(
     drug_id: str,
@@ -69,5 +70,20 @@ async def add_drug_image(
         response = service.add_drug_image(drug_images)
         
         return _to_drug_image_list_response(response)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete("/{drug_id}/images")
+def delete_drug_image(
+    images_id: DeleteImagesRequest,
+    service: DrugService = Depends(get_drug_service),
+):
+    try:
+        service.delete_drug_image(images_id.images_id)
+        return {
+            "message": "Images deleted successfully",
+            "deleted_ids": images_id.images_id
+        }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

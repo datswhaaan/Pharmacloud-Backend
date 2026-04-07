@@ -24,3 +24,8 @@ class DrugRepository(ABC):
     def add_drug_image(self, drug_id: str, images: DrugImageList) -> DrugImageList:
         """Add images to a drug"""
         raise NotImplementedError
+    
+    @abstractmethod
+    def delete_drug_image(self, images_id: list[str]) -> None:
+        """Delete drug images"""
+        raise NotImplementedError
