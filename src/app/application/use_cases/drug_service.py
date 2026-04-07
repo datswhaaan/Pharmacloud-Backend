@@ -45,5 +45,5 @@ class DrugService:
 
         return _to_drug_image_list_dto(drug_images)
     
-    def delete_drug_image(self, images_id: list[str]) -> None:
-        return self.repository.delete_drug_image(images_id)
+    def delete_drug_image(self, image_ids: list[str]) -> None:
+        return self.repository.delete_drug_image(image_ids)

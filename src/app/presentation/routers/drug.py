@@ -76,14 +76,14 @@ async def add_drug_image(
 
 @router.delete("/images")
 def delete_drug_image(
-    images_id: DeleteImagesRequest,
+    image_ids: DeleteImagesRequest,
     service: DrugService = Depends(get_drug_service),
 ):
     try:
-        service.delete_drug_image(images_id.images_id)
+        service.delete_drug_image(image_ids.image_ids)
         return {
             "message": "Images deleted successfully",
-            "deleted_ids": images_id.images_id
+            "deleted_ids": image_ids.image_ids
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

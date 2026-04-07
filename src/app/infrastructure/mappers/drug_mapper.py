@@ -11,11 +11,12 @@ def _to_drug_image(orm: DrugImageORM) -> DrugImage:
         created_at = orm.created_at
     )
 
-def _to_drug_image_orm(drug_id: str, drug_image: DrugImageUpload, drug_image_url: str) -> DrugImageORM:
+def _to_drug_image_orm(drug_id: str, drug_image: DrugImageUpload, drug_image_url: str, file_id: str) -> DrugImageORM:
     return DrugImageORM(
         b_item_id = drug_id,
         image_url = drug_image_url,
-        variant_id = drug_image.variant_id
+        variant_id = drug_image.variant_id,
+        file_id = file_id
     )
 
 def _to_drug_instruction(orm: DrugInstructionORM) -> DrugInstruction:

@@ -21,6 +21,7 @@ class DrugImageORM(Base):
     variant_id = Column(Integer, ForeignKey("image_variants.variant_id"), index=True)
     image_url = Column(String)
     description = Column(String)
+    file_id = Column(String)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     drug = relationship("DrugORM", back_populates="images")

@@ -128,7 +128,7 @@ class DrugRepositoryImpl(DrugRepository):
                 
                 drug_image_url = self.storage.get_public_url(file_id)
 
-                orm = _to_drug_image_orm(drug_id, image, drug_image_url)
+                orm = _to_drug_image_orm(drug_id, image, drug_image_url, file_id)
 
                 self.session.add(orm)
                 self.session.flush()
@@ -152,28 +152,28 @@ class DrugRepositoryImpl(DrugRepository):
             images = created_images
         )
 
-    def delete_drug_image(self, images_id: list[str]) -> None:
+    def delete_drug_image(self, image_ids: list[str]) -> None:
         try:
             images = (
                 self.session.query(DrugImageORM)
-                .filter(DrugImageORM.drug_image_id.in_(images_id))
+                .filter(DrugImageORM.drug_image_id.in_(image_ids))
                 .all()
             )
 
             if not images:
-                raise DrugNotFoundError(f"Image with ids: {images_id} not found")
+                raise DrugNotFoundError(f"Image with ids: {image_ids} not found")
 
             
             for img in images:
                 try:
-                    self.storage.delete(file_id=img.drug_image_id).execute()
+                    self.storage.delete(file_id=img.file_id)
                 except HttpError as e:
                     if e.resp.status != 404:
                         raise
             
             (
                 self.session.query(DrugImageORM)
-                .filter(DrugImageORM.drug_image_id.in_(images_id))
+                .filter(DrugImageORM.drug_image_id.in_(image_ids))
                 .delete(synchronize_session=False)
             )
             self.session.commit()
