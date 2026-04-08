@@ -55,6 +55,7 @@ class DrugDTO:
     id: str
     code: str
     names: DrugNameDTO
+    flags: DrugFlagsDTO
     categories: DrugCategoryDTO | None = None
     images: list[DrugImageDTO] | None = None
     instructions: DrugInstructionDTO | None = None

@@ -29,7 +29,7 @@ class DrugRepositoryImpl(DrugRepository):
                 selectinload(DrugORM.instructions),
                 selectinload(DrugORM.subgroup),
                 selectinload(DrugORM.billing_subgroup),
-                selectinload(DrugORM.group_16) 
+                selectinload(DrugORM.group_16)
             )
             .filter(DrugORM.b_item_id == id)
             .first()
@@ -39,7 +39,7 @@ class DrugRepositoryImpl(DrugRepository):
             raise DrugNotFoundError(
                 f"Drug with id: {id} not found"
             )
-
+        
         return _to_drug(row)
 
     def get_all(
@@ -80,7 +80,7 @@ class DrugRepositoryImpl(DrugRepository):
                 DrugORM.item_number,
                 DrugORM.item_common_name,
                 func.coalesce(high_alert_subq.c.has_high_alert, 0).label("is_high_alert"),
-                (func.coalesce(image_count_subq.c.image_count, 0) == 1).label("image_count")
+                func.coalesce(image_count_subq.c.image_count, 0).label("image_count")
             )
             .join(
                 high_alert_subq,
@@ -108,6 +108,7 @@ class DrugRepositoryImpl(DrugRepository):
 
         rows = (
             query
+            .order_by(func.coalesce(image_count_subq.c.image_count, 0).asc())
             .offset(skip)
             .limit(limit)
             .all()

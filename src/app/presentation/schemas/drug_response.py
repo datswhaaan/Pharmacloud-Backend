@@ -45,6 +45,7 @@ class DrugResponse(BaseModel):
     code: str
     names: DrugNameResponse
     categories: DrugCategoryResponse
+    flags: DrugFlagsResponse
     images: list[DrugImageResponse] | None = None
     instructions: DrugInstructionResponse | None = None
 

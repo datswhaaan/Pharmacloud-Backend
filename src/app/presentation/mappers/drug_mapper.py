@@ -28,6 +28,10 @@ def _to_drug_response(dto: DrugDTO) -> DrugResponse:
             pharmacological = dto.categories.pharmacological,
             standard = dto.categories.standard
         ),
+        flags = DrugFlagsResponse(
+            is_high_alert = dto.flags.is_high_alert,
+            has_images = dto.flags.has_images
+        ),
         images=[
             _to_drug_image_response(img)
             for img in (dto.images or [])

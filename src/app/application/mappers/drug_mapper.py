@@ -40,6 +40,10 @@ def _to_dto(drug: Drug) -> DrugDTO:
             pharmacological = drug.b_item_billing_subgroup,
             standard = drug.b_item_16_group
         ),
+        flags = DrugFlagsDTO(
+            is_high_alert = any(instr.high_alert for instr in drug.instructions) if drug.instructions else False,
+            has_images = True if len(drug.images) > 0 else False
+        ),
         images = [
             _to_image_dto(image)
             for image in drug.images

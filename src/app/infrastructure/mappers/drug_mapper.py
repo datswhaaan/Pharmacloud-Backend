@@ -54,7 +54,7 @@ def _to_drug_list(ormlist: list[DrugORM], total: int, page: int, size: int) ->  
                 drug_common_name = orm.item_common_name,
                 flags = DrugFlags(
                     is_high_alert = orm.is_high_alert,
-                    has_images = True if orm.image_count >= 0 else False
+                    has_images = True if orm.image_count > 0 else False
                 )
             )
             for orm in ormlist
