@@ -41,7 +41,6 @@ class DrugCategoryDTO:
 @dataclass
 class DrugFlagsDTO:
     is_high_alert: bool
-    is_new_drug: bool
     has_images: bool
 
 @dataclass
@@ -57,7 +56,6 @@ class DrugDTO:
     code: str
     names: DrugNameDTO
     categories: DrugCategoryDTO | None = None
-    flags: DrugFlagsDTO | None = None
     images: list[DrugImageDTO] | None = None
     instructions: DrugInstructionDTO | None = None
 
@@ -66,7 +64,7 @@ class DrugListItemDTO:
     drug_id: str
     drug_code: str
     drug_common_name: str
-    high_alert: bool
+    flags: DrugFlagsDTO
 
 @dataclass
 class DrugListDTO:

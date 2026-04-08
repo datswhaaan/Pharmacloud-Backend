@@ -48,6 +48,11 @@ class DrugInstruction:
     high_alert: bool
 
 @dataclass
+class DrugFlags:
+    is_high_alert: bool
+    has_images: bool
+    
+@dataclass
 class Drug:
     b_item_id: str
     item_number: str
@@ -66,7 +71,7 @@ class DrugListItem:
     drug_id: str
     drug_code: str
     drug_common_name: str
-    high_alert: bool
+    flags: DrugFlags
 
 @dataclass
 class DrugList:

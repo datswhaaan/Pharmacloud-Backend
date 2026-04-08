@@ -28,11 +28,6 @@ def _to_drug_response(dto: DrugDTO) -> DrugResponse:
             pharmacological = dto.categories.pharmacological,
             standard = dto.categories.standard
         ),
-        flags = DrugFlagsResponse(
-            is_high_alert = dto.flags.is_high_alert,
-            is_new_drug = dto.flags.is_new_drug,
-            has_images = dto.flags.has_images
-        ),
         images=[
             _to_drug_image_response(img)
             for img in (dto.images or [])
@@ -52,7 +47,10 @@ def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:
                 drug_id = drug.drug_id,
                 drug_code = drug.drug_code,
                 drug_common_name = drug.drug_common_name,
-                high_alert = drug.high_alert
+                flags = DrugFlagsResponse(
+                    is_high_alert = drug.flags.is_high_alert,
+                    has_images = drug.flags.has_images
+                ),
             )
             for drug in dto.drugs
         ],

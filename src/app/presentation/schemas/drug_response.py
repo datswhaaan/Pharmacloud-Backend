@@ -36,7 +36,6 @@ class DrugCategoryResponse(BaseModel):
 
 class DrugFlagsResponse(BaseModel):
     is_high_alert: bool
-    is_new_drug: bool
     has_images: bool
 
 class DrugResponse(BaseModel):
@@ -46,7 +45,6 @@ class DrugResponse(BaseModel):
     code: str
     names: DrugNameResponse
     categories: DrugCategoryResponse
-    flags: DrugFlagsResponse
     images: list[DrugImageResponse] | None = None
     instructions: DrugInstructionResponse | None = None
 
@@ -56,7 +54,7 @@ class DrugListItemResponse(BaseModel):
     drug_id: str
     drug_code: str
     drug_common_name: str
-    high_alert: bool
+    flags: DrugFlagsResponse
 
 class DrugListResponse(BaseModel):
     drugs: list[DrugListItemResponse]

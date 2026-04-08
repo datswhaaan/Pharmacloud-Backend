@@ -1,5 +1,5 @@
-from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, ImageVariantORM, InstructionORM
-from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList, DrugListItem, DrugImageUpload
+from app.infrastructure.models.drug import DrugORM, DrugImageORM, DrugInstructionORM, ImageVariantORM
+from app.domain.entities.drug import Drug, DrugList, DrugImage, DrugInstruction, ImageVariant, ImageVariant, ImageVariantList, DrugListItem, DrugImageUpload, DrugFlags
 
 def _to_drug_image(orm: DrugImageORM) -> DrugImage:
     return DrugImage(
@@ -52,7 +52,10 @@ def _to_drug_list(ormlist: list[DrugORM], total: int, page: int, size: int) ->  
                 drug_id = orm.b_item_id,
                 drug_code = orm.item_number,
                 drug_common_name = orm.item_common_name,
-                high_alert = orm.high_alert
+                flags = DrugFlags(
+                    is_high_alert = orm.is_high_alert,
+                    has_images = True if orm.image_count >= 0 else False
+                )
             )
             for orm in ormlist
         ],

@@ -65,16 +65,30 @@ class DrugRepositoryImpl(DrugRepository):
             .subquery()
         )
 
+        image_count_subq = (
+            self.session.query(
+                DrugImageORM.b_item_id,
+                func.count(DrugImageORM.drug_image_id).label("image_count")
+            )
+            .group_by(DrugImageORM.b_item_id)
+            .subquery()
+        )
+
         query = (
             self.session.query(
                 DrugORM.b_item_id,
                 DrugORM.item_number,
                 DrugORM.item_common_name,
-                func.coalesce(high_alert_subq.c.has_high_alert, 0).label("high_alert")
+                func.coalesce(high_alert_subq.c.has_high_alert, 0).label("is_high_alert"),
+                (func.coalesce(image_count_subq.c.image_count, 0) == 1).label("image_count")
             )
             .join(
                 high_alert_subq,
                 DrugORM.b_item_id == high_alert_subq.c.b_item_id
+            )
+            .outerjoin(
+                image_count_subq, 
+                DrugORM.b_item_id == image_count_subq.c.b_item_id
             )
         )
 
@@ -108,7 +122,6 @@ class DrugRepositoryImpl(DrugRepository):
 
         return _to_drug_list(rows, total, page, min(limit, total - skip))
     
-
     def add_drug_image(self, drug_id: str, images: DrugImageListUpload) -> DrugImageList:
         uploaded_files = []
         created_images = []
