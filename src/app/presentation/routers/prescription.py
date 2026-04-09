@@ -23,10 +23,12 @@ def get_all_prescriptions(
     limit: int = 10,
     skip: int = 0,
     order: str = "desc",
+    search: str | None = None,
+    status: str | None = None,
     service: PrescriptionService = Depends(get_prescription_service),
 ):
     try:
-        prescription_list = service.get_all(start_time, end_time, limit, skip, order)
+        prescription_list = service.get_all(start_time, end_time, limit, skip, order, status, search)
         return _to_prescription_list_response(prescription_list)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

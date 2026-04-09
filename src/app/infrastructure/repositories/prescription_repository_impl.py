@@ -39,7 +39,14 @@ class PrescriptionRepositoryImpl:
         
         return _to_prescription(row)
 
-    def get_all_prescriptions(self, start_time: str, end_time: str, limit: int, skip: int, order: str) -> PrescriptionList:
+    def get_all_prescriptions(
+            self, 
+            start_time: str, 
+            end_time: str, 
+            limit: int, skip: int, order: str,
+            status: list[str],
+            search: str | None = None
+    ) -> PrescriptionList:
         STATUS_PRIORITY = {
             '1': 2,  # ยืนยัน
             '2': 1,  # ดำเนินการ
@@ -65,6 +72,19 @@ class PrescriptionRepositoryImpl:
             PrescriptionORM.visit_begin_visit_time,
             OrderStatusORM.f_order_status_id
         )
+        
+        if search:
+            query = query.filter(
+                PrescriptionORM.visit_hn.ilike(f"%{search}%") |
+                PrescriptionORM.visit_vn.ilike(f"%{search}%") |
+                PatientORM.patient_firstname.ilike(f"%{search}%") |
+                PatientORM.patient_lastname.ilike(f"%{search}%")
+            )
+
+        if len(status) > 0:
+            query = query.filter(
+                OrderStatusORM.f_order_status_id.in_(status)
+            )
         
         rows = (
             query

@@ -33,9 +33,10 @@ class PrescriptionItemResponse(BaseModel):
     visit_id: str
     visit_hn: str
     visit_vn: str
-    patient_prefix: str
-    patient_firstname: str
-    patient_lastname: str
+    patient_name: str
+    # patient_prefix: str
+    # patient_firstname: str
+    # patient_lastname: str
     visit_begin_visit_time: str
     status: str
 

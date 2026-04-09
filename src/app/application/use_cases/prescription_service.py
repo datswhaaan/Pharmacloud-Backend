@@ -12,8 +12,26 @@ class PrescriptionService:
             raise ValueError("Prescription not found")
         return _to_prescription_dto(prescription)
     
-    def get_all(self, start_time: str, end_time: str, limit: int, skip: int, order: str) -> PrescriptionListDTO:
-        prescription_list = self.repository.get_all_prescriptions(start_time, end_time, limit, skip, order)
+    def get_all(
+            self, 
+            start_time: str, 
+            end_time: str, 
+            limit: int, skip: int, order: str,
+            status: str,
+            search: str | None = None
+    ) -> PrescriptionListDTO:
+        
+        match status:
+            case "all":
+                status_list = []
+            case "completed":
+                status_list = ["1", "6", "3"]
+            case "waiting":
+                status_list = ["2", "4"]
+            case "cancelled":
+                status_list = ["5"]
+
+        prescription_list = self.repository.get_all_prescriptions(start_time, end_time, limit, skip, order, status_list, search)
         return _to_prescription_list_dto(prescription_list)
 
     def compare_detections(self, order_id: str) -> DetectionListDTO:

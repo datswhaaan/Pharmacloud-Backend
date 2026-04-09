@@ -8,7 +8,12 @@ class PrescriptionRepository:
         raise NotImplementedError
     
     @abstractmethod
-    def get_all_prescriptions(self, start_time: str, end_time: str, limit: int, skip: int, order: str) -> PrescriptionList:
+    def get_all_prescriptions(
+        self, 
+        start_time: str, end_time: str, 
+        limit: int, skip: int, order: str, 
+        search: str | None = None
+    ) -> PrescriptionList:
         """Return a list of prescriptions within the specified time range with pagination"""
         raise NotImplementedError
 
