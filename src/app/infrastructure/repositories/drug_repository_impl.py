@@ -123,7 +123,7 @@ class DrugRepositoryImpl(DrugRepository):
 
         return _to_drug_list(rows, total, page, min(limit, total - skip))
     
-    def add_drug_image(self, drug_id: str, images: DrugImageListUpload) -> DrugImageList:
+    def add_drug_image(self, drug_id: str, trade_name: str, images: DrugImageListUpload) -> DrugImageList:
         uploaded_files = []
         created_images = []
 
@@ -136,7 +136,7 @@ class DrugRepositoryImpl(DrugRepository):
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
             for image in images.images:
-                file_name = f"{drug_id}_{image.view_type}_{image.position}_{image.lighting}_{timestamp}"
+                file_name = f"{drug_id}_{trade_name}_{image.view_type}_{image.position}_{image.lighting}_{timestamp}"
                 file_id = self.storage.upload(image, file_name)
                 uploaded_files.append(file_id)
                 

@@ -24,7 +24,7 @@ class DrugService:
         drugs = self.repository.get_all(search, high_alert=high_alert, skip=skip, limit=limit)
         return _to_dto_list(drugs)
 
-    def add_drug_image(self, images: DrugImageListInputDTO) -> DrugImageListDTO:
+    def add_drug_image(self, images: DrugImageListInputDTO, trade_name: str) -> DrugImageListDTO:
         variant_map = self.repository.get_variant_map()
         image_objs = []
 
@@ -41,7 +41,7 @@ class DrugService:
             
             image_objs.append(_to_drug_image_upload(image, variant_id))
 
-        drug_images = self.repository.add_drug_image(images.b_item_id, _to_drug_image_list_upload(images.b_item_id, image_objs))
+        drug_images = self.repository.add_drug_image(images.b_item_id, trade_name, _to_drug_image_list_upload(images.b_item_id, image_objs))
 
         return _to_drug_image_list_dto(drug_images)
     

@@ -38,6 +38,7 @@ def get_all_drugs(
 @router.post("/{drug_id}/images")
 async def add_drug_image(
     drug_id: str,
+    trade_name: str,
     images: list[UploadFile],
     metadatas: str = Form(...),
     service: DrugService = Depends(get_drug_service),
@@ -65,9 +66,9 @@ async def add_drug_image(
 
             image_objs.append(drug_image)
 
-        drug_images = _to_drug_image_list_dto(drug_id, image_objs)
+        drug_images = _to_drug_image_list_dto(drug_id, image_objs, trade_name)
         
-        response = service.add_drug_image(drug_images)
+        response = service.add_drug_image(drug_images, trade_name)
         
         return _to_drug_image_list_response(response)
     except Exception as e:

@@ -63,10 +63,11 @@ def _to_drug_list_response(dto: DrugListDTO) -> DrugListResponse:
         size = dto.size
     )
 
-def _to_drug_image_list_dto(id: str, image_list: list[DrugImageInputDTO]) -> DrugImageListInputDTO:
+def _to_drug_image_list_dto(id: str, image_list: list[DrugImageInputDTO], trade_name: str) -> DrugImageListInputDTO:
 
     domain_images = DrugImageListInputDTO(
         b_item_id=id,
+        trade_name=trade_name,
         images=image_list
     )
     
