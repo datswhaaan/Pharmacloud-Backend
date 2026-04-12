@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.presentation.routers import drug_metadata, drug, prescription, auth, user
+from app.presentation.routers import drug_metadata, drug, prescription, auth, user, notify, websocket
 
 app = FastAPI()
 
@@ -22,3 +22,5 @@ app.include_router(drug.router)
 app.include_router(prescription.router)
 app.include_router(auth.router)
 app.include_router(user.router)
+app.include_router(notify.router)
+app.include_router(websocket.router)

@@ -14,6 +14,8 @@ from app.infrastructure.security.password_hasher_impl import PasswordHasherImpl
 from app.infrastructure.security.token_impl import TokenImpl
 from app.infrastructure.repositories.user_repository_impl import UserRepositoryImpl
 from app.application.use_cases.user_service import UserService
+from app.infrastructure.websocket.connection_manager import ConnectionManager
+from app.application.use_cases.notify_service import NotifyService
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -25,6 +27,8 @@ load_dotenv()
 GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
 GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID")
 GOOGLE_DRIVE_TOKEN_PATH = os.getenv("GOOGLE_DRIVE_TOKEN_PATH")
+
+manager = ConnectionManager()
 
 def get_db():
     db = SessionLocal()
@@ -60,6 +64,9 @@ def get_auth_service(db: Session = Depends(get_db)):
     token = TokenImpl()
     user = UserRepositoryImpl(db)
     return AuthService(password, token, user)
+
+def get_notify_service():
+    return NotifyService(manager)
 
 def get_current_user_id(
     token: str = Depends(api_key_scheme), 
