@@ -113,7 +113,8 @@ class PrescriptionRepositoryImpl:
             .join(OrderORM.status)
             .filter(
                 PrescriptionORM.visit_begin_visit_time >= start_time if start_time else True,
-                PrescriptionORM.visit_begin_visit_time <= end_time if end_time else True
+                PrescriptionORM.visit_begin_visit_time <= end_time if end_time else True,
+                OrderStatusORM.f_order_status_id.in_(status) if len(status) > 0 else True
             )
             .count()
         )
