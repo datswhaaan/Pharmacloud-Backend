@@ -44,6 +44,8 @@ class PatientORM(Base):
     prefix = relationship("PatientPrefixORM", back_populates="patient_prefix")
     prescriptions = relationship("PrescriptionORM", back_populates="patient")
     risk_factors = relationship("PatientRiskFactorORM", back_populates="patient")
+    past_history = relationship("PatientPastHistoryORM", back_populates="patient")
+    family_history = relationship("PatientFamilyHistoryORM", back_populates="patient")
 
 class EmployeeORM(Base):
     __tablename__ = "b_employee"
@@ -153,3 +155,19 @@ class DetectionItemORM(Base):
     detection = relationship("DetectionORM", back_populates="detection_item")
     order_drugs = relationship("OrderDrugORM", back_populates="detection_item")
     item = relationship("ItemORM", back_populates="detection_item")
+
+class PatientPastHistoryORM(Base):
+    __tablename__ = "t_patient_past_history"
+    t_patient_past_history_id = Column(String, primary_key=True, index=True)
+    t_patient_id = Column(String, ForeignKey("t_patient.t_patient_id"))
+    patient_past_history_topic = Column(String)
+
+    patient = relationship("PatientORM", back_populates="past_history")
+
+class PatientFamilyHistoryORM(Base):
+    __tablename__ = "t_patient_family_history"
+    t_patient_family_history_id = Column(String, primary_key=True, index=True)
+    t_patient_id = Column(String, ForeignKey("t_patient.t_patient_id"))
+    patient_family_topic = Column(String)
+
+    patient = relationship("PatientORM", back_populates="family_history")

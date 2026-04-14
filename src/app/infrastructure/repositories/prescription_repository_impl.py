@@ -19,12 +19,18 @@ class PrescriptionRepositoryImpl:
                     .selectinload(PatientORM.prefix),
                 selectinload(PrescriptionORM.patient)
                     .selectinload(PatientORM.risk_factors),
+                selectinload(PrescriptionORM.patient)
+                    .selectinload(PatientORM.past_history),
+                selectinload(PrescriptionORM.patient)
+                    .selectinload(PatientORM.family_history),
                 selectinload(PrescriptionORM.employee),
                 selectinload(PrescriptionORM.orders)
                     .selectinload(OrderORM.order_drugs)
                     .selectinload(OrderDrugORM.item_drug_uom),
                 selectinload(PrescriptionORM.orders)
-                    .selectinload(OrderORM.item)
+                    .selectinload(OrderORM.item),
+                selectinload(PrescriptionORM.orders)
+                    .selectinload(OrderORM.status)
             )
             .filter(
                 PrescriptionORM.t_visit_id == id

@@ -1,4 +1,4 @@
-from app.domain.entities.prescription import OrderDrugItem, Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem, DetectionItem, DetectionList, Detection, OrderList
+from app.domain.entities.prescription import OrderDrugItem, Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem, DetectionItem, DetectionList, Detection, OrderList, PatientHistory, PastHistory, FamilyHistory
 from app.infrastructure.models.prescription import PrescriptionORM, DetectionORM, OrderORM
 
 def _to_risk_factor(orm: PrescriptionORM) -> list[RiskFactor]:
@@ -28,6 +28,7 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
         t_visit_id=orm.t_visit_id,
         visit_hn=orm.visit_hn,
         visit_vn=orm.visit_vn,
+        status=orm.orders[0].status.f_order_status_id,
         f_visit_type=orm.visit_type.visit_type_description,
         visit_begin_visit_time=orm.visit_begin_visit_time,
         visit_diagnosis_notice=orm.visit_diagnosis_notice,
@@ -41,7 +42,19 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
         visit_deny_allergy=orm.visit_deny_allergy,
         visit_patient_age=orm.visit_patient_age, 
         risk_factors=_to_risk_factor(orm),
-        order_drugs=_to_order_drug(orm)
+        order_drugs=_to_order_drug(orm),
+        history=PatientHistory(
+            past_history=[
+                PastHistory(
+                    patient_past_history_topic=ph.patient_past_history_topic
+                ) for ph in orm.patient.past_history
+            ],
+            family_history=[
+                FamilyHistory(
+                    patient_family_topic=fh.patient_family_topic
+                ) for fh in orm.patient.family_history
+            ]
+        )
     )
 
 def _to_prescription_list(orms: list[PrescriptionORM], total: int, page: int, size: int) -> PrescriptionList:

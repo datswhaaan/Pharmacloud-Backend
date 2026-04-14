@@ -14,10 +14,24 @@ class OrderDrug:
     order_drug_dose: str
 
 @dataclass
+class PastHistory:
+    patient_past_history_topic: str
+
+@dataclass
+class FamilyHistory:
+    patient_family_topic: str
+
+@dataclass
+class PatientHistory:
+    past_history: list[PastHistory]
+    family_history: list[FamilyHistory]
+
+@dataclass
 class Prescription:
     t_visit_id: str
     visit_hn: str
     visit_vn: str
+    status: str
     f_visit_type: str
     visit_begin_visit_time: str
     visit_diagnosis_notice: str
@@ -32,6 +46,7 @@ class Prescription:
     visit_patient_age: str
     risk_factors: list[RiskFactor]
     order_drugs: list[OrderDrug]
+    history: PatientHistory
 
 @dataclass
 class PrescriptionItem:

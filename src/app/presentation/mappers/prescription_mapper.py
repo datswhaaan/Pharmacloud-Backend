@@ -1,16 +1,13 @@
 
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
-from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
 
-    risk_factors = [
-        RiskFactorResponse(
-            patient_risk_factor_topic=rf.patient_risk_factor_topic,
-            patient_risk_factor_description=rf.patient_risk_factor_description
+    risk_factors = RiskFactorResponse(
+            alcoholUse=dto.risk_factors.alcoholUse,
+            smokingHabits=dto.risk_factors.smokingHabits
         )
-        for rf in dto.risk_factors
-    ]
 
     order_drugs = [
         OrderDrugResponse(
@@ -22,24 +19,29 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
         for od in dto.order_drugs
     ]
 
+    history = PatientHistoryResponse(
+        past_history=[ph.patient_past_history_topic for ph in dto.history.past_history],
+        family_history=[fh.patient_family_history_topic for fh in dto.history.family_history]
+    )
+
     return PrescriptionResponse(
         visit_id=dto.visit_id,
         visit_hn=dto.visit_hn,
         visit_vn=dto.visit_vn,
+        status=dto.status,
         f_visit_type=dto.f_visit_type,
         visit_begin_visit_time=dto.visit_begin_visit_time,
         visit_diagnosis_notice=dto.visit_diagnosis_notice,
         visit_patient_type=dto.visit_patient_type,
         visit_queue=dto.visit_queue,
         visit_dx=dto.visit_dx,
-        patient_prefix=dto.f_patient_prefix,
-        patient_firstname=dto.patient_firstname,
-        patient_lastname=dto.patient_lastname,
+        patient_name=dto.f_patient_prefix + dto.patient_firstname + " " + dto.patient_lastname,
         visit_staff_doctor_discharge=dto.visit_staff_doctor_discharge,
         visit_deny_allergy=dto.visit_deny_allergy,
         visit_patient_age=dto.visit_patient_age,
         risk_factors=risk_factors,
-        order_drugs=order_drugs
+        order_drugs=order_drugs,
+        history=history
     )
 
 def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionListResponse:
@@ -50,9 +52,6 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
                 visit_hn=item.visit_hn,
                 visit_vn=item.visit_vn,
                 patient_name=item.f_patient_prefix + item.patient_firstname + " " + item.patient_lastname,
-                # patient_prefix=item.f_patient_prefix,
-                # patient_firstname=item.patient_firstname,
-                # patient_lastname=item.patient_lastname,
                 visit_begin_visit_time=item.visit_begin_visit_time,
                 status=item.status
             )
