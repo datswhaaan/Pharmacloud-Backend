@@ -1,6 +1,6 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM
 from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_detection_list, _to_order_list
 from app.domain.entities.prescription import Prescription, PrescriptionList, DetectionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
@@ -23,6 +23,9 @@ class PrescriptionRepositoryImpl:
                     .selectinload(PatientORM.past_history),
                 selectinload(PrescriptionORM.patient)
                     .selectinload(PatientORM.family_history),
+                selectinload(PrescriptionORM.patient)
+                    .selectinload(PatientORM.drug_allergy)
+                    .selectinload(PatientDrugAllergyORM.item),
                 selectinload(PrescriptionORM.employee),
                 selectinload(PrescriptionORM.orders)
                     .selectinload(OrderORM.order_drugs)

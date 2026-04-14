@@ -16,6 +16,11 @@ class PatientHistoryResponse(BaseModel):
     past_history: list[str]
     family_history: list[str]
 
+class DrugAllergyResponse(BaseModel):
+    drug_allergies: list[str]
+    monitoring: list[str]
+    suspected: list[str]
+
 class PrescriptionResponse(BaseModel):
     visit_id: str
     visit_hn: str
@@ -33,6 +38,7 @@ class PrescriptionResponse(BaseModel):
     visit_patient_age: str
     risk_factors: RiskFactorResponse
     history: PatientHistoryResponse
+    drug_allergy: DrugAllergyResponse
     order_drugs: list[OrderDrugResponse]
 
 class PrescriptionItemResponse(BaseModel):

@@ -1,5 +1,5 @@
 from app.domain.entities.prescription import DetectionItem, OrderDrugItem, Prescription, PrescriptionList, RiskFactor
-from app.application.dto.prescription_dto import DetectionItemDTO, PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO, DetectionDTO, RiskFactorDTO, PatientHistoryDTO, PastHistoryDTO, FamilyHistoryDTO
+from app.application.dto.prescription_dto import DetectionItemDTO, PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO, DetectionDTO, RiskFactorDTO, PatientHistoryDTO, PastHistoryDTO, FamilyHistoryDTO, DrugAllergyDTO
 
 def _risk_factors_mapper(riskFactors: list[RiskFactor]) -> RiskFactorDTO:
     alcohol = ""
@@ -47,6 +47,11 @@ def _to_prescription_dto(prescription: Prescription) -> PrescriptionDTO:
                     patient_family_history_topic=fh.patient_family_topic
                 ) for fh in prescription.history.family_history
             ]
+        ),
+        drug_allergy=DrugAllergyDTO(
+            drug_allergies=prescription.drug_allergy.drug_allergies,
+            monitoring=prescription.drug_allergy.monitoring,
+            suspected=prescription.drug_allergy.suspected
         )
     )
 

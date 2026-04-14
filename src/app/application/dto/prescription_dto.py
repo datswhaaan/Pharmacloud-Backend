@@ -28,6 +28,12 @@ class PatientHistoryDTO:
     family_history: list[FamilyHistoryDTO]
 
 @dataclass
+class DrugAllergyDTO:
+    drug_allergies: list[str]
+    monitoring: list[str]
+    suspected: list[str]
+
+@dataclass
 class PrescriptionDTO:
     visit_id: str
     visit_hn: str
@@ -48,6 +54,7 @@ class PrescriptionDTO:
     risk_factors: RiskFactorDTO
     order_drugs: list[OrderDrugDTO]
     history: PatientHistoryDTO
+    drug_allergy: DrugAllergyDTO
 
 @dataclass
 class PrescriptionItemDTO:

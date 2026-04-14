@@ -33,6 +33,13 @@ class OrderStatusORM(Base):
 
     orders = relationship("OrderORM", back_populates="status")
 
+class AllergyWarningTypeORM(Base):
+    __tablename__ = "f_allergy_warning_type"
+    f_allergy_warning_type_id = Column(String, primary_key=True)
+    warning_type_description = Column(String)
+
+    drug_allergy = relationship("PatientDrugAllergyORM", back_populates="warning_type")
+
 class PatientORM(Base):
     __tablename__ = "t_patient"
     t_patient_id = Column(String, primary_key=True, index=True)
@@ -46,6 +53,7 @@ class PatientORM(Base):
     risk_factors = relationship("PatientRiskFactorORM", back_populates="patient")
     past_history = relationship("PatientPastHistoryORM", back_populates="patient")
     family_history = relationship("PatientFamilyHistoryORM", back_populates="patient")
+    drug_allergy = relationship("PatientDrugAllergyORM", back_populates="patient")
 
 class EmployeeORM(Base):
     __tablename__ = "b_employee"
@@ -123,6 +131,7 @@ class ItemORM(Base):
     orders = relationship("OrderORM", back_populates="item")
     order_drugs = relationship("OrderDrugORM", back_populates="item")
     detection_item = relationship("DetectionItemORM", back_populates="item")
+    drug_allergy = relationship("PatientDrugAllergyORM", back_populates="item")
 
 class ItemDrugUOMORM(Base):
     __tablename__ = "b_item_drug_uom"
@@ -171,3 +180,14 @@ class PatientFamilyHistoryORM(Base):
     patient_family_topic = Column(String)
 
     patient = relationship("PatientORM", back_populates="family_history")
+
+class PatientDrugAllergyORM(Base):
+    __tablename__ = "t_patient_drug_allergy_backup"
+    t_patient_drug_allergy_id = Column(String, primary_key=True, index=True)
+    t_patient_id = Column(String, ForeignKey("t_patient.t_patient_id"), index=True)
+    b_item_id = Column(String, ForeignKey("b_item.b_item_id"))
+    f_allergy_warning_type = Column(String, ForeignKey("f_allergy_warning_type.f_allergy_warning_type_id"))
+
+    patient = relationship("PatientORM", back_populates="drug_allergy")
+    warning_type = relationship("AllergyWarningTypeORM", back_populates="drug_allergy")
+    item = relationship("ItemORM", back_populates="drug_allergy")

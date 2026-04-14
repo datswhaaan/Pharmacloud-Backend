@@ -1,6 +1,6 @@
 
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
-from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse, DrugAllergyResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
 
@@ -41,7 +41,12 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
         visit_patient_age=dto.visit_patient_age,
         risk_factors=risk_factors,
         order_drugs=order_drugs,
-        history=history
+        history=history,
+        drug_allergy=DrugAllergyResponse(
+            drug_allergies=dto.drug_allergy.drug_allergies,
+            monitoring=dto.drug_allergy.monitoring,
+            suspected=dto.drug_allergy.suspected
+        )
     )
 
 def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionListResponse:

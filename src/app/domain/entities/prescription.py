@@ -27,6 +27,12 @@ class PatientHistory:
     family_history: list[FamilyHistory]
 
 @dataclass
+class DrugAllergy:
+    drug_allergies: list[str]
+    monitoring: list[str]
+    suspected: list[str]
+
+@dataclass
 class Prescription:
     t_visit_id: str
     visit_hn: str
@@ -47,6 +53,7 @@ class Prescription:
     risk_factors: list[RiskFactor]
     order_drugs: list[OrderDrug]
     history: PatientHistory
+    drug_allergy: DrugAllergy
 
 @dataclass
 class PrescriptionItem:

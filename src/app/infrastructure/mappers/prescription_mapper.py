@@ -1,4 +1,4 @@
-from app.domain.entities.prescription import OrderDrugItem, Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem, DetectionItem, DetectionList, Detection, OrderList, PatientHistory, PastHistory, FamilyHistory
+from app.domain.entities.prescription import OrderDrugItem, Prescription, RiskFactor, OrderDrug, PrescriptionList, PrescriptionItem, DetectionItem, DetectionList, Detection, OrderList, PatientHistory, PastHistory, FamilyHistory, DrugAllergy
 from app.infrastructure.models.prescription import PrescriptionORM, DetectionORM, OrderORM
 
 def _to_risk_factor(orm: PrescriptionORM) -> list[RiskFactor]:
@@ -24,6 +24,25 @@ def _to_order_drug(orm: PrescriptionORM) -> list[OrderDrug]:
 
 
 def _to_prescription(orm: PrescriptionORM) -> Prescription:
+    mapping = {
+        "1": "drug_allergies",
+        "2": "monitoring",
+        "3": "suspected"
+    }
+
+    result = {
+        "drug_allergies": [],
+        "monitoring": [],
+        "suspected": []
+    }
+
+    for da in orm.patient.drug_allergy:
+        if not da.item or not da.warning_type:
+            continue
+        key = mapping.get(da.warning_type.f_allergy_warning_type_id)
+        if key:
+            result[key].append(da.item.item_common_name)
+
     return Prescription(
         t_visit_id=orm.t_visit_id,
         visit_hn=orm.visit_hn,
@@ -54,7 +73,8 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
                     patient_family_topic=fh.patient_family_topic
                 ) for fh in orm.patient.family_history
             ]
-        )
+        ),
+        drug_allergy = DrugAllergy(**result)
     )
 
 def _to_prescription_list(orms: list[PrescriptionORM], total: int, page: int, size: int) -> PrescriptionList:
