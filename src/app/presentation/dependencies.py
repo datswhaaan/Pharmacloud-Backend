@@ -24,9 +24,8 @@ from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
 api_key_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 
 load_dotenv()
-GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
 GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID")
-GOOGLE_DRIVE_TOKEN_PATH = os.getenv("GOOGLE_DRIVE_TOKEN_PATH")
+GOOGLE_SERVICE_ACCOUNT_PATH="service-account.json"
 
 manager = ConnectionManager()
 
@@ -42,10 +41,9 @@ def get_drug_metadata_service(db: Session = Depends(get_db)):
     return DrugMetadataService(repo)
 
 def get_google_drive_storage():
-    credentials_path = GOOGLE_DRIVE_CREDENTIALS_PATH
-    token_path=GOOGLE_DRIVE_TOKEN_PATH
+    service_account_path = GOOGLE_SERVICE_ACCOUNT_PATH
     folder_id = GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID
-    return GoogleDriveStorage(credentials_path, token_path, folder_id)
+    return GoogleDriveStorage(service_account_path, folder_id)
 
 def get_drug_service(db: Session = Depends(get_db), storage: GoogleDriveStorage = Depends(get_google_drive_storage)):
     repo = DrugRepositoryImpl(db, storage)
