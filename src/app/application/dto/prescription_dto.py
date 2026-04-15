@@ -7,7 +7,7 @@ class RiskFactorDTO:
 
 @dataclass
 class OrderDrugDTO:
-    b_item_id: str
+    t_order_drug_id: str
     item_common_name: str
     unit: str
     quantity: str
@@ -45,7 +45,6 @@ class PrescriptionDTO:
     visit_staff_doctor_discharge: str
     visit_patient_age: str
     risk_factors: RiskFactorDTO
-    order_drugs: list[OrderDrugDTO]
     history: PatientHistoryDTO
     drug_allergy: DrugAllergyDTO
     payment: str
@@ -75,17 +74,20 @@ class DetectionItemDTO:
     detection_item_id: str
     item_common_name: str
     confidence: str
+    confidence_level: str
     quantity: str
     unit: str
+    is_manually_edited: bool
+    match_type: str
 
 @dataclass
 class DetectionDTO:
     detection_id: str
+    image_url: str
     verified_by: str
     verified_at: str
-    matched: list[DetectionItemDTO]
-    missing: list[DetectionItemDTO]
-    extra: list[DetectionItemDTO]
+    status: str
+    drug_list: list[DetectionItemDTO]
 
 @dataclass
 class DetectionListDTO:

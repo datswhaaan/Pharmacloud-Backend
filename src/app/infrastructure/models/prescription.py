@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, Float, DateTime
+from sqlalchemy import Column, ForeignKey, String, Float, DateTime, Integer, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -152,6 +152,16 @@ class ItemORM(Base):
     order_drugs = relationship("OrderDrugORM", back_populates="item")
     detection_item = relationship("DetectionItemORM", back_populates="item")
     drug_allergy = relationship("PatientDrugAllergyORM", back_populates="item")
+    item_drug = relationship("ItemDrugORM", back_populates="item")
+
+class ItemDrugORM(Base):
+    __tablename__ = "b_item_drug"
+    b_item_drug_id = Column(String, primary_key=True, index=True)
+    b_item_id = Column(String, ForeignKey("b_item.b_item_id", ondelete="CASCADE"), index=True)
+    item_drug_purch_uom = Column(String, ForeignKey("b_item_drug_uom.b_item_drug_uom_id"))
+
+    item = relationship("ItemORM", back_populates="item_drug")
+    item_drug_uom = relationship("ItemDrugUOMORM", back_populates="item_drug")
 
 class ItemDrugUOMORM(Base):
     __tablename__ = "b_item_drug_uom"
@@ -159,6 +169,14 @@ class ItemDrugUOMORM(Base):
     item_drug_uom_description = Column(String)
 
     order_drugs = relationship("OrderDrugORM", back_populates="item_drug_uom")
+    item_drug = relationship("ItemDrugORM", back_populates="item_drug_uom")
+
+class DetectionStatusORM(Base):
+    __tablename__ = "detection_status"
+    detection_status_id = Column(Integer, primary_key=True, index=True)
+    detection_status_description = Column(String)
+
+    detection = relationship("DetectionORM", back_populates="detection_status")
 
 class DetectionORM(Base):
     __tablename__ = "detection"
@@ -168,10 +186,12 @@ class DetectionORM(Base):
     image_url = Column(String)
     verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
     verified_at = Column(DateTime)
+    status_id = Column(Integer, ForeignKey("detection_status.detection_status_id"))
 
     orders = relationship("OrderORM", back_populates="detection")
     detection_item = relationship("DetectionItemORM", back_populates="detection")
     employee = relationship("EmployeeORM", back_populates="detection")
+    detection_status = relationship("DetectionStatusORM", back_populates="detection")
 
 class DetectionItemORM(Base):
     __tablename__ = "detection_item"
@@ -180,6 +200,8 @@ class DetectionItemORM(Base):
     t_order_drug_id = Column(String, ForeignKey("t_order_drug.t_order_drug_id"))
     b_item_id = Column(String, ForeignKey("b_item.b_item_id"))
     confidence = Column(Float)
+    quantity = Column(Integer)
+    is_manually_edited = Column(Boolean)
 
     detection = relationship("DetectionORM", back_populates="detection_item")
     order_drugs = relationship("OrderDrugORM", back_populates="detection_item")

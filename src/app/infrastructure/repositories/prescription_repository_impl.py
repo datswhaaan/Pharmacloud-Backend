@@ -177,7 +177,8 @@ class PrescriptionRepositoryImpl:
                 selectinload(DetectionORM.detection_item)
                     .selectinload(DetectionItemORM.item),
                 selectinload(DetectionORM.orders),
-                selectinload(DetectionORM.employee)
+                selectinload(DetectionORM.employee),
+                selectinload(DetectionORM.detection_status)
             )
             .filter(
                 DetectionORM.t_order_id == order_id

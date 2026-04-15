@@ -9,16 +9,6 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
             smokingHabits=dto.risk_factors.smokingHabits
         )
 
-    order_drugs = [
-        OrderDrugResponse(
-            b_item_id=od.b_item_id,
-            item_common_name=od.item_common_name,
-            unit=od.b_item_drug_uom_id_purch,
-            dose=od.order_drug_dose
-        )
-        for od in dto.order_drugs
-    ]
-
     history = PatientHistoryResponse(
         past_history=[ph.patient_past_history_topic for ph in dto.history.past_history],
         family_history=[fh.patient_family_history_topic for fh in dto.history.family_history]
@@ -37,7 +27,6 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
         visit_staff_doctor_discharge=dto.visit_staff_doctor_discharge,
         visit_patient_age=dto.visit_patient_age,
         risk_factors=risk_factors,
-        order_drugs=order_drugs,
         history=history,
         drug_allergy=DrugAllergyResponse(
             drug_allergies=dto.drug_allergy.drug_allergies,
@@ -70,7 +59,7 @@ def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:
     return DetectionListResponse(
         order_drugs=[
             OrderDrugResponse(
-                b_item_id=od.b_item_id,
+                t_order_drug_id=od.t_order_drug_id,
                 item_common_name=od.item_common_name,
                 unit=od.unit,
                 quantity=od.quantity
@@ -79,38 +68,22 @@ def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:
         detections=[
             DetectionResponse(
                 detection_id=d.detection_id,
+                image_url=d.image_url,
+                status=d.status,
                 verified_by=d.verified_by,
                 verified_at=d.verified_at,
-                matched=[
+                drug_list=[
                     DetectionItemResponse(
-                        t_order_drug_id=item.t_order_drug_id,
-                        detection_item_id=item.detection_item_id,
-                        item_common_name=item.item_common_name,
-                        confidence=item.confidence,
-                        quantity=item.quantity,
-                        unit=item.unit
-                    )
-                    for item in d.matched
-                ],
-                missing=[
-                    DetectionItemResponse(
-                        detection_item_id=item.detection_item_id,
-                        item_common_name=item.item_common_name,
-                        confidence=item.confidence,
-                        quantity=item.quantity,
-                        unit=item.unit
-                    )
-                    for item in d.missing
-                ],
-                extra=[
-                    DetectionItemResponse(
-                        detection_item_id=item.detection_item_id,
-                        item_common_name=item.item_common_name,
-                        confidence=item.confidence,
-                        quantity=item.quantity,
-                        unit=item.unit
-                    )
-                    for item in d.extra
+                        t_order_drug_id=drug.t_order_drug_id,
+                        detection_item_id=drug.detection_item_id,
+                        item_common_name=drug.item_common_name,
+                        confidence=drug.confidence,
+                        confidence_level=drug.confidence_level,
+                        quantity=drug.quantity,
+                        unit=drug.unit,
+                        is_manually_edited=drug.is_manually_edited,
+                        match_type=drug.match_type
+                    ) for drug in d.drug_list 
                 ]
             )
             for d in dto.detections

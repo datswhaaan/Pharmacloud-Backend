@@ -1,3 +1,4 @@
+from app.domain.entities.prescription import OrderDrugItem
 from app.domain.repositories.prescription import PrescriptionRepository
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
 from app.application.mappers.prescription_mapper import _to_detection_item_dto, _to_prescription_dto, _to_prescription_list_dto, _to_detection_dto, _to_detection_list_dto
@@ -45,24 +46,23 @@ class PrescriptionService:
         dto = []
 
         order_map = [order_item.b_item_id for order_item in order_list.orders]
+        print(order_map)
         
         for d in detection_list.detections:
             detection_map = [detection_item.b_item_id for detection_item in d.detections]
 
-            matched = []
-            missing = []
-            extra = []
+            print(detection_map)
+
+            drug_list =[]
 
             for od in order_map:
                 if od in detection_map:
-                    matched.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
+                    drug_list.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)], "matched"))
                     detection_map.remove(od)
-                else: 
-                    missing.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
 
             for dm in detection_map:
-                extra.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
+                drug_list.append(_to_detection_item_dto(None, d.detections[order_map.index(od)], "extra"))
             
-            dto.append(_to_detection_dto(d, matched, missing, extra))
+            dto.append(_to_detection_dto(d, drug_list))
             
         return _to_detection_list_dto(order_list, dto)

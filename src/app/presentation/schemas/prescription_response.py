@@ -5,7 +5,7 @@ class RiskFactorResponse(BaseModel):
     smokingHabits: str
 
 class OrderDrugResponse(BaseModel):
-    b_item_id: str
+    t_order_drug_id: str
     item_common_name: str
     unit: str
     quantity: float
@@ -36,7 +36,6 @@ class PrescriptionResponse(BaseModel):
     risk_factors: RiskFactorResponse
     history: PatientHistoryResponse
     drug_allergy: DrugAllergyResponse
-    order_drugs: list[OrderDrugResponse]
 
 class PrescriptionItemResponse(BaseModel):
     order_id: str
@@ -57,16 +56,19 @@ class DetectionItemResponse(BaseModel):
     detection_item_id: str
     item_common_name: str
     confidence: float
+    confidence_level: str
     quantity: int
     unit: str
+    is_manually_edited: bool
+    match_type: str
 
 class DetectionResponse(BaseModel):
     detection_id: str
+    image_url: str
+    status: str
     verified_by: str
     verified_at: str
-    matched: list[DetectionItemResponse]
-    missing: list[DetectionItemResponse]
-    extra: list[DetectionItemResponse]
+    drug_list: list[DetectionItemResponse]
 
 class DetectionListResponse(BaseModel):
     order_drugs: list[OrderDrugResponse]
