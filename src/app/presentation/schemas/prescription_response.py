@@ -41,7 +41,7 @@ class PrescriptionResponse(BaseModel):
     order_drugs: list[OrderDrugResponse]
 
 class PrescriptionItemResponse(BaseModel):
-    visit_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     patient_name: str

@@ -56,7 +56,7 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
     return PrescriptionListDTO(
         prescriptions=[
             PrescriptionItemDTO(
-                visit_id=prescription.t_visit_id,
+                order_id=prescription.order_id,
                 visit_hn=prescription.visit_hn,
                 visit_vn=prescription.visit_vn,
                 f_patient_prefix=prescription.f_patient_prefix,

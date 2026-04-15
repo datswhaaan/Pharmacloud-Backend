@@ -82,11 +82,11 @@ def _to_prescription(orm: OrderORM) -> Prescription:
         )
     )
 
-def _to_prescription_list(orms: list[VisitORM], total: int, page: int, size: int) -> PrescriptionList:
+def _to_prescription_list(orms: list[OrderORM], total: int, page: int, size: int) -> PrescriptionList:
     return PrescriptionList(
         prescriptions=[
             PrescriptionItem(
-                t_visit_id=orm.t_visit_id,
+                order_id=orm.t_order_id,
                 visit_hn=orm.visit_hn,
                 visit_vn=orm.visit_vn,
                 f_patient_prefix=orm.patient_prefix_description,

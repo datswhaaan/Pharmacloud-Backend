@@ -32,6 +32,10 @@ class PrescriptionService:
                 status_list = ["5"]
 
         prescription_list = self.repository.get_all_prescriptions(start_time, end_time, limit, skip, order, status_list, search)
+
+        if prescription_list is None:
+            raise ValueError("Prescriptions not found")
+        
         return _to_prescription_list_dto(prescription_list)
 
     def compare_detections(self, order_id: str) -> DetectionListDTO:

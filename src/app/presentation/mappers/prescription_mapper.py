@@ -52,7 +52,7 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
     return PrescriptionListResponse(
         prescriptions=[
             PrescriptionItemResponse(
-                visit_id=item.visit_id,
+                order_id=item.order_id,
                 visit_hn=item.visit_hn,
                 visit_vn=item.visit_vn,
                 patient_name=item.f_patient_prefix + item.patient_firstname + " " + item.patient_lastname,

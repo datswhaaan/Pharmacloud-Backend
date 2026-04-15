@@ -55,7 +55,7 @@ class PrescriptionDTO:
 
 @dataclass
 class PrescriptionItemDTO:
-    visit_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     f_patient_prefix: str
