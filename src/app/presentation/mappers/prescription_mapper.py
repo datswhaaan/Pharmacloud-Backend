@@ -68,6 +68,14 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
 
 def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:
     return DetectionListResponse(
+        order_drugs=[
+            OrderDrugResponse(
+                b_item_id=od.b_item_id,
+                item_common_name=od.item_common_name,
+                unit=od.unit,
+                quantity=od.quantity
+            ) for od in dto.order_drugs
+        ],
         detections=[
             DetectionResponse(
                 detection_id=d.detection_id,

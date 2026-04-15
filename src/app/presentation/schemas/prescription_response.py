@@ -1,8 +1,6 @@
 from pydantic import BaseModel
 
 class RiskFactorResponse(BaseModel):
-    # patient_risk_factor_topic: str
-    # patient_risk_factor_description: str
     alcoholUse: str
     smokingHabits: str
 
@@ -10,7 +8,7 @@ class OrderDrugResponse(BaseModel):
     b_item_id: str
     item_common_name: str
     unit: str
-    dose: float
+    quantity: float
 
 class PatientHistoryResponse(BaseModel):
     past_history: list[str]
@@ -71,4 +69,5 @@ class DetectionResponse(BaseModel):
     extra: list[DetectionItemResponse]
 
 class DetectionListResponse(BaseModel):
+    order_drugs: list[OrderDrugResponse]
     detections: list[DetectionResponse]

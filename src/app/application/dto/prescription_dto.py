@@ -2,8 +2,6 @@ from dataclasses import dataclass
 
 @dataclass 
 class RiskFactorDTO:
-    # patient_risk_factor_topic: str
-    # patient_risk_factor_description: str
     alcoholUse: str
     smokingHabits: str
 
@@ -11,8 +9,8 @@ class RiskFactorDTO:
 class OrderDrugDTO:
     b_item_id: str
     item_common_name: str
-    b_item_drug_uom_id_purch: str
-    order_drug_dose: str
+    unit: str
+    quantity: str
 
 @dataclass
 class PastHistoryDTO:
@@ -91,4 +89,5 @@ class DetectionDTO:
 
 @dataclass
 class DetectionListDTO:
+    order_drugs: list[OrderDrugDTO]
     detections: list[DetectionDTO]

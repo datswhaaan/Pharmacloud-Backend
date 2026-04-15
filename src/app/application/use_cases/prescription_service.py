@@ -1,6 +1,6 @@
 from app.domain.repositories.prescription import PrescriptionRepository
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
-from app.application.mappers.prescription_mapper import _to_detection_item_dto, _to_prescription_dto, _to_prescription_list_dto, _to_detection_dto
+from app.application.mappers.prescription_mapper import _to_detection_item_dto, _to_prescription_dto, _to_prescription_list_dto, _to_detection_dto, _to_detection_list_dto
 
 class PrescriptionService:
     def __init__(self, prescription_repository: PrescriptionRepository):
@@ -64,5 +64,5 @@ class PrescriptionService:
                 extra.append(_to_detection_item_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)]))
             
             dto.append(_to_detection_dto(d, matched, missing, extra))
-
-        return DetectionListDTO(detections=dto)
+            
+        return _to_detection_list_dto(order_list, dto)
