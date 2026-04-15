@@ -54,6 +54,7 @@ class Prescription:
     order_drugs: list[OrderDrug]
     history: PatientHistory
     drug_allergy: DrugAllergy
+    payment: str
 
 @dataclass
 class PrescriptionItem:

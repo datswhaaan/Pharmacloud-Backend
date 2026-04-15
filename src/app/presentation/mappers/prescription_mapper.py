@@ -46,7 +46,8 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
             drug_allergies=dto.drug_allergy.drug_allergies,
             monitoring=dto.drug_allergy.monitoring,
             suspected=dto.drug_allergy.suspected
-        )
+        ),
+        payment=dto.payment
     )
 
 def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionListResponse:

@@ -55,6 +55,7 @@ class PrescriptionDTO:
     order_drugs: list[OrderDrugDTO]
     history: PatientHistoryDTO
     drug_allergy: DrugAllergyDTO
+    payment: str
 
 @dataclass
 class PrescriptionItemDTO:

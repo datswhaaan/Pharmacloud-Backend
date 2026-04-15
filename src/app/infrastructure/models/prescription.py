@@ -83,7 +83,8 @@ class PrescriptionORM(Base):
     visit_type = relationship("VisitTypeORM", back_populates="prescriptions")
     patient = relationship("PatientORM", back_populates="prescriptions")
     employee = relationship("EmployeeORM", back_populates="prescriptions")
-    orders = relationship("OrderORM", back_populates="visit")
+    orders = relationship("OrderORM", back_populates="prescriptions")
+    payment = relationship("PaymentORM" , back_populates="prescriptions")
 
 class PatientRiskFactorORM(Base):
     __tablename__ = "t_patient_risk_factor"
@@ -104,7 +105,7 @@ class OrderORM(Base):
     order_qty = Column(Float)
     f_order_status_id = Column(String, ForeignKey("f_order_status.f_order_status_id", ondelete="CASCADE"), index=True)
 
-    visit = relationship("PrescriptionORM", back_populates="orders")
+    prescriptions = relationship("PrescriptionORM", back_populates="orders")
     item = relationship("ItemORM", back_populates="orders")
     order_drugs = relationship("OrderDrugORM", back_populates="orders")
     status = relationship("OrderStatusORM", back_populates="orders")
@@ -191,3 +192,20 @@ class PatientDrugAllergyORM(Base):
     patient = relationship("PatientORM", back_populates="drug_allergy")
     warning_type = relationship("AllergyWarningTypeORM", back_populates="drug_allergy")
     item = relationship("ItemORM", back_populates="drug_allergy")
+
+class PaymentORM(Base):
+    __tablename__ = "t_visit_payment"
+    t_visit_payment_id = Column(String, primary_key=True, index=True)
+    t_visit_id = Column(String, ForeignKey("t_visit.t_visit_id"), index=True)
+    b_contract_plans_id = Column(String, ForeignKey("b_contract_plans.b_contract_plans_id"), index=True)
+
+    prescriptions = relationship("PrescriptionORM", back_populates="payment")
+    contract = relationship("ContractPlansORM", back_populates="payment")
+
+class ContractPlansORM(Base):
+    __tablename__ = "b_contract_plans"
+    b_contract_plans_id = Column(String, primary_key=True, index=True)
+    contract_plans_number = Column(String)
+    contract_plans_description = Column(String)
+
+    payment = relationship("PaymentORM", back_populates="contract")

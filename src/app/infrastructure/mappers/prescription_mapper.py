@@ -74,7 +74,8 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
                 ) for fh in orm.patient.family_history
             ]
         ),
-        drug_allergy = DrugAllergy(**result)
+        drug_allergy = DrugAllergy(**result),
+        payment = orm.payment[0].contract.contract_plans_description
     )
 
 def _to_prescription_list(orms: list[PrescriptionORM], total: int, page: int, size: int) -> PrescriptionList:
