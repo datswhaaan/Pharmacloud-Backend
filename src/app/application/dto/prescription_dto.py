@@ -56,6 +56,7 @@ class PrescriptionDTO:
     history: PatientHistoryDTO
     drug_allergy: DrugAllergyDTO
     payment: str
+    symptom: str
 
 @dataclass
 class PrescriptionItemDTO:

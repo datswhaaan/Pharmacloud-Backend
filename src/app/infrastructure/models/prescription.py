@@ -54,6 +54,7 @@ class PatientORM(Base):
     past_history = relationship("PatientPastHistoryORM", back_populates="patient")
     family_history = relationship("PatientFamilyHistoryORM", back_populates="patient")
     drug_allergy = relationship("PatientDrugAllergyORM", back_populates="patient")
+    symptom = relationship("SymptomORM", back_populates="patient")
 
 class EmployeeORM(Base):
     __tablename__ = "b_employee"
@@ -63,6 +64,23 @@ class EmployeeORM(Base):
 
     prescriptions = relationship("PrescriptionORM", back_populates="employee")
     detection = relationship("DetectionORM", back_populates="employee")
+    symptom_record = relationship(
+        "SymptomORM",
+        foreign_keys="[SymptomORM.visit_primary_symptom_staff_record]",
+        back_populates="staff_record"
+    )
+
+    symptom_modify = relationship(
+        "SymptomORM",
+        foreign_keys="[SymptomORM.visit_primary_symptom_staff_modify]",
+        back_populates="staff_modify"
+    )
+
+    symptom_cancel = relationship(
+        "SymptomORM",
+        foreign_keys="[SymptomORM.visit_primary_symptom_staff_cancel]",
+        back_populates="staff_cancel"
+    )
 
 class PrescriptionORM(Base):
     __tablename__ = "t_visit"
@@ -85,6 +103,7 @@ class PrescriptionORM(Base):
     employee = relationship("EmployeeORM", back_populates="prescriptions")
     orders = relationship("OrderORM", back_populates="prescriptions")
     payment = relationship("PaymentORM" , back_populates="prescriptions")
+    symptom = relationship("SymptomORM", back_populates="prescriptions")
 
 class PatientRiskFactorORM(Base):
     __tablename__ = "t_patient_risk_factor"
@@ -209,3 +228,35 @@ class ContractPlansORM(Base):
     contract_plans_description = Column(String)
 
     payment = relationship("PaymentORM", back_populates="contract")
+
+class SymptomORM(Base):
+    __tablename__ = "t_visit_primary_symptom"
+    t_visit_primary_symptom_id = Column(String, primary_key=True, index=True)
+    t_visit_id = Column(String, ForeignKey("t_visit.t_visit_id"), index=True)
+    t_patient_id = Column(String, ForeignKey("t_patient.t_patient_id"), index=True)
+    visit_primary_symptom_staff_record = Column(String, ForeignKey("b_employee.b_employee_id"), index=True)
+    visit_primary_symptom_staff_modify = Column(String, ForeignKey("b_employee.b_employee_id"), index=True)
+    visit_primary_symptom_staff_cancel = Column(String, ForeignKey("b_employee.b_employee_id"), index=True)
+    visit_primary_symptom_general_symptom = Column(String)
+    visit_primary_symptom_main_symptom = Column(String)
+    visit_primary_symptom_current_illness = Column(String)    
+
+    prescriptions = relationship("PrescriptionORM", back_populates="symptom")
+    patient = relationship("PatientORM", back_populates="symptom")
+    staff_record = relationship(
+    "EmployeeORM",
+        foreign_keys=[visit_primary_symptom_staff_record],
+        back_populates="symptom_record"
+    )
+
+    staff_modify = relationship(
+        "EmployeeORM",
+        foreign_keys=[visit_primary_symptom_staff_modify],
+        back_populates="symptom_modify"
+    )
+
+    staff_cancel = relationship(
+        "EmployeeORM",
+        foreign_keys=[visit_primary_symptom_staff_cancel],
+        back_populates="symptom_cancel"
+    )

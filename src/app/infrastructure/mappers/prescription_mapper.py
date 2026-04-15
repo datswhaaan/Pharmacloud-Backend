@@ -75,7 +75,15 @@ def _to_prescription(orm: PrescriptionORM) -> Prescription:
             ]
         ),
         drug_allergy = DrugAllergy(**result),
-        payment = orm.payment[0].contract.contract_plans_description
+        payment = orm.payment[0].contract.contract_plans_description,
+        symptom = (
+            orm.symptom[0].visit_primary_symptom_main_symptom
+            + " ("
+            + orm.symptom[0].staff_record.employee_firstname
+            + " "
+            + orm.symptom[0].staff_record.employee_lastname
+            + " บันทึก)"
+        )
     )
 
 def _to_prescription_list(orms: list[PrescriptionORM], total: int, page: int, size: int) -> PrescriptionList:

@@ -55,6 +55,7 @@ class Prescription:
     history: PatientHistory
     drug_allergy: DrugAllergy
     payment: str
+    symptom: str
 
 @dataclass
 class PrescriptionItem:

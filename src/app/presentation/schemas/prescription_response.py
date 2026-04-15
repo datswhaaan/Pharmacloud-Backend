@@ -25,6 +25,7 @@ class PrescriptionResponse(BaseModel):
     visit_id: str
     visit_hn: str
     visit_vn: str
+    symptom: str
     status: str
     payment: str
     visit_begin_visit_time: str
