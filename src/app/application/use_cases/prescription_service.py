@@ -46,12 +46,9 @@ class PrescriptionService:
         dto = []
 
         order_map = [order_item.b_item_id for order_item in order_list.orders]
-        print(order_map)
         
         for d in detection_list.detections:
             detection_map = [detection_item.b_item_id for detection_item in d.detections]
-
-            print(detection_map)
 
             drug_list =[]
 
