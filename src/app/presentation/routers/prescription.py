@@ -33,7 +33,7 @@ def get_all_prescriptions(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/compare/{order_id}")
+@router.get("/detection/{order_id}")
 def compare_detections(
     order_id: str,
     service: PrescriptionService = Depends(get_prescription_service),
