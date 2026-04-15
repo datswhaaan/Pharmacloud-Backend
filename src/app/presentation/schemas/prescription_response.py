@@ -22,7 +22,7 @@ class DrugAllergyResponse(BaseModel):
     suspected: list[str]
 
 class PrescriptionResponse(BaseModel):
-    visit_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     symptom: str
@@ -31,11 +31,9 @@ class PrescriptionResponse(BaseModel):
     visit_begin_visit_time: str
     visit_diagnosis_notice: str
     visit_patient_type: str
-    visit_queue: str
     visit_dx: str
     patient_name: str
     visit_staff_doctor_discharge: str
-    visit_deny_allergy: str
     visit_patient_age: str
     risk_factors: RiskFactorResponse
     history: PatientHistoryResponse

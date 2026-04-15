@@ -35,21 +35,16 @@ class DrugAllergyDTO:
 
 @dataclass
 class PrescriptionDTO:
-    visit_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     status: str
-    f_visit_type: str
     visit_begin_visit_time: str
     visit_diagnosis_notice: str
     visit_patient_type: str
-    visit_queue: str
     visit_dx: str
-    f_patient_prefix: str
-    patient_firstname: str
-    patient_lastname: str
+    patient_name: str
     visit_staff_doctor_discharge: str
-    visit_deny_allergy: str
     visit_patient_age: str
     risk_factors: RiskFactorDTO
     order_drugs: list[OrderDrugDTO]

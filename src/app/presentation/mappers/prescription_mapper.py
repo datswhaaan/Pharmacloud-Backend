@@ -25,19 +25,16 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
     )
 
     return PrescriptionResponse(
-        visit_id=dto.visit_id,
+        order_id=dto.order_id,
         visit_hn=dto.visit_hn,
         visit_vn=dto.visit_vn,
         status=dto.status,
-        f_visit_type=dto.f_visit_type,
         visit_begin_visit_time=dto.visit_begin_visit_time,
         visit_diagnosis_notice=dto.visit_diagnosis_notice,
         visit_patient_type=dto.visit_patient_type,
-        visit_queue=dto.visit_queue,
         visit_dx=dto.visit_dx,
-        patient_name=dto.f_patient_prefix + dto.patient_firstname + " " + dto.patient_lastname,
+        patient_name=dto.patient_name,
         visit_staff_doctor_discharge=dto.visit_staff_doctor_discharge,
-        visit_deny_allergy=dto.visit_deny_allergy,
         visit_patient_age=dto.visit_patient_age,
         risk_factors=risk_factors,
         order_drugs=order_drugs,

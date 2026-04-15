@@ -18,21 +18,16 @@ def _risk_factors_mapper(riskFactors: list[RiskFactor]) -> RiskFactorDTO:
 
 def _to_prescription_dto(prescription: Prescription) -> PrescriptionDTO:
     return PrescriptionDTO(
-        visit_id=prescription.t_visit_id,
+        order_id=prescription.order_id,
         visit_hn=prescription.visit_hn,
         visit_vn=prescription.visit_vn,
         status=_status_mapper(prescription.status),
-        f_visit_type=prescription.f_visit_type,
         visit_begin_visit_time=prescription.visit_begin_visit_time,
         visit_diagnosis_notice=prescription.visit_diagnosis_notice,
         visit_patient_type=prescription.visit_patient_type,
-        visit_queue=prescription.visit_queue,
         visit_dx=prescription.visit_dx,
-        f_patient_prefix=prescription.f_patient_prefix,
-        patient_firstname=prescription.patient_firstname,
-        patient_lastname=prescription.patient_lastname,
+        patient_name=prescription.f_patient_prefix + prescription.patient_firstname + " " + prescription.patient_lastname,
         visit_staff_doctor_discharge=prescription.visit_staff_doctor_discharge,
-        visit_deny_allergy=prescription.visit_deny_allergy,
         visit_patient_age=prescription.visit_patient_age,
         risk_factors=_risk_factors_mapper(prescription.risk_factors),
         order_drugs=prescription.order_drugs,

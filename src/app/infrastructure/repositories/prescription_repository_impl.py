@@ -1,6 +1,6 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, PrescriptionORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM, PaymentORM, SymptomORM
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM, PaymentORM, SymptomORM
 from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_detection_list, _to_order_list
 from app.domain.entities.prescription import Prescription, PrescriptionList, DetectionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
@@ -12,42 +12,89 @@ class PrescriptionRepositoryImpl:
     def get_prescription_by_id(self, id: str) -> Prescription:
         row = (
             self.session
-            .query(PrescriptionORM)
+            .query(OrderORM)
             .options(
-                selectinload(PrescriptionORM.visit_type),
-                selectinload(PrescriptionORM.patient)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.visit_type),
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.patient)
                     .selectinload(PatientORM.prefix),
-                selectinload(PrescriptionORM.patient)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.patient)
                     .selectinload(PatientORM.risk_factors),
-                selectinload(PrescriptionORM.patient)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.patient)
                     .selectinload(PatientORM.past_history),
-                selectinload(PrescriptionORM.patient)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.patient)
                     .selectinload(PatientORM.family_history),
-                selectinload(PrescriptionORM.patient)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.patient)
                     .selectinload(PatientORM.drug_allergy)
                     .selectinload(PatientDrugAllergyORM.item),
-                selectinload(PrescriptionORM.employee),
-                selectinload(PrescriptionORM.orders)
-                    .selectinload(OrderORM.order_drugs)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.employee),
+                selectinload(OrderORM.order_drugs)
                     .selectinload(OrderDrugORM.item_drug_uom),
-                selectinload(PrescriptionORM.orders)
-                    .selectinload(OrderORM.item),
-                selectinload(PrescriptionORM.orders)
-                    .selectinload(OrderORM.status),
-                selectinload(PrescriptionORM.payment)
+                selectinload(OrderORM.item),
+                selectinload(OrderORM.status),
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.payment)
                     .selectinload(PaymentORM.contract),
-                selectinload(PrescriptionORM.symptom)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.symptom)
                     .selectinload(SymptomORM.staff_record),
-                selectinload(PrescriptionORM.symptom)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.symptom)
                     .selectinload(SymptomORM.staff_modify),
-                selectinload(PrescriptionORM.symptom)
+                selectinload(OrderORM.visit)
+                    .selectinload(VisitORM.symptom)
                     .selectinload(SymptomORM.staff_cancel)
             )
             .filter(
-                PrescriptionORM.t_visit_id == id
+                OrderORM.t_order_id == id
             )
             .first()
         )
+
+        # row = (
+        #     self.session
+        #     .query(VisitORM)
+        #     .options(
+        #         selectinload(VisitORM.visit_type),
+        #         selectinload(VisitORM.patient)
+        #             .selectinload(PatientORM.prefix),
+        #         selectinload(VisitORM.patient)
+        #             .selectinload(PatientORM.risk_factors),
+        #         selectinload(VisitORM.patient)
+        #             .selectinload(PatientORM.past_history),
+        #         selectinload(VisitORM.patient)
+        #             .selectinload(PatientORM.family_history),
+        #         selectinload(VisitORM.patient)
+        #             .selectinload(PatientORM.drug_allergy)
+        #             .selectinload(PatientDrugAllergyORM.item),
+        #         selectinload(VisitORM.employee),
+        #         selectinload(VisitORM.orders)
+        #             .selectinload(OrderORM.order_drugs)
+        #             .selectinload(OrderDrugORM.item_drug_uom),
+        #         selectinload(VisitORM.orders)
+        #             .selectinload(OrderORM.item),
+        #         selectinload(VisitORM.orders)
+        #             .selectinload(OrderORM.status),
+        #         selectinload(VisitORM.payment)
+        #             .selectinload(PaymentORM.contract),
+        #         selectinload(VisitORM.symptom)
+        #             .selectinload(SymptomORM.staff_record),
+        #         selectinload(VisitORM.symptom)
+        #             .selectinload(SymptomORM.staff_modify),
+        #         selectinload(VisitORM.symptom)
+        #             .selectinload(SymptomORM.staff_cancel)
+        #     )
+        #     .filter(
+        #         VisitORM.t_visit_id == id
+        #     )
+        #     .first()
+        # )
 
         if row is None:
             raise PrescriptionNotFoundException(
@@ -80,20 +127,20 @@ class PrescriptionRepositoryImpl:
         )
         
         query = self.session.query(
-            PrescriptionORM.t_visit_id,
-            PrescriptionORM.visit_hn,
-            PrescriptionORM.visit_vn,
+            VisitORM.t_visit_id,
+            VisitORM.visit_hn,
+            VisitORM.visit_vn,
             PatientPrefixORM.patient_prefix_description,
             PatientORM.patient_firstname,
             PatientORM.patient_lastname,
-            PrescriptionORM.visit_begin_visit_time,
+            VisitORM.visit_begin_visit_time,
             OrderStatusORM.f_order_status_id
         )
         
         if search:
             query = query.filter(
-                PrescriptionORM.visit_hn.ilike(f"%{search}%") |
-                PrescriptionORM.visit_vn.ilike(f"%{search}%") |
+                VisitORM.visit_hn.ilike(f"%{search}%") |
+                VisitORM.visit_vn.ilike(f"%{search}%") |
                 PatientORM.patient_firstname.ilike(f"%{search}%") |
                 PatientORM.patient_lastname.ilike(f"%{search}%")
             )
@@ -105,18 +152,18 @@ class PrescriptionRepositoryImpl:
         
         rows = (
             query
-            .join(PrescriptionORM.patient)
-            .join(PrescriptionORM.orders)
+            .join(VisitORM.patient)
+            .join(VisitORM.orders)
             .join(OrderORM.status)
             .join(PatientORM.prefix)
             .filter(
-                PrescriptionORM.visit_begin_visit_time >= start_time if start_time else True,
-                PrescriptionORM.visit_begin_visit_time <= end_time if end_time else True
+                VisitORM.visit_begin_visit_time >= start_time if start_time else True,
+                VisitORM.visit_begin_visit_time <= end_time if end_time else True
             )
             .order_by(
                 status_order,
-                PrescriptionORM.visit_begin_visit_time.asc() if order == "asc" 
-                else PrescriptionORM.visit_begin_visit_time.desc()
+                VisitORM.visit_begin_visit_time.asc() if order == "asc" 
+                else VisitORM.visit_begin_visit_time.desc()
             )
             .limit(limit)
             .offset(skip)
@@ -124,13 +171,13 @@ class PrescriptionRepositoryImpl:
         )
 
         total = (
-            self.session.query(PrescriptionORM.t_visit_id)
-            .join(PrescriptionORM.patient)
-            .join(PrescriptionORM.orders)
+            self.session.query(VisitORM.t_visit_id)
+            .join(VisitORM.patient)
+            .join(VisitORM.orders)
             .join(OrderORM.status)
             .filter(
-                PrescriptionORM.visit_begin_visit_time >= start_time if start_time else True,
-                PrescriptionORM.visit_begin_visit_time <= end_time if end_time else True,
+                VisitORM.visit_begin_visit_time >= start_time if start_time else True,
+                VisitORM.visit_begin_visit_time <= end_time if end_time else True,
                 OrderStatusORM.f_order_status_id.in_(status) if len(status) > 0 else True
             )
             .count()
