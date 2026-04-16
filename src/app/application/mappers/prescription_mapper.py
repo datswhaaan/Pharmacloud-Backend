@@ -62,7 +62,8 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
                 patient_firstname=prescription.patient_firstname,
                 patient_lastname=prescription.patient_lastname,
                 visit_begin_visit_time=prescription.visit_begin_visit_time,
-                status=_status_mapper(prescription.status)
+                status=_status_mapper(prescription.status),
+                verified_by=prescription.verified_by
             )
             for prescription in prescription_list.prescriptions
         ],

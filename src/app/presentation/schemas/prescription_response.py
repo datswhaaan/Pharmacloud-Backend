@@ -19,7 +19,7 @@ class DrugAllergyResponse(BaseModel):
     monitoring: list[str]
     suspected: list[str]
 
-class PrescriptionResponse(BaseModel):
+class PrescriptionDetailResponse(BaseModel):
     order_id: str
     visit_hn: str
     visit_vn: str
@@ -44,6 +44,7 @@ class PrescriptionItemResponse(BaseModel):
     patient_name: str
     visit_begin_visit_time: str
     status: str
+    verified_by: str
 
 class PrescriptionListResponse(BaseModel):
     prescriptions: list[PrescriptionItemResponse]

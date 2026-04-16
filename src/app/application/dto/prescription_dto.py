@@ -60,6 +60,7 @@ class PrescriptionItemDTO:
     patient_lastname: str
     visit_begin_visit_time: str
     status: str
+    verified_by: str
 
 @dataclass
 class PrescriptionListDTO:

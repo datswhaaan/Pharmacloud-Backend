@@ -1,6 +1,6 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM, PaymentORM, SymptomORM
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM, PaymentORM, SymptomORM, EmployeeORM
 from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_detection_list, _to_order_list
 from app.domain.entities.prescription import Prescription, PrescriptionList, DetectionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
@@ -96,12 +96,17 @@ class PrescriptionRepositoryImpl:
                 PatientORM.patient_firstname,
                 PatientORM.patient_lastname,
                 VisitORM.visit_begin_visit_time,
-                OrderStatusORM.f_order_status_id
+                OrderStatusORM.f_order_status_id,
+                EmployeeORM.employee_firstname,
+                EmployeeORM.employee_lastname
+                
             )
             .join(OrderORM.visit)
             .join(VisitORM.patient)
             .join(PatientORM.prefix)
             .join(OrderORM.status)
+            .join(OrderORM.detection)
+            .join(DetectionORM.employee)
         )
         
         if search:

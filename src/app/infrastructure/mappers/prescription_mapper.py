@@ -21,7 +21,6 @@ def _to_order_drug(orm: OrderORM) -> list[OrderDrug]:
         for od in orm.order_drugs
     ]
 
-
 def _to_prescription(orm: OrderORM) -> Prescription:
     mapping = {
         "1": "drug_allergies",
@@ -92,7 +91,8 @@ def _to_prescription_list(orms: list[OrderORM], total: int, page: int, size: int
                 patient_firstname=orm.patient_firstname,
                 patient_lastname=orm.patient_lastname,
                 visit_begin_visit_time=orm.visit_begin_visit_time,
-                status = orm.f_order_status_id
+                status = orm.f_order_status_id,
+                verified_by= orm.employee_firstname + " " + orm.employee_lastname
             )
             for orm in orms
         ],

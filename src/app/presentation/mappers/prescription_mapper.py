@@ -1,8 +1,8 @@
 
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
-from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse, DrugAllergyResponse
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionDetailResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse, DrugAllergyResponse
 
-def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
+def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionDetailResponse:
 
     risk_factors = RiskFactorResponse(
             alcoholUse=dto.risk_factors.alcoholUse,
@@ -14,7 +14,7 @@ def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionResponse:
         family_history=[fh.patient_family_history_topic for fh in dto.history.family_history]
     )
 
-    return PrescriptionResponse(
+    return PrescriptionDetailResponse(
         order_id=dto.order_id,
         visit_hn=dto.visit_hn,
         visit_vn=dto.visit_vn,
@@ -46,7 +46,8 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
                 visit_vn=item.visit_vn,
                 patient_name=item.f_patient_prefix + item.patient_firstname + " " + item.patient_lastname,
                 visit_begin_visit_time=item.visit_begin_visit_time,
-                status=item.status
+                status=item.status,
+                verified_by=item.verified_by
             )
             for item in dto.prescriptions
         ],
