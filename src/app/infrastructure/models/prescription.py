@@ -63,7 +63,6 @@ class EmployeeORM(Base):
     employee_lastname = Column(String)
 
     visit = relationship("VisitORM", back_populates="employee")
-    detection = relationship("DetectionORM", back_populates="employee")
     symptom_record = relationship(
         "SymptomORM",
         foreign_keys="[SymptomORM.visit_primary_symptom_staff_record]",
@@ -128,7 +127,6 @@ class OrderORM(Base):
     item = relationship("ItemORM", back_populates="orders")
     order_drugs = relationship("OrderDrugORM", back_populates="orders")
     status = relationship("OrderStatusORM", back_populates="orders")
-    detection = relationship("DetectionORM", back_populates="orders")
 
 class OrderDrugORM(Base):
     __tablename__ = "t_order_drug"
@@ -141,7 +139,6 @@ class OrderDrugORM(Base):
     orders = relationship("OrderORM", back_populates="order_drugs")
     item = relationship("ItemORM", back_populates="order_drugs")
     item_drug_uom = relationship("ItemDrugUOMORM", back_populates="order_drugs")
-    detection_item = relationship("DetectionItemORM", back_populates="order_drugs")
 
 class ItemORM(Base):
     __tablename__ = "b_item"
@@ -150,7 +147,6 @@ class ItemORM(Base):
 
     orders = relationship("OrderORM", back_populates="item")
     order_drugs = relationship("OrderDrugORM", back_populates="item")
-    detection_item = relationship("DetectionItemORM", back_populates="item")
     drug_allergy = relationship("PatientDrugAllergyORM", back_populates="item")
     item_drug = relationship("ItemDrugORM", back_populates="item")
 
@@ -170,42 +166,6 @@ class ItemDrugUOMORM(Base):
 
     order_drugs = relationship("OrderDrugORM", back_populates="item_drug_uom")
     item_drug = relationship("ItemDrugORM", back_populates="item_drug_uom")
-
-class DetectionStatusORM(Base):
-    __tablename__ = "detection_status"
-    detection_status_id = Column(Integer, primary_key=True, index=True)
-    detection_status_description = Column(String)
-
-    detection = relationship("DetectionORM", back_populates="detection_status")
-
-class DetectionORM(Base):
-    __tablename__ = "detection"
-    detection_id = Column(String, primary_key=True, index=True)
-    t_order_id = Column(String, ForeignKey("t_order.t_order_id", ondelete="CASCADE"), index=True)
-    detected_at = Column(DateTime)
-    image_url = Column(String)
-    verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
-    verified_at = Column(DateTime)
-    status_id = Column(Integer, ForeignKey("detection_status.detection_status_id"))
-
-    orders = relationship("OrderORM", back_populates="detection")
-    detection_item = relationship("DetectionItemORM", back_populates="detection")
-    employee = relationship("EmployeeORM", back_populates="detection")
-    detection_status = relationship("DetectionStatusORM", back_populates="detection")
-
-class DetectionItemORM(Base):
-    __tablename__ = "detection_item"
-    detection_item_id = Column(String, primary_key= True, index=True)
-    detection_id = Column(String, ForeignKey("detection.detection_id"))
-    t_order_drug_id = Column(String, ForeignKey("t_order_drug.t_order_drug_id"))
-    b_item_id = Column(String, ForeignKey("b_item.b_item_id"))
-    confidence = Column(Float)
-    quantity = Column(Integer)
-    is_manually_edited = Column(Boolean)
-
-    detection = relationship("DetectionORM", back_populates="detection_item")
-    order_drugs = relationship("OrderDrugORM", back_populates="detection_item")
-    item = relationship("ItemORM", back_populates="detection_item")
 
 class PatientPastHistoryORM(Base):
     __tablename__ = "t_patient_past_history"

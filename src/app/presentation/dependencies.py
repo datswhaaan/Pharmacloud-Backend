@@ -16,6 +16,7 @@ from app.infrastructure.repositories.user_repository_impl import UserRepositoryI
 from app.application.use_cases.user_service import UserService
 from app.infrastructure.websocket.connection_manager import ConnectionManager
 from app.application.use_cases.notify_service import NotifyService
+from app.infrastructure.repositories.detection_repository_impl import DetectionRepositoryImpl
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -50,8 +51,9 @@ def get_drug_service(db: Session = Depends(get_db), storage: GoogleDriveStorage 
     return DrugService(repo)
 
 def get_prescription_service(db: Session = Depends(get_db)):
-    repo = PrescriptionRepositoryImpl(db)
-    return PrescriptionService(repo)
+    prescription = PrescriptionRepositoryImpl(db)
+    detection = DetectionRepositoryImpl(db)
+    return PrescriptionService(prescription, detection)
 
 def get_user_service(db: Session = Depends(get_db)):
     repo = UserRepositoryImpl(db)

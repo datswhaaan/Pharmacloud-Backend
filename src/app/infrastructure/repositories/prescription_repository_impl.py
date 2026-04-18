@@ -1,8 +1,9 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, DetectionORM, DetectionItemORM, PatientDrugAllergyORM, PaymentORM, SymptomORM, EmployeeORM
-from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_detection_list, _to_order_list
-from app.domain.entities.prescription import Prescription, PrescriptionList, DetectionList, OrderList
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, PatientDrugAllergyORM, PaymentORM, SymptomORM, EmployeeORM
+from app.infrastructure.models.detection import DetectionORM
+from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_order_list
+from app.domain.entities.prescription import Prescription, PrescriptionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
 
 class PrescriptionRepositoryImpl:
@@ -169,27 +170,3 @@ class PrescriptionRepositoryImpl:
         )
 
         return _to_order_list(rows)
-
-    def get_detections_by_order_id(self, order_id: str) -> DetectionList:
-        
-        rows = (
-            self.session
-            .query(DetectionORM)
-            .options(
-                selectinload(DetectionORM.detection_item)
-                    .selectinload(DetectionItemORM.order_drugs)
-                    .selectinload(OrderDrugORM.item_drug_uom),
-                selectinload(DetectionORM.detection_item)
-                    .selectinload(DetectionItemORM.item),
-                selectinload(DetectionORM.orders),
-                selectinload(DetectionORM.employee),
-                selectinload(DetectionORM.detection_status)
-            )
-            .filter(
-                DetectionORM.t_order_id == order_id
-            )
-            .order_by(DetectionORM.verified_at.desc())
-            .all()
-        )
-
-        return _to_detection_list(rows)

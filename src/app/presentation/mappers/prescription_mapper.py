@@ -1,6 +1,8 @@
 
-from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO, DetectionListDTO
-from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionDetailResponse, RiskFactorResponse, OrderDrugResponse, DetectionListResponse, DetectionItemResponse, DetectionResponse, PatientHistoryResponse, DrugAllergyResponse
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
+from app.application.dto.detection_dto import DetectionListDTO
+from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionDetailResponse, RiskFactorResponse, OrderDrugResponse, PatientHistoryResponse, DrugAllergyResponse
+from app.presentation.schemas.detection_response import DetectionListResponse, DetectionItemResponse, DetectionResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionDetailResponse:
 
