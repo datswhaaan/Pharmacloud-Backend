@@ -2,7 +2,7 @@ from app.domain.repositories.detection import DetectionRepository
 from app.domain.repositories.prescription import PrescriptionRepository
 from app.domain.entities.detection import Detection, DetectionList, DetectionItem
 from app.application.dto.detection_dto import DetectionListDTO, DetectionDTO, DetectionImageInputDTO, DetectionInputDTO
-from app.application.mappers.detection_mapper import _to_detection_item_compare_dto, _to_detection_dto, _to_detection_list_dto, _to_detection_item, _to_detection, _to_detection_image
+from app.application.mappers.detection_mapper import _to_detection_item_compare_dto, _to_detection_dto, _to_detection_list_dto, _to_detection_item_input, _to_detection, _to_detection_image
 
 class DetectionService:
     def __init__(self, detection_repository: DetectionRepository, prescription_repository: PrescriptionRepository):
@@ -52,10 +52,10 @@ class DetectionService:
 
         for od in order_map:
             if od in detection_map:
-                drug_list.append(_to_detection_item(order_list.orders[order_map.index(od)], detection_items[order_map.index(od)], "MATCHED"))
+                drug_list.append(_to_detection_item_input(order_list.orders[order_map.index(od)], detection_items[order_map.index(od)], "MATCHED"))
                 detection_map.remove(od)
 
         for dm in detection_map:
-            drug_list.append(_to_detection_item(None, detection_items[order_map.index(od)], "EXTRA"))
+            drug_list.append(_to_detection_item_input(None, detection_items[order_map.index(od)], "EXTRA"))
         
         return drug_list

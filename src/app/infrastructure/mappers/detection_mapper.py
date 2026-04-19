@@ -40,6 +40,7 @@ def _to_detection_orm(d: DetectionCreate, image_url: str) -> DetectionORM:
 def _to_detection_item_orm(detection_list: list[DetectionItem], detection_id: str) -> list[DetectionItemORM]:
     return [
         DetectionItemORM(
+            t_order_drug_id=di.t_order_drug_id,
             detection_id=detection_id,
             b_item_id=di.b_item_id,
             confidence=di.confidence,

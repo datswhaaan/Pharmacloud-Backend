@@ -105,7 +105,7 @@ def _to_order_list(orms: list[OrderORM]) -> OrderList:
     return OrderList(
         orders=[
             OrderDrugItem(
-                t_order_drug_id=od.t_order_id,
+                t_order_drug_id=od.t_order_drug_id,
                 b_item_id=od.item.b_item_id,
                 item_common_name=od.item.item_common_name,
                 unit=od.item_drug_uom.item_drug_uom_description,

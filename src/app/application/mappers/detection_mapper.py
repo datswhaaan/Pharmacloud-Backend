@@ -56,11 +56,11 @@ def _to_detection_list_dto(order_list: OrderList, detection_list: list[Detection
         detections=detection_list
     )
 
-def _to_detection_item(
+def _to_detection_item_input(
     ordered: OrderDrugItem | None,
     detected: DetectionItem | None,
     match_type: str
-) -> DetectionItem:
+) -> DetectionItemInput:
     return DetectionItemInput(
         t_order_drug_id=ordered.t_order_drug_id if ordered else None,
         b_item_id=detected.b_item_id,
@@ -71,7 +71,7 @@ def _to_detection_item(
 
 def _to_detection(
         detection: DetectionInputDTO,
-        detection_items: list[DetectionItem]
+        detection_items: list[DetectionItemInput]
 ) -> DetectionCreate:
     return DetectionCreate(
         t_order_id=detection.order_id,
