@@ -1,34 +1,45 @@
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaInMemoryUpload
+from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.auth.exceptions import RefreshError
 from google.oauth2 import service_account
+import io
+import os
 
 from app.domain.storage.storage import Storage
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
-
-
 class GoogleDriveStorage(Storage):
-    def __init__(
-        self,
-        service_account_path: str,
-        folder_id: str
-    ):
+    def __init__(self, credentials_path: str, folder_id: str):
         self.folder_id = folder_id
+        self.creds = self._get_credentials(credentials_path)
+        self.service = build("drive", "v3", credentials=self.creds)
 
-        creds = service_account.Credentials.from_service_account_file(
-            service_account_path,
-            scopes=SCOPES
-        )
+    def _get_credentials(self, credentials_path: str):
+        creds = None
 
-        self.service = build("drive", "v3", credentials=creds)
+        if os.path.exists("token.json"):
+            creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    credentials_path, SCOPES
+                )
+                creds = flow.run_local_server(port=0)
+
+            with open("token.json", "w") as token:
+                token.write(creds.to_json())
+
+        return creds
 
     def upload(self, file, file_name: str) -> str:
-        media = MediaInMemoryUpload(
-            file.content,
+        media = MediaIoBaseUpload(
+            io.BytesIO(file.content),
             mimetype=file.content_type
         )
 

@@ -17,6 +17,7 @@ from app.application.use_cases.user_service import UserService
 from app.infrastructure.websocket.connection_manager import ConnectionManager
 from app.application.use_cases.notify_service import NotifyService
 from app.infrastructure.repositories.detection_repository_impl import DetectionRepositoryImpl
+from app.application.use_cases.detection_service import DetectionService
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -26,7 +27,10 @@ api_key_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 
 load_dotenv()
 GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID")
+GOOGLE_DRIVE_DETECTION_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DETECTION_IMAGE_FOLDER_ID")
 GOOGLE_SERVICE_ACCOUNT_PATH="service-account.json"
+
+GOOGLE_OAUTH_CREDENTIALS_PATH = os.getenv("GOOGLE_OAUTH_CREDENTIALS_PATH")
 
 manager = ConnectionManager()
 
@@ -41,19 +45,20 @@ def get_drug_metadata_service(db: Session = Depends(get_db)):
     repo = DrugMetadataRepositoryImpl(db)
     return DrugMetadataService(repo)
 
-def get_google_drive_storage():
-    service_account_path = GOOGLE_SERVICE_ACCOUNT_PATH
-    folder_id = GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID
-    return GoogleDriveStorage(service_account_path, folder_id)
+def get_google_drive_storage(folder_id: str):
+    credentials_path = GOOGLE_OAUTH_CREDENTIALS_PATH
+    return GoogleDriveStorage(credentials_path, folder_id)
 
-def get_drug_service(db: Session = Depends(get_db), storage: GoogleDriveStorage = Depends(get_google_drive_storage)):
-    repo = DrugRepositoryImpl(db, storage)
+drug_storage = get_google_drive_storage(GOOGLE_DRIVE_DRUG_IMAGE_FOLDER_ID)
+detection_storage = get_google_drive_storage(GOOGLE_DRIVE_DETECTION_IMAGE_FOLDER_ID)
+
+def get_drug_service(db: Session = Depends(get_db)):
+    repo = DrugRepositoryImpl(db, drug_storage)    
     return DrugService(repo)
 
 def get_prescription_service(db: Session = Depends(get_db)):
     prescription = PrescriptionRepositoryImpl(db)
-    detection = DetectionRepositoryImpl(db)
-    return PrescriptionService(prescription, detection)
+    return PrescriptionService(prescription)
 
 def get_user_service(db: Session = Depends(get_db)):
     repo = UserRepositoryImpl(db)
@@ -64,6 +69,11 @@ def get_auth_service(db: Session = Depends(get_db)):
     token = TokenImpl()
     user = UserRepositoryImpl(db)
     return AuthService(password, token, user)
+
+def get_detection_service(db: Session = Depends(get_db)):
+    detection_repo = DetectionRepositoryImpl(db, detection_storage)
+    prescription_repo = PrescriptionRepositoryImpl(db)
+    return DetectionService(detection_repo, prescription_repo)
 
 def get_notify_service():
     return NotifyService(manager)

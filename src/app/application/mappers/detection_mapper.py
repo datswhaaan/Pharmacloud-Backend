@@ -1,9 +1,9 @@
-from app.domain.entities.detection import DetectionItem, Detection
+from app.domain.entities.detection import DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate
 from app.domain.entities.prescription import OrderList, OrderDrugItem
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionImageInputDTO, DetectionInputDTO
 from app.application.dto.prescription_dto import OrderDrugDTO
 
-def _to_detection_item_dto(
+def _to_detection_item_compare_dto(
     ordered: OrderDrugItem | None,
     detected: DetectionItem | None,
     match_type: str
@@ -20,6 +20,19 @@ def _to_detection_item_dto(
         match_type=match_type
     )
 
+def _to_detection_item_dto(di: DetectionItem) -> DetectionItemDTO:
+    return DetectionItemDTO(
+        t_order_drug_id=di.t_order_drug_id,
+        detection_item_id=di.detection_item_id,
+        item_common_name=di.item_common_name,
+        confidence=di.confidence,
+        confidence_level=_confidence_level_mapper(di.confidence),
+        quantity=di.quantity,
+        unit=di.unit,
+        is_manually_edited=di.is_manually_edited,
+        match_type=di.match_type
+    )
+
 def _to_detection_dto(detection: Detection, drug_list: list[DetectionItemDTO]) -> DetectionDTO:
     return DetectionDTO(
         detection_id=detection.detection_id,
@@ -27,7 +40,7 @@ def _to_detection_dto(detection: Detection, drug_list: list[DetectionItemDTO]) -
         status=detection.status,
         verified_at=str(detection.verified_at),
         verified_by=detection.verified_by,
-        drug_list=drug_list
+        drug_list=[_to_detection_item_dto(drug) for drug in drug_list]
     )
 
 def _to_detection_list_dto(order_list: OrderList, detection_list: list[DetectionItemDTO]) -> DetectionListDTO:
@@ -41,6 +54,35 @@ def _to_detection_list_dto(order_list: OrderList, detection_list: list[Detection
             ) for od in order_list.orders
         ],
         detections=detection_list
+    )
+
+def _to_detection_item(
+    ordered: OrderDrugItem | None,
+    detected: DetectionItem | None,
+    match_type: str
+) -> DetectionItem:
+    return DetectionItemInput(
+        t_order_drug_id=ordered.t_order_drug_id if ordered else None,
+        b_item_id=detected.b_item_id,
+        confidence=detected.confidence,
+        quantity=ordered.quantity if ordered else None,
+        match_type=match_type
+    )
+
+def _to_detection(
+        detection: DetectionInputDTO,
+        detection_items: list[DetectionItem]
+) -> DetectionCreate:
+    return DetectionCreate(
+        t_order_id=detection.order_id,
+        status=4, #รอตรวจสอบ
+        detections=detection_items
+    )
+
+def _to_detection_image(image: DetectionImageInputDTO) -> DetectionImageInput:
+    return DetectionImageInput(
+        content=image.content,
+        content_type=image.content_type
     )
 
 def _confidence_level_mapper(confidence_level: float) -> str:

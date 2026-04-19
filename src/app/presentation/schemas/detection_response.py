@@ -2,12 +2,12 @@ from pydantic import BaseModel
 from app.presentation.schemas.prescription_response import OrderDrugResponse
 
 class DetectionItemResponse(BaseModel):
-    t_order_drug_id: str
+    t_order_drug_id: str | None = None
     detection_item_id: str
     item_common_name: str
     confidence: float
     confidence_level: str
-    quantity: int
+    quantity: int | None = None
     unit: str
     is_manually_edited: bool
     match_type: str

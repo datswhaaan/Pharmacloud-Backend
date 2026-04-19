@@ -1,8 +1,6 @@
 
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
-from app.application.dto.detection_dto import DetectionListDTO
 from app.presentation.schemas.prescription_response import PrescriptionItemResponse, PrescriptionListResponse, PrescriptionListResponse, PrescriptionDetailResponse, RiskFactorResponse, OrderDrugResponse, PatientHistoryResponse, DrugAllergyResponse
-from app.presentation.schemas.detection_response import DetectionListResponse, DetectionItemResponse, DetectionResponse
 
 def _to_prescription_response(dto: PrescriptionDTO) -> PrescriptionDetailResponse:
 
@@ -56,39 +54,4 @@ def _to_prescription_list_response(dto: PrescriptionListDTO) -> PrescriptionList
         total=dto.total,
         page=dto.page,
         size=dto.size
-    )
-
-def _to_detection_list_response(dto: DetectionListDTO) -> DetectionListResponse:
-    return DetectionListResponse(
-        order_drugs=[
-            OrderDrugResponse(
-                t_order_drug_id=od.t_order_drug_id,
-                item_common_name=od.item_common_name,
-                unit=od.unit,
-                quantity=od.quantity
-            ) for od in dto.order_drugs
-        ],
-        detections=[
-            DetectionResponse(
-                detection_id=d.detection_id,
-                image_url=d.image_url,
-                status=d.status,
-                verified_by=d.verified_by,
-                verified_at=d.verified_at,
-                drug_list=[
-                    DetectionItemResponse(
-                        t_order_drug_id=drug.t_order_drug_id,
-                        detection_item_id=drug.detection_item_id,
-                        item_common_name=drug.item_common_name,
-                        confidence=drug.confidence,
-                        confidence_level=drug.confidence_level,
-                        quantity=drug.quantity,
-                        unit=drug.unit,
-                        is_manually_edited=drug.is_manually_edited,
-                        match_type=drug.match_type
-                    ) for drug in d.drug_list 
-                ]
-            )
-            for d in dto.detections
-        ]
     )

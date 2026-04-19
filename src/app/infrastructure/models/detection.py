@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, Float, DateTime, Integer, Boolean
+from sqlalchemy import Column, ForeignKey, String, Float, DateTime, Integer, Boolean, Enum, text, func
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -12,9 +12,9 @@ class DetectionStatusORM(Base):
 
 class DetectionORM(Base):
     __tablename__ = "detection"
-    detection_id = Column(String, primary_key=True, index=True)
+    detection_id = Column(String, primary_key=True, index=True, server_default=text("gen_random_uuid()"))
     t_order_id = Column(String, ForeignKey("t_order.t_order_id", ondelete="CASCADE"), index=True)
-    detected_at = Column(DateTime)
+    detected_at = Column(DateTime, server_default=func.now())
     image_url = Column(String)
     verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
     verified_at = Column(DateTime)
@@ -27,13 +27,14 @@ class DetectionORM(Base):
 
 class DetectionItemORM(Base):
     __tablename__ = "detection_item"
-    detection_item_id = Column(String, primary_key= True, index=True)
+    detection_item_id = Column(String, primary_key= True, index=True, server_default=text("gen_random_uuid()"))
     detection_id = Column(String, ForeignKey("detection.detection_id"))
     t_order_drug_id = Column(String, ForeignKey("t_order_drug.t_order_drug_id"))
     b_item_id = Column(String, ForeignKey("b_item.b_item_id"))
     confidence = Column(Float)
     quantity = Column(Integer)
-    is_manually_edited = Column(Boolean)
+    is_manually_edited = Column(Boolean, server_default=text("false"))
+    match_type = Column(Enum("MATCHED", "EXTRA", name="match_type_enum"))
 
     detection = relationship("DetectionORM", back_populates="detection_item")
     order_drugs = relationship("OrderDrugORM", back_populates="detection_item")
