@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.domain.exception.detection import RepositoryError
 from app.domain.repositories.detection import DetectionRepository
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
-from app.domain.entities.detection import DetectionList, Detection, DetectionImageInput
+from app.domain.entities.detection import DetectionList, Detection, DetectionImageInput,DetectionCreate, DetectionUpdate
 from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderDrugORM
 from app.infrastructure.mappers.detection_mapper import _to_detection_list, _to_detection_orm, _to_detection, _to_detection_item_orm
 
@@ -37,8 +37,31 @@ class DetectionRepositoryImpl(DetectionRepository):
         )
 
         return _to_detection_list(rows)
+    
+    def get_detections_by_detection_id(self, detection_id: str) -> DetectionList:
+        row = (
+            self.session
+            .query(DetectionORM)
+            .options(
+                selectinload(DetectionORM.detection_item)
+                    .selectinload(DetectionItemORM.order_drugs)
+                    .selectinload(OrderDrugORM.item_drug_uom),
+                selectinload(DetectionORM.detection_item)
+                    .selectinload(DetectionItemORM.item),
+                selectinload(DetectionORM.orders),
+                selectinload(DetectionORM.employee),
+                selectinload(DetectionORM.detection_status)
+            )
+            .filter(
+                DetectionORM.detection_id == detection_id
+            )
+            .order_by(DetectionORM.verified_at.desc())
+            .first()
+        )
 
-    def create_detection(self, detection: Detection, image: DetectionImageInput) -> Detection:
+        return _to_detection(row)
+
+    def create_detection(self, detection: DetectionCreate, image: DetectionImageInput) -> Detection:
         file_id = None
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -68,4 +91,49 @@ class DetectionRepositoryImpl(DetectionRepository):
 
             raise RepositoryError(f"Database error occurred: {str(e)}")
         return _to_detection(detection_orm)
-        
+    
+    def update_detection(self, detection: DetectionUpdate) -> Detection:
+        try:
+            detection_orm = (
+                self.session.query(DetectionORM)
+                .filter(DetectionORM.detection_id == detection.detection_id)
+                .first()
+            )
+
+            if not detection_orm:
+                raise RepositoryError(
+                    f"Detection with ID {detection.detection_id} not found"
+                )
+
+            detection_orm.status_id = detection.status
+            detection_orm.verified_by = detection.verified_by
+            detection_orm.verified_at = detection.verified_at
+
+            detection_items_orm = (
+                self.session.query(DetectionItemORM)
+                .filter(DetectionItemORM.detection_id == detection.detection_id)
+                .all()
+            )
+
+            dto_map = {
+                item.detection_item_id: item
+                for item in detection.drug_list
+            }
+
+            for item_orm in detection_items_orm:
+                dto = dto_map.get(item_orm.detection_item_id)
+                if not dto:
+                    continue
+
+                item_orm.quantity = dto.quantity
+                item_orm.is_manually_edited = dto.is_manually_edited
+                item_orm.match_type = dto.match_type
+
+            self.session.commit()
+            self.session.refresh(detection_orm)
+
+        except (IntegrityError, SQLAlchemyError) as e:
+            self.session.rollback()
+            raise RepositoryError(f"Database error occurred: {str(e)}")
+
+        return _to_detection(detection_orm)

@@ -1,6 +1,6 @@
 from fastapi import UploadFile
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionInputDTO, DetectionItemInputDTO, DetectionImageInputDTO
-from app.presentation.schemas.detection_request import DetectionCreateRequest
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionInputDTO, DetectionItemInputDTO, DetectionImageInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO
+from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.schemas.detection_response import DetectionListResponse, DetectionItemResponse, DetectionResponse
 from app.presentation.schemas.prescription_response import OrderDrugResponse
 
@@ -56,4 +56,18 @@ def _to_detection_image_input_dto(image: UploadFile) -> DetectionImageInputDTO:
     return DetectionImageInputDTO(
         content=content,
         content_type=image.content_type
+    )
+
+def _to_detection_update_dto(detection_id: str, request: DetectionUpdateRequest) -> DetectionUpdateDTO:
+    return DetectionUpdateDTO(
+        detection_id=detection_id,
+        status=request.status,
+        verified_by=request.verified_by,
+        drug_list=[
+            DetectionItemUpdateDTO(
+                detection_item_id=item.detection_item_id,
+                quantity=item.quantity,
+                is_checked=item.is_checked
+            ) for item in request.drug_list
+        ]
     )

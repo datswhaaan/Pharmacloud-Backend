@@ -45,3 +45,18 @@ class DetectionCreate:
     t_order_id: str
     status: str
     detections: list[DetectionItemInput]
+
+@dataclass
+class DetectionItemUpdate:
+    detection_item_id: str
+    quantity: int
+    is_manually_edited: bool
+    match_type: str
+
+@dataclass
+class DetectionUpdate:
+    detection_id: str
+    status: str
+    verified_by: str
+    verified_at: datetime
+    drug_list: list[DetectionItemUpdate]

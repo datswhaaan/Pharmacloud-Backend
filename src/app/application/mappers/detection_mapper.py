@@ -1,6 +1,7 @@
-from app.domain.entities.detection import DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate
+from datetime import datetime, timezone
+from app.domain.entities.detection import DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
 from app.domain.entities.prescription import OrderList, OrderDrugItem
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionImageInputDTO, DetectionInputDTO
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionImageInputDTO, DetectionInputDTO, DetectionUpdateDTO
 from app.application.dto.prescription_dto import OrderDrugDTO
 
 def _to_detection_item_compare_dto(
@@ -85,9 +86,42 @@ def _to_detection_image(image: DetectionImageInputDTO) -> DetectionImageInput:
         content_type=image.content_type
     )
 
+def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate], is_edited: bool) -> DetectionUpdate:
+    return DetectionUpdate(
+        detection_id=detection.detection_id,
+        status=_status_text_to_id(detection.status) if not is_edited else 3,
+        verified_by=detection.verified_by,
+        verified_at=datetime.now(timezone.utc),
+        drug_list=_to_detection_item_update_list(drug_list)
+    )
+
+def _to_detection_item_update_list(detection_items: list[DetectionItem]) -> list[DetectionItemUpdate]:
+    return [
+        DetectionItemUpdate(
+            detection_item_id=item.detection_item_id,
+            quantity=item.quantity,
+            is_manually_edited=item.is_manually_edited,
+            match_type=item.match_type
+        ) for item in detection_items
+    ]
+
 def _confidence_level_mapper(confidence_level: float) -> str:
     if confidence_level >= 80:
         return "High"
     elif confidence_level >=60:
         return "Medium"
     else: return "Low"
+
+STATUS_MAP = {
+    1: "ตรวจสอบสำเร็จ",
+    2: "ปฏิเสธ",
+    3: "ถูกแก้ไข",
+    4: "รอตรวจสอบ"
+}
+
+def _status_id_to_text(status_id: int) -> str:
+    return STATUS_MAP.get(status_id, "ไม่ทราบสถานะ")
+
+def _status_text_to_id(status_text: str) -> int | None:
+    reverse_map = {v: k for k, v in STATUS_MAP.items()}
+    return reverse_map.get(status_text)

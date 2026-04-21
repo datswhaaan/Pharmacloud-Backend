@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from app.domain.entities.detection import DetectionList, DetectionImageInput, Detection
+from app.domain.entities.detection import DetectionList, DetectionImageInput, Detection, DetectionCreate, DetectionUpdate
 
 class DetectionRepository:
     @abstractmethod
@@ -8,6 +8,16 @@ class DetectionRepository:
         raise 
 
     @abstractmethod
-    def create_detection(self, detection: Detection, image: DetectionImageInput) -> Detection:
+    def get_detections_by_order_id(self, order_id: str) -> DetectionList:
+        """Return a list of detections for a given order ID"""
+        raise 
+
+    @abstractmethod
+    def create_detection(self, detection: DetectionCreate, image: DetectionImageInput) -> Detection:
         """Create and store a detection with its associated image data."""
+        raise
+
+    @abstractmethod
+    def update_detection(self, detection: DetectionUpdate) -> Detection:
+        """Update the status and verification details of an existing detection."""
         raise

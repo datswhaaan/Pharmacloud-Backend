@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File
 from app.application.use_cases.detection_service import DetectionService
-from app.presentation.schemas.detection_request import DetectionCreateRequest
+from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.dependencies import get_detection_service
-from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_input_dto, _to_detection_image_input_dto, _to_detection_response
+from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_input_dto, _to_detection_image_input_dto, _to_detection_response, _to_detection_update_dto
 
 router = APIRouter(prefix="/detection", tags=["detection"])
 
@@ -37,5 +37,18 @@ def create_detection(
 
         return _to_detection_response(detection_response)
 
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.put("/{detection_id}")
+def update_detection(
+    detection_id: str,
+    request: DetectionUpdateRequest,
+    service: DetectionService = Depends(get_detection_service)
+):
+    try:
+        detection_update_dto = _to_detection_update_dto(detection_id, request)
+        detection_response = service.update_detection(detection_update_dto)
+        return _to_detection_response(detection_response)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -41,3 +41,16 @@ class DetectionItemInputDTO:
 class DetectionInputDTO:
     order_id: str
     detections: list[DetectionItemInputDTO]
+
+@dataclass
+class DetectionItemUpdateDTO:
+    detection_item_id: str
+    quantity: int
+    is_checked: bool
+
+@dataclass
+class DetectionUpdateDTO:
+    detection_id: str
+    status: str
+    verified_by: str
+    drug_list: list[DetectionItemUpdateDTO]
