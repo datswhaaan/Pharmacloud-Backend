@@ -63,6 +63,7 @@ class EmployeeORM(Base):
     employee_lastname = Column(String)
 
     visit = relationship("VisitORM", back_populates="employee")
+    detection = relationship("DetectionORM", back_populates="employee")
     symptom_record = relationship(
         "SymptomORM",
         foreign_keys="[SymptomORM.visit_primary_symptom_staff_record]",
@@ -127,6 +128,7 @@ class OrderORM(Base):
     item = relationship("ItemORM", back_populates="orders")
     order_drugs = relationship("OrderDrugORM", back_populates="orders")
     status = relationship("OrderStatusORM", back_populates="orders")
+    detection = relationship("DetectionORM", back_populates="orders")
 
 class OrderDrugORM(Base):
     __tablename__ = "t_order_drug"
@@ -240,3 +242,12 @@ class SymptomORM(Base):
             foreign_keys=[visit_primary_symptom_staff_cancel],
             back_populates="symptom_cancel"
         )
+
+class DetectionORM(Base):
+    __tablename__ = "detection"
+    detection_id = Column(String, primary_key=True, index=True)
+    t_order_id = Column(String, ForeignKey("t_order.t_order_id", ondelete="CASCADE"), index=True)
+    verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
+
+    orders = relationship("OrderORM", back_populates="detection")
+    employee = relationship("EmployeeORM", back_populates="detection")

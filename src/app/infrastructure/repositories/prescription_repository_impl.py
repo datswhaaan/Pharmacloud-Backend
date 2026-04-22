@@ -1,7 +1,6 @@
 from sqlalchemy import case
 from sqlalchemy.orm import Session, selectinload
-from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, PatientDrugAllergyORM, PaymentORM, SymptomORM, EmployeeORM
-from app.infrastructure.models.detection import DetectionORM
+from app.infrastructure.models.prescription import OrderDrugORM, OrderORM, PatientORM, PatientORM, VisitORM, PatientPrefixORM, OrderStatusORM, PatientDrugAllergyORM, PaymentORM, SymptomORM, EmployeeORM, DetectionORM
 from app.infrastructure.mappers.prescription_mapper import _to_prescription, _to_prescription_list, _to_order_list
 from app.domain.entities.prescription import Prescription, PrescriptionList, OrderList
 from app.domain.exception.prescription import PrescriptionNotFoundException
