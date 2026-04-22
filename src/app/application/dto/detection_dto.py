@@ -28,11 +28,6 @@ class DetectionListDTO:
     detections: list[DetectionDTO]
 
 @dataclass
-class DetectionImageInputDTO:
-    content: bytes
-    content_type: str
-
-@dataclass
 class DetectionItemInputDTO:
     b_item_id: str
     confidence: float

@@ -18,6 +18,7 @@ from app.infrastructure.websocket.connection_manager import ConnectionManager
 from app.application.use_cases.notify_service import NotifyService
 from app.infrastructure.repositories.detection_repository_impl import DetectionRepositoryImpl
 from app.application.use_cases.detection_service import DetectionService
+from app.infrastructure.external.medication_vision_inference_impl import MedicationVisionInferenceImpl
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -73,7 +74,8 @@ def get_auth_service(db: Session = Depends(get_db)):
 def get_detection_service(db: Session = Depends(get_db)):
     detection_repo = DetectionRepositoryImpl(db, detection_storage)
     prescription_repo = PrescriptionRepositoryImpl(db)
-    return DetectionService(detection_repo, prescription_repo)
+    medication_vision_service = MedicationVisionInferenceImpl(model=None)
+    return DetectionService(detection_repo, prescription_repo, medication_vision_service)
 
 def get_notify_service():
     return NotifyService(manager)

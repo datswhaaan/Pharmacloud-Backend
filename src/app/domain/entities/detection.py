@@ -60,3 +60,14 @@ class DetectionUpdate:
     verified_by: str
     verified_at: datetime
     drug_list: list[DetectionItemUpdate]
+
+@dataclass
+class DetectedMedicationItem:
+    b_item_id: str
+    confidence: float
+    bbox: tuple[int, int, int, int] | None = None
+
+@dataclass
+class DetectedMedication:
+    image: bytes
+    detected_items: list[DetectedMedicationItem]
