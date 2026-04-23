@@ -13,7 +13,6 @@ def compare_detections(
 ):
     try:
         detection_comparison = service.compare_detections(order_id)
-        print(detection_comparison)
         return _to_detection_list_response(detection_comparison)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

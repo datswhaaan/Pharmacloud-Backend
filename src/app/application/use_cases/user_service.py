@@ -13,7 +13,6 @@ class UserService():
 
         if not user:
             raise UserNotFoundException("User don't exists")
-        print(user)
         return _to_user_dto(user)
     
     def get_user_by_username(self, username: str) -> UserDTO:
