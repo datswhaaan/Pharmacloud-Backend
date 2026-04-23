@@ -1,8 +1,8 @@
 from fastapi import UploadFile
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionInputDTO, DetectionItemInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionInputDTO, DetectionItemInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO, DetectionInferDTO
 from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
-from app.presentation.schemas.detection_response import DetectionListResponse, DetectionItemResponse, DetectionResponse
-from app.presentation.schemas.prescription_response import OrderDrugResponse
+from app.presentation.schemas.detection_response import DetectionListResponse, DetectionItemResponse, DetectionResponse, DetectionInferResponse
+from app.presentation.schemas.prescription_response import OrderDrugResponse, OrderDrugInferResponse
 
 def _to_detection_response(dto: DetectionDTO) -> DetectionResponse:
     return DetectionResponse(
@@ -11,6 +11,37 @@ def _to_detection_response(dto: DetectionDTO) -> DetectionResponse:
                 status=dto.status,
                 verified_by=dto.verified_by,
                 verified_at=dto.verified_at,
+                drug_list=[
+                    DetectionItemResponse(
+                        t_order_drug_id=drug.t_order_drug_id,
+                        detection_item_id=drug.detection_item_id,
+                        item_common_name=drug.item_common_name,
+                        confidence=drug.confidence,
+                        confidence_level=drug.confidence_level,
+                        quantity=drug.quantity,
+                        unit=drug.unit,
+                        is_manually_edited=drug.is_manually_edited,
+                        match_type=drug.match_type
+                    ) for drug in dto.drug_list 
+                ]
+            )
+
+def _to_detection_infer_response(dto: DetectionInferDTO) -> DetectionInferResponse:
+    return DetectionInferResponse(
+                detection_id=dto.detection_id,
+                image_url=dto.image_url,
+                status=dto.status,
+                verified_by=dto.verified_by,
+                verified_at=dto.verified_at,
+                ordered_drugs=[
+                    OrderDrugInferResponse(
+                        t_order_drug_id=od.t_order_drug_id,
+                        item_common_name=od.item_common_name,
+                        unit=od.unit,
+                        quantity=od.quantity,
+                        match_type=od.match_type
+                    ) for od in dto.ordered_drugs
+                ],
                 drug_list=[
                     DetectionItemResponse(
                         t_order_drug_id=drug.t_order_drug_id,

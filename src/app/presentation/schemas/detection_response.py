@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from app.presentation.schemas.prescription_response import OrderDrugResponse
+from app.presentation.schemas.prescription_response import OrderDrugResponse, OrderDrugInferResponse
 
 class DetectionItemResponse(BaseModel):
     t_order_drug_id: str | None = None
@@ -20,6 +20,15 @@ class DetectionResponse(BaseModel):
     verified_at: str
     drug_list: list[DetectionItemResponse]
 
+class DetectionInferResponse(BaseModel):
+    detection_id: str
+    image_url: str
+    status: str
+    verified_by: str
+    verified_at: str
+    ordered_drugs: list[OrderDrugInferResponse]
+    drug_list: list[DetectionItemResponse]
+    
 class DetectionListResponse(BaseModel):
     order_drugs: list[OrderDrugResponse]
     detections: list[DetectionResponse]

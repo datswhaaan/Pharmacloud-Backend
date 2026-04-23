@@ -1,9 +1,10 @@
+from app.application.dto.prescription_dto import OrderDrugInferDTO
 from app.domain.repositories.detection import DetectionRepository
 from app.domain.repositories.prescription import PrescriptionRepository
 from app.domain.external.medication_vision_inference import MedicationVisionInferenceService
-from app.domain.entities.detection import DetectionList, DetectionItemUpdate
-from app.application.dto.detection_dto import DetectionListDTO, DetectionDTO, DetectionInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO, DetectionItemInputDTO
-from app.application.mappers.detection_mapper import _to_detection_item_compare_dto, _to_detection_dto, _to_detection_list_dto, _to_detection_item_input, _to_detection, _to_detection_image, _to_detection_update
+from app.application.dto.detection_dto import DetectionListDTO, DetectionDTO, DetectionInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO, DetectionItemInputDTO, DetectionInferDTO
+from app.application.mappers.detection_mapper import _to_detection_item_compare_dto, _to_detection_dto, _to_detection_item_dto, _to_detection_list_dto, _to_detection_item_input, _to_detection, _to_detection_image, _to_detection_update, _to_infer_detection_dto
+from app.application.mappers.prescription_mapper import _to_order_drug_infer_dto
 
 class DetectionService:
     def __init__(
@@ -58,23 +59,27 @@ class DetectionService:
         response = self.detection_repo.update_detection(detection_update)
         return _to_detection_dto(response, response.detections)
 
-    def compare_detection(self, order_id: str, detection_items: list[DetectionItemInputDTO]) -> DetectionList:
+    def compare_drug_list(self, order_id: str, detection_items: list[DetectionItemInputDTO]) -> tuple[list[DetectionInferDTO], list[OrderDrugInferDTO]]:
         order_list = self.prescription_repo.get_orders_by_order_id(order_id)
         detection_map = [detection_item.b_item_id for detection_item in detection_items]
 
-        drug_list =[]
+        detected_drug_list=[]
+        ordered_drug_list=[]
 
         order_map = [order_item.b_item_id for order_item in order_list.orders]
 
         for od in order_map:
             if od in detection_map:
-                drug_list.append(_to_detection_item_input(order_list.orders[order_map.index(od)], detection_items[order_map.index(od)], "MATCHED"))
+                detected_drug_list.append(_to_detection_item_input(order_list.orders[order_map.index(od)], detection_items[order_map.index(od)], "MATCHED"))
+                ordered_drug_list.append(_to_order_drug_infer_dto(order_list.orders[order_map.index(od)], "MATCHED"))
                 detection_map.remove(od)
+            else:
+                ordered_drug_list.append(_to_order_drug_infer_dto(order_list.orders[order_map.index(od)], "MISSING"))
 
         for dm in detection_map:
-            drug_list.append(_to_detection_item_input(None, detection_items[order_map.index(od)], "EXTRA"))
+            detected_drug_list.append(_to_detection_item_input(None, detection_items[order_map.index(od)], "EXTRA"))
         
-        return drug_list
+        return detected_drug_list, ordered_drug_list
 
     def _update_detection_items(
         self,
@@ -109,9 +114,10 @@ class DetectionService:
         detected_items = self.medication_vision.infer(image)
 
         detection_image = _to_detection_image(image)
-        compared_items = self.compare_detection(order_id, detected_items.detected_items)
-        detection = _to_detection(order_id, compared_items)
+        compared_detected_items, compared_ordered_items = self.compare_drug_list(order_id, detected_items.detected_items)
+        detection = _to_detection(order_id, compared_detected_items)
         response = self.detection_repo.create_detection(
             detection, detection_image
         )
-        return _to_detection_dto(response, response.detections)
+        detection_items_dto = [_to_detection_item_dto(res) for res in response.detections]
+        return _to_infer_detection_dto(response, detection_items_dto, compared_ordered_items)

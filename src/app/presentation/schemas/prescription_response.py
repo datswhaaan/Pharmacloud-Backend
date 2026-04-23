@@ -10,6 +10,13 @@ class OrderDrugResponse(BaseModel):
     unit: str
     quantity: float
 
+class OrderDrugInferResponse(BaseModel):
+    t_order_drug_id: str
+    item_common_name: str
+    unit: str
+    quantity: float
+    match_type: str
+
 class PatientHistoryResponse(BaseModel):
     past_history: list[str]
     family_history: list[str]

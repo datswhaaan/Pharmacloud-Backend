@@ -13,6 +13,14 @@ class OrderDrugDTO:
     quantity: str
 
 @dataclass
+class OrderDrugInferDTO:
+    t_order_drug_id: str
+    item_common_name: str
+    unit: str
+    quantity: str
+    match_type: str
+
+@dataclass
 class PastHistoryDTO:
     patient_past_history_topic: str
 

@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 from app.domain.entities.detection import DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
 from app.domain.entities.prescription import OrderList, OrderDrugItem
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInputDTO, DetectionUpdateDTO
-from app.application.dto.prescription_dto import OrderDrugDTO
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInferDTO, DetectionUpdateDTO
+from app.application.dto.prescription_dto import OrderDrugDTO, OrderDrugInferDTO
 
 def _to_detection_item_compare_dto(
     ordered: OrderDrugItem | None,
@@ -23,7 +23,7 @@ def _to_detection_item_compare_dto(
 
 def _to_detection_item_dto(di: DetectionItem) -> DetectionItemDTO:
     return DetectionItemDTO(
-        t_order_drug_id=di.t_order_drug_id,
+        t_order_drug_id=di.t_order_drug_id if di.t_order_drug_id else "",
         detection_item_id=di.detection_item_id,
         item_common_name=di.item_common_name,
         confidence=di.confidence,
@@ -105,6 +105,17 @@ def _to_detection_item_update_list(detection_items: list[DetectionItem]) -> list
             match_type=item.match_type
         ) for item in detection_items
     ]
+
+def _to_infer_detection_dto(detection: Detection, detected_drug_list: list[DetectionItemDTO], ordered_drug_list: list[OrderDrugInferDTO]) -> DetectionInferDTO:
+    return DetectionInferDTO(
+        detection_id=detection.detection_id,
+        image_url=detection.image_url,
+        status=detection.status,
+        verified_at=str(detection.verified_at),
+        verified_by=detection.verified_by,
+        ordered_drugs=ordered_drug_list,
+        drug_list=detected_drug_list
+    )
 
 def _confidence_level_mapper(confidence_level: float) -> str:
     if confidence_level >= 80:

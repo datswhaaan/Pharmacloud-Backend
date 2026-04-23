@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from app.application.dto.prescription_dto import OrderDrugDTO
+from app.application.dto.prescription_dto import OrderDrugDTO, OrderDrugInferDTO
 
 @dataclass
 class DetectionItemDTO:
@@ -20,6 +20,17 @@ class DetectionDTO:
     verified_by: str
     verified_at: str
     status: str
+    drug_list: list[DetectionItemDTO]
+
+
+@dataclass
+class DetectionInferDTO:
+    detection_id: str
+    image_url: str
+    verified_by: str
+    verified_at: str
+    status: str
+    ordered_drugs: list[OrderDrugInferDTO]
     drug_list: list[DetectionItemDTO]
 
 @dataclass

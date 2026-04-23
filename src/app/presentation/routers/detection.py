@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File
 from app.application.use_cases.detection_service import DetectionService
 from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.dependencies import get_detection_service
-from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_input_dto, _to_detection_response, _to_detection_update_dto
+from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_infer_response, _to_detection_response, _to_detection_update_dto
 
 router = APIRouter(prefix="/detection", tags=["detection"])
 
@@ -39,6 +39,6 @@ def infer_detection(
 ):
     try:
         response = service.detection(order_id, image)
-        return _to_detection_response(response)
+        return _to_detection_infer_response(response)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

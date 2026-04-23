@@ -1,5 +1,5 @@
-from app.domain.entities.prescription import Prescription, PrescriptionList, RiskFactor
-from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO, RiskFactorDTO, PatientHistoryDTO, PastHistoryDTO, FamilyHistoryDTO, DrugAllergyDTO
+from app.domain.entities.prescription import Prescription, PrescriptionList, RiskFactor, OrderDrug
+from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionItemDTO, PrescriptionListDTO, RiskFactorDTO, PatientHistoryDTO, PastHistoryDTO, FamilyHistoryDTO, DrugAllergyDTO, OrderDrugInferDTO
 
 def _risk_factors_mapper(riskFactors: list[RiskFactor]) -> RiskFactorDTO:
     alcohol = ""
@@ -70,6 +70,15 @@ def _to_prescription_list_dto(prescription_list: PrescriptionList) -> Prescripti
         total=prescription_list.total,
         page=prescription_list.page,
         size=prescription_list.size
+    )
+
+def _to_order_drug_infer_dto(ordered: OrderDrug, match_type: str) -> OrderDrugInferDTO:
+    return OrderDrugInferDTO(
+        t_order_drug_id=ordered.t_order_drug_id,
+        item_common_name=ordered.item_common_name,
+        unit=ordered.unit,
+        quantity=ordered.quantity,
+        match_type=match_type
     )
 
 def _status_mapper(status_id: str) -> str:
