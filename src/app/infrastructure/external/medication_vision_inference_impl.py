@@ -17,6 +17,11 @@ class MedicationVisionInferenceImpl(MedicationVisionInferenceService):
                     b_item_id="ITM010",
                     confidence=0.95,
                     bbox=(10, 20, 100, 200)
+                ),
+                DetectedMedicationItem(
+                    b_item_id="ITM005",
+                    confidence=0.95,
+                    bbox=(10, 20, 100, 200)
                 )
             ]
         )

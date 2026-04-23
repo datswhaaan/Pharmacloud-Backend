@@ -118,9 +118,9 @@ def _to_infer_detection_dto(detection: Detection, detected_drug_list: list[Detec
     )
 
 def _confidence_level_mapper(confidence_level: float) -> str:
-    if confidence_level >= 80:
+    if confidence_level >= 0.80:
         return "High"
-    elif confidence_level >=60:
+    elif confidence_level >=0.60:
         return "Medium"
     else: return "Low"
 

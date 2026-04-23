@@ -36,7 +36,7 @@ class DetectionService:
                     detection_map.remove(od)
 
             for dm in detection_map:
-                drug_list.append(_to_detection_item_compare_dto(None, d.detections[order_map.index(od)], "extra"))
+                drug_list.append(_to_detection_item_compare_dto(None, d.detections[detection_map.index(dm)], "extra"))
             
             dto.append(_to_detection_dto(d, drug_list))
         return _to_detection_list_dto(order_list, dto)
@@ -67,17 +67,17 @@ class DetectionService:
         ordered_drug_list=[]
 
         order_map = [order_item.b_item_id for order_item in order_list.orders]
-
+        
         for od in order_map:
             if od in detection_map:
-                detected_drug_list.append(_to_detection_item_input(order_list.orders[order_map.index(od)], detection_items[order_map.index(od)], "MATCHED"))
+                detected_drug_list.append(_to_detection_item_input(order_list.orders[order_map.index(od)], detection_items[detection_map.index(od)], "MATCHED"))
                 ordered_drug_list.append(_to_order_drug_infer_dto(order_list.orders[order_map.index(od)], "MATCHED"))
                 detection_map.remove(od)
             else:
                 ordered_drug_list.append(_to_order_drug_infer_dto(order_list.orders[order_map.index(od)], "MISSING"))
 
-        for dm in detection_map:
-            detected_drug_list.append(_to_detection_item_input(None, detection_items[order_map.index(od)], "EXTRA"))
+        for dm in detection_map:        
+            detected_drug_list.append(_to_detection_item_input(None, detection_items[detection_map.index(dm)], "EXTRA"))
         
         return detected_drug_list, ordered_drug_list
 
