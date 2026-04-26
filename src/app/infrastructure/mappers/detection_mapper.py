@@ -6,9 +6,9 @@ def _to_detection(orm: DetectionORM) -> Detection:
             detection_id=orm.detection_id,
             detected_at=orm.detected_at,
             image_url=orm.image_url,
-            verified_by=orm.employee.employee_firstname + " " + orm.employee.employee_lastname if orm.employee else "-",
+            verified_by=orm.employee.employee_firstname + " " + orm.employee.employee_lastname if orm.employee else "",
             verified_at=orm.verified_at,
-            status=orm.detection_status.detection_status_description,
+            status=orm.detection_status.detection_status_description if orm.detection_status else "",
             detections=[
                 DetectionItem(
                     t_order_drug_id=di.t_order_drug_id,

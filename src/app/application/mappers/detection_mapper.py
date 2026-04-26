@@ -125,10 +125,10 @@ def _confidence_level_mapper(confidence_level: float) -> str:
     else: return "Low"
 
 STATUS_MAP = {
-    1: "ตรวจสอบสำเร็จ",
-    2: "ปฏิเสธ",
-    3: "ถูกแก้ไข",
-    4: "รอตรวจสอบ"
+    "1": "ตรวจสอบสำเร็จ",
+    "2": "ปฏิเสธ",
+    "3": "ถูกแก้ไข",
+    "4": "รอตรวจสอบ"
 }
 
 def _status_id_to_text(status_id: int) -> str:

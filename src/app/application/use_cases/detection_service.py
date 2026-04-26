@@ -50,11 +50,8 @@ class DetectionService:
         return _to_detection_dto(response, response.detections)
     
     def update_detection(self, detection: DetectionUpdateDTO) -> DetectionDTO:
-        if detection.status == "ตรวจสอบสำเร็จ":
-            drug_list, is_edited = self._update_detection_items(detection.detection_id, detection.drug_list)
-            detection_update = _to_detection_update(detection, drug_list, is_edited)
-        else:
-            detection_update = _to_detection_update(detection, detection.drug_list, False)
+        drug_list, is_edited = self._update_detection_items(detection.detection_id, detection.drug_list)
+        detection_update = _to_detection_update(detection, drug_list, is_edited)
             
         response = self.detection_repo.update_detection(detection_update)
         return _to_detection_dto(response, response.detections)

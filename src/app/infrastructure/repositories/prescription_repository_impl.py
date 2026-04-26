@@ -96,17 +96,13 @@ class PrescriptionRepositoryImpl:
                 PatientORM.patient_firstname,
                 PatientORM.patient_lastname,
                 VisitORM.visit_begin_visit_time,
-                OrderStatusORM.f_order_status_id,
-                EmployeeORM.employee_firstname,
-                EmployeeORM.employee_lastname
+                OrderStatusORM.f_order_status_id
                 
             )
             .join(OrderORM.visit)
             .join(VisitORM.patient)
             .join(PatientORM.prefix)
             .join(OrderORM.status)
-            .join(OrderORM.detection)
-            .join(DetectionORM.employee)
         )
         
         if search:

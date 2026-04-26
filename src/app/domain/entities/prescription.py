@@ -62,8 +62,7 @@ class PrescriptionItem:
     patient_lastname: str
     visit_begin_visit_time: str
     status: str
-    verified_by: str
-
+    verified_by: str | None = None
 @dataclass
 class PrescriptionList:
     prescriptions: list[PrescriptionItem]

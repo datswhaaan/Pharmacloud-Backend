@@ -92,7 +92,7 @@ def _to_prescription_list(orms: list[OrderORM], total: int, page: int, size: int
                 patient_lastname=orm.patient_lastname,
                 visit_begin_visit_time=orm.visit_begin_visit_time,
                 status = orm.f_order_status_id,
-                verified_by= orm.employee_firstname + " " + orm.employee_lastname
+                verified_by=None
             )
             for orm in orms
         ],

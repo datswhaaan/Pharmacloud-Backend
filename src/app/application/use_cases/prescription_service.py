@@ -1,5 +1,4 @@
 from app.domain.repositories.prescription import PrescriptionRepository
-from app.domain.repositories.detection import DetectionRepository
 from app.application.dto.prescription_dto import PrescriptionDTO, PrescriptionListDTO
 from app.application.mappers.prescription_mapper import _to_prescription_dto, _to_prescription_list_dto
 
@@ -36,5 +35,5 @@ class PrescriptionService:
 
         if prescription_list is None:
             raise ValueError("Prescriptions not found")
-        
+
         return _to_prescription_list_dto(prescription_list)

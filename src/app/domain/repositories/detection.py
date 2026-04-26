@@ -8,7 +8,7 @@ class DetectionRepository:
         raise 
 
     @abstractmethod
-    def get_detections_by_order_id(self, order_id: str) -> DetectionList:
+    def get_detections_by_detection_id(self, detection_id: str) -> DetectionList:
         """Return a list of detections for a given order ID"""
         raise 
 
