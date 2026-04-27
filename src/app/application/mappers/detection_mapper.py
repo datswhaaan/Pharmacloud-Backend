@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from app.domain.entities.detection import DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
+from app.domain.entities.detection import DetectionList, DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
 from app.domain.entities.prescription import OrderList, OrderDrugItem
 from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInferDTO, DetectionUpdateDTO
 from app.application.dto.prescription_dto import OrderDrugDTO, OrderDrugInferDTO
@@ -44,7 +44,7 @@ def _to_detection_dto(detection: Detection, drug_list: list[DetectionItemDTO]) -
         drug_list=[_to_detection_item_dto(drug) for drug in drug_list]
     )
 
-def _to_detection_list_dto(order_list: OrderList, detection_list: list[DetectionItemDTO]) -> DetectionListDTO:
+def _to_detection_list_dto(order_list: OrderList, detection_list: DetectionList) -> DetectionListDTO:
     return DetectionListDTO(
         order_drugs=[
             OrderDrugDTO(
@@ -54,7 +54,7 @@ def _to_detection_list_dto(order_list: OrderList, detection_list: list[Detection
                 quantity=od.quantity
             ) for od in order_list.orders
         ],
-        detections=detection_list
+        detections=[_to_detection_dto(d, d.detections) for d in detection_list.detections]
     )
 
 def _to_detection_item_input(
@@ -125,10 +125,10 @@ def _confidence_level_mapper(confidence_level: float) -> str:
     else: return "Low"
 
 STATUS_MAP = {
-    "1": "ตรวจสอบสำเร็จ",
-    "2": "ปฏิเสธ",
-    "3": "ถูกแก้ไข",
-    "4": "รอตรวจสอบ"
+    "1": "approved",
+    "2": "rejected",
+    "3": "edited",
+    "4": "waited"
 }
 
 def _status_id_to_text(status_id: int) -> str:

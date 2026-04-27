@@ -7,12 +7,12 @@ from app.presentation.mappers.detection_mapper import _to_detection_list_respons
 router = APIRouter(prefix="/detection", tags=["detection"])
 
 @router.get("/{order_id}")
-def compare_detections(
+def get_order_and_detections_by_order_id(
     order_id: str,
     service: DetectionService = Depends(get_detection_service),
 ):
     try:
-        detection_comparison = service.compare_detections(order_id)
+        detection_comparison = service.get_order_and_detections_by_order_id(order_id)
         return _to_detection_list_response(detection_comparison)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

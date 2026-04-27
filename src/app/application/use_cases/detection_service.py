@@ -17,29 +17,10 @@ class DetectionService:
         self.prescription_repo = prescription_repository
         self.medication_vision = medication_vision_service
 
-    def compare_detections(self, order_id: str) -> DetectionListDTO:
+    def get_order_and_detections_by_order_id(self, order_id: str) -> DetectionListDTO:
         order_list = self.prescription_repo.get_orders_by_order_id(order_id)
         detection_list = self.detection_repo.get_detections_by_order_id(order_id)
-
-        dto = []
-
-        order_map = [order_item.b_item_id for order_item in order_list.orders]
-        
-        for d in detection_list.detections:
-            detection_map = [detection_item.b_item_id for detection_item in d.detections]
-
-            drug_list =[]
-
-            for od in order_map:
-                if od in detection_map:
-                    drug_list.append(_to_detection_item_compare_dto(order_list.orders[order_map.index(od)], d.detections[order_map.index(od)], "matched"))
-                    detection_map.remove(od)
-
-            for dm in detection_map:
-                drug_list.append(_to_detection_item_compare_dto(None, d.detections[detection_map.index(dm)], "extra"))
-            
-            dto.append(_to_detection_dto(d, drug_list))
-        return _to_detection_list_dto(order_list, dto)
+        return _to_detection_list_dto(order_list, detection_list)
     
     def create_detection(self, detection: DetectionInputDTO, image: bytes) -> DetectionDTO:
         detection_items = self.compare_detection(detection.order_id, detection.detections)
