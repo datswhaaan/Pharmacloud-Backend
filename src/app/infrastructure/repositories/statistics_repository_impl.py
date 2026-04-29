@@ -26,7 +26,7 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             .query(DetectionORM)
             .join(DetectionORM.orders)
             .join(OrderORM.visit)
-            .join(OrderORM.status)
+            .join(OrderORM.order_status)
             .options(
                 selectinload(DetectionORM.orders)
                     .selectinload(OrderORM.visit)
