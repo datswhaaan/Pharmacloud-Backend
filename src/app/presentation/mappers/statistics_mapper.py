@@ -7,7 +7,6 @@ def _to_detection_log_item_response(log: DetectionLogItemDTO) -> DetectionLogIte
         visit_hn=log.visit_hn,
         visit_vn=log.visit_hn,
         patient_name=log.patient_name,
-        status=log.status,
         verified_by=log.verified_by,
         verified_at=log.verified_at
     )

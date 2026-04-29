@@ -5,7 +5,6 @@ class DetectionLogItemResponse(BaseModel):
     visit_hn: str
     visit_vn: str
     patient_name: str
-    status: str
     verified_by: str
     verified_at: str
 

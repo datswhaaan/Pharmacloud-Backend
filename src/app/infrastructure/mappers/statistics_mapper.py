@@ -9,7 +9,6 @@ def _to_detection_log_item(log: DetectionORM) -> DetectionLogItem:
         patient_prefix=log.orders.visit.patient.prefix.patient_prefix_description,
         patient_firstname=log.orders.visit.patient.patient_firstname,
         patient_lastname=log.orders.visit.patient.patient_lastname,
-        status=log.status_id,
         employee_firstname=log.employee.employee_firstname if log.employee else "",
         employee_lastname=log.employee.employee_lastname if log.employee else "",
         verified_at=log.verified_at if log.verified_at else ""

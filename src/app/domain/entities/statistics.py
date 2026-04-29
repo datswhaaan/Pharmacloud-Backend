@@ -8,7 +8,6 @@ class DetectionLogItem:
     patient_prefix: str
     patient_firstname: str
     patient_lastname: str
-    status: str
     employee_firstname: str
     employee_lastname: str
     verified_at: str
