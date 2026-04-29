@@ -125,10 +125,10 @@ def _confidence_level_mapper(confidence_level: float) -> str:
     else: return "Low"
 
 STATUS_MAP = {
-    "1": "approved",
-    "2": "rejected",
-    "3": "edited",
-    "4": "waited"
+    1: "approved",
+    2: "rejected",
+    3: "edited",
+    4: "waited"
 }
 
 def _status_id_to_text(status_id: int) -> str:

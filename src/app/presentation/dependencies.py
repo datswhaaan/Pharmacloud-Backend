@@ -19,6 +19,8 @@ from app.application.use_cases.notify_service import NotifyService
 from app.infrastructure.repositories.detection_repository_impl import DetectionRepositoryImpl
 from app.application.use_cases.detection_service import DetectionService
 from app.infrastructure.external.medication_vision_inference_impl import MedicationVisionInferenceImpl
+from app.application.use_cases.statistics_service import StatisticsService
+from app.infrastructure.repositories.statistics_repository_impl import StatisticsRepositoryImpl
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -79,6 +81,10 @@ def get_detection_service(db: Session = Depends(get_db)):
 
 def get_notify_service():
     return NotifyService(manager)
+
+def get_statistics_service(db: Session = Depends(get_db)):
+    repo = StatisticsRepositoryImpl(db)
+    return StatisticsService(repo)
 
 def get_current_user_id(
     token: str = Depends(api_key_scheme), 
