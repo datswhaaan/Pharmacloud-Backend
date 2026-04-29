@@ -13,3 +13,12 @@ class DetectionLogResponse(BaseModel):
     total: int
     page: int
     size: int
+
+class SummaryResponse(BaseModel):
+    label: list[str]
+    value: list[int]
+
+class StatisticsResponse(BaseModel):
+    status_summary: SummaryResponse
+    error_summary: SummaryResponse
+    annual_error_summary: SummaryResponse

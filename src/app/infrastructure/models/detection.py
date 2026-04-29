@@ -19,6 +19,7 @@ class DetectionORM(Base):
     verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
     verified_at = Column(DateTime)
     status_id = Column(Integer, ForeignKey("detection_status.detection_status_id"))
+    created_at = Column(DateTime)
 
     orders = relationship("OrderORM", back_populates="detection")
     detection_item = relationship("DetectionItemORM", back_populates="detection")
@@ -35,6 +36,7 @@ class DetectionItemORM(Base):
     quantity = Column(Integer)
     is_manually_edited = Column(Boolean, server_default=text("false"))
     match_type = Column(Enum("MATCHED", "EXTRA", name="match_type_enum"))
+    error_type = Column(Enum("WRONG_DRUG_NAME", "WRONG_STRENGTH", "WRONG_QUANTITY", "WRONG_FORM", name="error_type_enum"))
 
     detection = relationship("DetectionORM", back_populates="detection_item")
     order_drugs = relationship("OrderDrugORM", back_populates="detection_item")
@@ -55,7 +57,6 @@ class OrderORM(Base):
     detection = relationship("DetectionORM", back_populates="orders")
     order_status = relationship("OrderStatusORM", back_populates="orders")
     visit = relationship("VisitORM", back_populates="orders")
-    status = relationship("OrderStatusORM", back_populates="orders")
 
 class OrderDrugORM(Base):
     __tablename__ = "t_order_drug"

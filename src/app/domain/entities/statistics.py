@@ -18,3 +18,8 @@ class DetectionLog:
     total: int
     page: int
     size: int
+
+@dataclass
+class Summary:
+    label: list[str]
+    value: list[int]

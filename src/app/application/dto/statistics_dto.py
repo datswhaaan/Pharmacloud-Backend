@@ -15,3 +15,14 @@ class DetectionLogDTO:
     total: int
     page: int
     size: int
+
+@dataclass
+class SummaryDTO:
+    label: list[str]
+    value: list[int]
+
+@dataclass
+class StatisticsDTO:
+    status_summary: SummaryDTO
+    error_summary: SummaryDTO
+    annual_error_summary: SummaryDTO

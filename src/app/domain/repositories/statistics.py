@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from app.domain.entities.statistics import DetectionLog
+from app.domain.entities.statistics import DetectionLog, Summary
 
 class StatisticsRepository:
     @abstractmethod
@@ -14,4 +14,27 @@ class StatisticsRepository:
         status: str
     ) -> DetectionLog:
         '''Retrieve paginated detection logs with optional filtering by search, time range, status, and sorting order.'''
+        raise
+
+    @abstractmethod
+    def get_order_status_statistics(
+        self,
+        start_time: str,
+        end_time: str,
+    ) -> Summary:
+        """Return aggregated order status counts within the specified time range."""
+        raise
+
+    @abstractmethod
+    def get_error_statistics(
+        self,
+        start_time: str,
+        end_time: str,
+    ) -> Summary:
+        """Return summary of error types (e.g., wrong name, quantity) within the specified time range."""
+        raise
+
+    @abstractmethod
+    def get_annual_error_statistics(self) -> Summary:
+        """Return monthly error trends for the past 12 months."""
         raise

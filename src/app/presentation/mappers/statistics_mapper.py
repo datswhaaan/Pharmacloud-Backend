@@ -1,5 +1,5 @@
-from app.application.dto.statistics_dto import DetectionLogDTO, DetectionLogItemDTO
-from app.presentation.schemas.statistics_response import DetectionLogResponse, DetectionLogItemResponse
+from app.application.dto.statistics_dto import DetectionLogDTO, DetectionLogItemDTO, StatisticsDTO, SummaryDTO
+from app.presentation.schemas.statistics_response import DetectionLogResponse, DetectionLogItemResponse, StatisticsResponse, SummaryResponse
 
 def _to_detection_log_item_response(log: DetectionLogItemDTO) -> DetectionLogItemResponse:
     return DetectionLogItemResponse(
@@ -17,4 +17,17 @@ def _to_detection_log_response(detection: DetectionLogDTO) -> DetectionLogRespon
         total=detection.total,
         page=detection.page,
         size=detection.size
+    )
+
+def _to_summary_response(annual: SummaryDTO) -> SummaryResponse:
+    return SummaryResponse(
+        label=annual.label,
+        value=annual.value
+    )
+
+def _to_statistics_response(statistics: StatisticsDTO) -> StatisticsResponse:
+    return StatisticsResponse(
+        status_summary=_to_summary_response(statistics.status_summary),
+        error_summary=_to_summary_response(statistics.error_summary),
+        annual_error_summary=_to_summary_response(statistics.annual_error_summary)
     )
