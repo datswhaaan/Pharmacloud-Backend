@@ -4,6 +4,7 @@ from app.domain.entities.statistics import DetectionLog, DetectionLogItem, Summa
 def _to_detection_log_item(log: DetectionORM) -> DetectionLogItem:
     return DetectionLogItem(
         detection_id=log.detection_id,
+        order_id=log.t_order_id,
         visit_hn=log.orders.visit.visit_hn,
         visit_vn=log.orders.visit.visit_vn,
         patient_prefix=log.orders.visit.patient.prefix.patient_prefix_description,

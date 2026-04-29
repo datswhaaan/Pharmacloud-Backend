@@ -3,6 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class DetectionLogItem:
     detection_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     patient_prefix: str

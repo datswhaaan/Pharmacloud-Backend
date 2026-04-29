@@ -1,10 +1,10 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import func, and_, or_
+from sqlalchemy import func, and_, or_, cast, DateTime
 from sqlalchemy.orm import Session, selectinload
 from app.domain.repositories.statistics import StatisticsRepository
 from app.domain.entities.statistics import DetectionLog, Summary
-from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderORM, OrderStatusORM, VisitORM, PatientORM, EmployeeORM
+from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderORM, OrderStatusORM, VisitORM, PatientORM, EmployeeORM, PatientPrefixORM
 from app.infrastructure.mappers.statistics_mapper import _to_detection_log, _to_error_summary, _to_status_summary, _to_annual_error_summary
 
 class StatisticsRepositoryImpl(StatisticsRepository):
@@ -26,18 +26,16 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             .query(DetectionORM)
             .join(DetectionORM.orders)
             .join(OrderORM.visit)
-            .join(OrderORM.order_status)
-            .options(
-                selectinload(DetectionORM.orders)
-                    .selectinload(OrderORM.visit)
-                    .selectinload(VisitORM.patient)
-            )
+            .join(VisitORM.patient)
+            .outerjoin(PatientORM.prefix) 
+            .outerjoin(EmployeeORM, DetectionORM.verified_by == EmployeeORM.b_employee_id)
         )
         
         if search:
             query = query.filter(
                 VisitORM.visit_hn.ilike(f"%{search}%") |
                 VisitORM.visit_vn.ilike(f"%{search}%") |
+                PatientPrefixORM.patient_prefix_description.ilike(f"%{search}%") |
                 PatientORM.patient_firstname.ilike(f"%{search}%") |
                 PatientORM.patient_lastname.ilike(f"%{search}%") |
                 EmployeeORM.employee_firstname.ilike(f"%{search}%") |
@@ -48,19 +46,19 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             query = query.filter(DetectionORM.status_id == status)
 
         if start_time:
-            query = query.filter(VisitORM.visit_begin_visit_time >= start_time)
+            query = query.filter(DetectionORM.detected_at >= cast(start_time, DateTime))
 
         if end_time:
-            query = query.filter(VisitORM.visit_begin_visit_time <= end_time)
+            query = query.filter(DetectionORM.detected_at <= cast(start_time, DateTime))
         
         total = query.distinct().count()
 
         rows = (
             query
             .order_by(
-                VisitORM.visit_begin_visit_time.asc()
+                DetectionORM.detected_at.asc()
                 if order == "asc"
-                else VisitORM.visit_begin_visit_time.desc()
+                else DetectionORM.detected_at.desc()
             )
             .limit(limit)
             .offset(skip)

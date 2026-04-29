@@ -4,6 +4,7 @@ from app.domain.entities.statistics import DetectionLog, DetectionLogItem, Summa
 def _to_detection_log_item_dto(log: DetectionLogItem) -> DetectionLogItemDTO:
     return DetectionLogItemDTO(
         detection_id=log.detection_id,
+        order_id=log.order_id,
         visit_hn=log.visit_hn,
         visit_vn=log.visit_vn,
         patient_name=log.patient_prefix + log.patient_firstname + " " + log.patient_lastname,

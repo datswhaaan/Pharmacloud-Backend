@@ -4,6 +4,7 @@ from app.presentation.schemas.statistics_response import DetectionLogResponse, D
 def _to_detection_log_item_response(log: DetectionLogItemDTO) -> DetectionLogItemResponse:
     return DetectionLogItemResponse(
         detection_id=log.detection_id,
+        order_id=log.order_id,
         visit_hn=log.visit_hn,
         visit_vn=log.visit_hn,
         patient_name=log.patient_name,

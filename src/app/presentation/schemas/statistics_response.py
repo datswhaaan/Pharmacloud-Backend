@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class DetectionLogItemResponse(BaseModel):
     detection_id: str
+    order_id: str
     visit_hn: str
     visit_vn: str
     patient_name: str
