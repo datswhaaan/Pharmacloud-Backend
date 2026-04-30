@@ -77,7 +77,7 @@ def _to_detection(
 ) -> DetectionCreate:
     return DetectionCreate(
         t_order_id=order_id,
-        status=4, #รอตรวจสอบ
+        status="UNVERIFIED",
         detections=detection_items
     )
 
@@ -91,7 +91,7 @@ def _to_detection_image(image: bytes) -> DetectionImageInput:
 def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate], is_edited: bool) -> DetectionUpdate:
     return DetectionUpdate(
         detection_id=detection.detection_id,
-        status=_status_text_to_id(detection.status) if not is_edited else 3,
+        status=detection.status,
         verified_by=detection.verified_by,
         verified_at=datetime.now(timezone.utc),
         drug_list=_to_detection_item_update_list(drug_list)
@@ -126,17 +126,3 @@ def _confidence_level_mapper(confidence_level: float) -> str:
     elif confidence_level >=0.60:
         return "Medium"
     else: return "Low"
-
-STATUS_MAP = {
-    1: "approved",
-    2: "rejected",
-    3: "edited",
-    4: "waited"
-}
-
-def _status_id_to_text(status_id: int) -> str:
-    return STATUS_MAP.get(status_id, "ไม่ทราบสถานะ")
-
-def _status_text_to_id(status_text: str) -> int | None:
-    reverse_map = {v: k for k, v in STATUS_MAP.items()}
-    return reverse_map.get(status_text)

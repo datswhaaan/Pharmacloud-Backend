@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.domain.exception.detection import RepositoryError
 from app.domain.repositories.detection import DetectionRepository
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
-from app.domain.entities.detection import DetectionList, Detection, DetectionImageInput,DetectionCreate, DetectionUpdate
+from app.domain.entities.detection import DetectionList, Detection, DetectionImageInput, DetectionCreate, DetectionUpdate
 from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderDrugORM
 from app.infrastructure.mappers.detection_mapper import _to_detection_list, _to_detection_orm, _to_detection, _to_detection_item_orm
 
@@ -26,12 +26,11 @@ class DetectionRepositoryImpl(DetectionRepository):
                 selectinload(DetectionORM.detection_item)
                     .selectinload(DetectionItemORM.item),
                 selectinload(DetectionORM.orders),
-                selectinload(DetectionORM.employee),
-                selectinload(DetectionORM.detection_status)
+                selectinload(DetectionORM.employee)
             )
             .filter(
                 DetectionORM.t_order_id == order_id,
-                DetectionORM.status_id != 4
+                DetectionORM.status != "UNVERIFIED"
             )
             .order_by(DetectionORM.verified_at.desc())
             .all()
@@ -50,8 +49,7 @@ class DetectionRepositoryImpl(DetectionRepository):
                 selectinload(DetectionORM.detection_item)
                     .selectinload(DetectionItemORM.item),
                 selectinload(DetectionORM.orders),
-                selectinload(DetectionORM.employee),
-                selectinload(DetectionORM.detection_status)
+                selectinload(DetectionORM.employee)
             )
             .filter(
                 DetectionORM.detection_id == detection_id
@@ -106,7 +104,7 @@ class DetectionRepositoryImpl(DetectionRepository):
                     f"Detection with ID {detection.detection_id} not found"
                 )
 
-            detection_orm.status_id = detection.status
+            detection_orm.status = detection.status
             detection_orm.verified_by = detection.verified_by
             detection_orm.verified_at = detection.verified_at
 

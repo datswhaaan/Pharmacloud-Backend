@@ -8,7 +8,7 @@ def _to_detection(orm: DetectionORM) -> Detection:
             image_url=orm.image_url,
             verified_by=orm.employee.employee_firstname + " " + orm.employee.employee_lastname if orm.employee else "",
             verified_at=orm.verified_at,
-            status=orm.detection_status.detection_status_description if orm.detection_status else "",
+            status=orm.status,
             detections=[
                 DetectionItem(
                     t_order_drug_id=di.t_order_drug_id,
@@ -34,7 +34,7 @@ def _to_detection_list(orms: list[DetectionORM]) -> DetectionList:
 def _to_detection_orm(d: DetectionCreate, image_url: str) -> DetectionORM:
     return DetectionORM(
         t_order_id=d.t_order_id,
-        status_id=d.status,
+        status=d.status,
         image_url=image_url
     )
 

@@ -43,7 +43,7 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             )
 
         if status:
-            query = query.filter(DetectionORM.status_id == status)
+            query = query.filter(DetectionORM.status == status)
 
         if start_time:
             query = query.filter(DetectionORM.detected_at >= cast(start_time, DateTime))

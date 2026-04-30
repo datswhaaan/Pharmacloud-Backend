@@ -1,7 +1,6 @@
 from app.domain.repositories.statistics import StatisticsRepository
 from app.application.dto.statistics_dto import DetectionLogDTO, StatisticsDTO
 from app.application.mappers.statistics_mapper import _to_detection_log_dto, _to_statistics_dto
-from app.application.mappers.detection_mapper import _status_text_to_id
 
 class StatisticsService:
     def __init__(self, statistic_repository: StatisticsRepository):
@@ -17,7 +16,7 @@ class StatisticsService:
         order: str,
         status: str
     ) -> DetectionLogDTO:
-        detection_log = self.repo.get_detection_logs(search, start_time, end_time, limit, skip, order, _status_text_to_id(status))
+        detection_log = self.repo.get_detection_logs(search, start_time, end_time, limit, skip, order, status)
 
         if detection_log is None:
             raise ValueError("Prescriptions not found")

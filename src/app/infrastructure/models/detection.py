@@ -3,13 +3,6 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
-class DetectionStatusORM(Base):
-    __tablename__ = "detection_status"
-    detection_status_id = Column(Integer, primary_key=True, index=True)
-    detection_status_description = Column(String)
-
-    detection = relationship("DetectionORM", back_populates="detection_status")
-
 class DetectionORM(Base):
     __tablename__ = "detection"
     detection_id = Column(String, primary_key=True, index=True, server_default=text("gen_random_uuid()"))
@@ -18,13 +11,12 @@ class DetectionORM(Base):
     image_url = Column(String)
     verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
     verified_at = Column(DateTime)
-    status_id = Column(Integer, ForeignKey("detection_status.detection_status_id"))
+    status = Column(Enum("UNVERIFIED", "APPROVED", "REJECTED", "MODIFIED", "CANCELLED", name="detection_status_enum"))
     created_at = Column(DateTime)
 
     orders = relationship("OrderORM", back_populates="detection")
     detection_item = relationship("DetectionItemORM", back_populates="detection")
     employee = relationship("EmployeeORM", back_populates="detection")
-    detection_status = relationship("DetectionStatusORM", back_populates="detection")
 
 class DetectionItemORM(Base):
     __tablename__ = "detection_item"
