@@ -6,7 +6,7 @@ from app.domain.exception.detection import RepositoryError
 from app.domain.repositories.detection import DetectionRepository
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
 from app.domain.entities.detection import DetectionList, Detection, DetectionImageInput, DetectionCreate, DetectionUpdate
-from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderDrugORM
+from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderDrugORM, OrderORM
 from app.infrastructure.mappers.detection_mapper import _to_detection_list, _to_detection_orm, _to_detection, _to_detection_item_orm
 
 class DetectionRepositoryImpl(DetectionRepository):
@@ -107,6 +107,14 @@ class DetectionRepositoryImpl(DetectionRepository):
             detection_orm.status = detection.status
             detection_orm.verified_by = detection.verified_by
             detection_orm.verified_at = detection.verified_at
+
+            if detection.status == "APPROVED":
+                prescription_orm = (
+                    self.session.query(OrderORM)
+                    .filter(OrderORM.t_order_id == detection_orm.t_order_id)
+                    .first()
+                )
+                prescription_orm.f_order_status_id = "1" #ยืนยัน
 
             detection_items_orm = (
                 self.session.query(DetectionItemORM)
