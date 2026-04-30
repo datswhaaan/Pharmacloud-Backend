@@ -134,18 +134,7 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             .order_by("month")
         )
 
-        query = query.filter(
-            or_(
-                and_(
-                    DetectionItemORM.match_type == "MATCHED",
-                    DetectionItemORM.is_manually_edited == True
-                ),
-                and_(
-                    DetectionItemORM.match_type == "EXTRA",
-                    DetectionItemORM.is_manually_edited == False
-                )
-            )
-        )
+        query = query.filter(DetectionItemORM.match_type == "EXTRA")
 
         rows = query.all()
 

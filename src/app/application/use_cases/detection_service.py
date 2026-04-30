@@ -75,6 +75,7 @@ class DetectionService:
                 continue
 
             d_item.quantity = dto.quantity
+            d_item.error_type = dto.error_type
 
             if dto.is_checked and d_item.match_type == "EXTRA":
                 d_item.is_manually_edited = True

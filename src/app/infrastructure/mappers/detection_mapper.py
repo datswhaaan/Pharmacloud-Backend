@@ -19,7 +19,8 @@ def _to_detection(orm: DetectionORM) -> Detection:
                     quantity=di.quantity,
                     unit=di.item.item_drug[0].item_drug_uom.item_drug_uom_description if di.item.item_drug else "หน่วย",
                     is_manually_edited=di.is_manually_edited,
-                    match_type=di.match_type
+                    match_type=di.match_type,
+                    error_type=di.error_type
                 )
                 for di in orm.detection_item
             ]

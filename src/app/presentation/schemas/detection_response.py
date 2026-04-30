@@ -11,6 +11,7 @@ class DetectionItemResponse(BaseModel):
     unit: str
     is_manually_edited: bool
     match_type: str
+    error_type: str | None = None
 
 class DetectionResponse(BaseModel):
     detection_id: str

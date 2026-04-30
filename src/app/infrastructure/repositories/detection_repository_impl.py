@@ -128,6 +128,7 @@ class DetectionRepositoryImpl(DetectionRepository):
                 item_orm.quantity = dto.quantity
                 item_orm.is_manually_edited = dto.is_manually_edited
                 item_orm.match_type = dto.match_type
+                item_orm.error_type = dto.error_type
 
             self.session.commit()
             self.session.refresh(detection_orm)

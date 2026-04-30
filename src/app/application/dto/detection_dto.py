@@ -12,6 +12,7 @@ class DetectionItemDTO:
     unit: str
     is_manually_edited: bool
     match_type: str
+    error_type: str | None = None
 
 @dataclass
 class DetectionDTO:
@@ -53,6 +54,7 @@ class DetectionItemUpdateDTO:
     detection_item_id: str
     quantity: int
     is_checked: bool
+    error_type: str | None = None
 
 @dataclass
 class DetectionUpdateDTO:

@@ -11,6 +11,7 @@ class DetectionItemUpdateRequest(BaseModel):
     detection_item_id: str
     quantity: int
     is_checked: bool
+    error_type: str | None = None
 class DetectionUpdateRequest(BaseModel):
     status: str
     verified_by: str

@@ -12,6 +12,7 @@ class DetectionItem:
     unit: str
     is_manually_edited: bool
     match_type: str
+    error_type: str | None = None
 
 @dataclass
 class Detection:
@@ -52,6 +53,7 @@ class DetectionItemUpdate:
     quantity: int
     is_manually_edited: bool
     match_type: str
+    error_type: str | None = None
 
 @dataclass
 class DetectionUpdate:

@@ -31,7 +31,8 @@ def _to_detection_item_dto(di: DetectionItem) -> DetectionItemDTO:
         quantity=di.quantity,
         unit=di.unit,
         is_manually_edited=di.is_manually_edited,
-        match_type=di.match_type
+        match_type=di.match_type,
+        error_type=di.error_type
     )
 
 def _to_detection_dto(detection: Detection, drug_list: list[DetectionItemDTO]) -> DetectionDTO:
@@ -96,15 +97,17 @@ def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[Detectio
         drug_list=_to_detection_item_update_list(drug_list)
     )
 
-def _to_detection_item_update_list(detection_items: list[DetectionItem]) -> list[DetectionItemUpdate]:
-    return [
+def _to_detection_item_update_list(detection_items: list[DetectionItemUpdate]) -> list[DetectionItemUpdate]:
+    d = [
         DetectionItemUpdate(
             detection_item_id=item.detection_item_id,
             quantity=item.quantity,
             is_manually_edited=item.is_manually_edited,
-            match_type=item.match_type
+            match_type=item.match_type,
+            error_type=item.error_type
         ) for item in detection_items
     ]
+    return d
 
 def _to_infer_detection_dto(detection: Detection, detected_drug_list: list[DetectionItemDTO], ordered_drug_list: list[OrderDrugInferDTO]) -> DetectionInferDTO:
     return DetectionInferDTO(

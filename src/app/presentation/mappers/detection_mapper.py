@@ -21,7 +21,8 @@ def _to_detection_response(dto: DetectionDTO) -> DetectionResponse:
                         quantity=drug.quantity,
                         unit=drug.unit,
                         is_manually_edited=drug.is_manually_edited,
-                        match_type=drug.match_type
+                        match_type=drug.match_type,
+                        error_type=drug.error_type
                     ) for drug in dto.drug_list 
                 ]
             )
@@ -91,7 +92,8 @@ def _to_detection_update_dto(detection_id: str, request: DetectionUpdateRequest)
             DetectionItemUpdateDTO(
                 detection_item_id=item.detection_item_id,
                 quantity=item.quantity,
-                is_checked=item.is_checked
+                is_checked=item.is_checked,
+                error_type=item.error_type
             ) for item in request.drug_list
         ]
     )
