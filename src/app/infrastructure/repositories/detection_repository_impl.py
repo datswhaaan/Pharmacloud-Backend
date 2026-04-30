@@ -30,7 +30,8 @@ class DetectionRepositoryImpl(DetectionRepository):
                 selectinload(DetectionORM.detection_status)
             )
             .filter(
-                DetectionORM.t_order_id == order_id
+                DetectionORM.t_order_id == order_id,
+                DetectionORM.status_id != 4
             )
             .order_by(DetectionORM.verified_at.desc())
             .all()
