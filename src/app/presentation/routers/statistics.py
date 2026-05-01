@@ -15,10 +15,12 @@ def get_detection_logs(
     skip: int = 0,
     order: str = "desc",
     status: str | None = None,
+    error_type: str | None = None,
+    month_key: str | None = None,
     service: StatisticsService = Depends(get_statistics_service),
 ):
     try:
-        detection_log = service.get_detection_logs(search, start_time, end_time, limit, skip, order, status)
+        detection_log = service.get_detection_logs(search, start_time, end_time, limit, skip, order, status, error_type, month_key)
         return _to_detection_log_response(detection_log)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

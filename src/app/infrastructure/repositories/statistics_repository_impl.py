@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import func, and_, or_, cast, DateTime
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy import extract, func, cast, DateTime
+from sqlalchemy.orm import Session
 from app.domain.repositories.statistics import StatisticsRepository
 from app.domain.entities.statistics import DetectionLog, Summary
 from app.infrastructure.models.detection import DetectionORM, DetectionItemORM, OrderORM, OrderStatusORM, VisitORM, PatientORM, EmployeeORM, PatientPrefixORM
@@ -19,7 +19,9 @@ class StatisticsRepositoryImpl(StatisticsRepository):
         limit: int,
         skip: int,
         order: str,
-        status: str
+        status: list[str],
+        error_type: str,
+        month_key: str | None = None
     ) -> DetectionLog :
         query = (
             self.session
@@ -42,14 +44,34 @@ class StatisticsRepositoryImpl(StatisticsRepository):
                 EmployeeORM.employee_lastname.ilike(f"%{search}%")
             )
 
-        if status != "ALL":
-            query = query.filter(DetectionORM.status == status)
+        if len(status) > 0:
+            query = query.filter(
+                OrderORM.f_order_status_id.in_(status)
+            )
+        if error_type :
+            query = query.filter(
+                DetectionORM.detection_item.any(
+                    DetectionItemORM.error_type == error_type
+                )
+            )
 
-        if start_time:
-            query = query.filter(DetectionORM.detected_at >= cast(start_time, DateTime))
+        if month_key:
+            year, month = month_key.split("-")
 
-        if end_time:
-            query = query.filter(DetectionORM.detected_at <= cast(start_time, DateTime))
+            query = query.filter(
+                extract('year', DetectionORM.created_at) == int(year),
+                extract('month', DetectionORM.created_at) == int(month)
+            )
+
+        else:
+            if start_time:
+                start_dt = datetime.fromisoformat(start_time)
+                query = query.filter(DetectionORM.detected_at >= start_dt)
+
+            if end_time:
+                end_dt = datetime.fromisoformat(end_time) + timedelta(days=1)
+                query = query.filter(DetectionORM.detected_at < end_dt)
+
         
         total = query.distinct().count()
 

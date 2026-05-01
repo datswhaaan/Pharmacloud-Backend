@@ -27,21 +27,21 @@ def _to_detection_log(detections: list[DetectionORM], total: int, page: int, siz
 
 def _to_status_summary(orms) -> Summary:
     completed = 0
-    waited = 0
+    waiting = 0
     cancel = 0
 
     for orm in orms:
         if orm.label in ["ยืนยัน", "รายงานผล", "จ่าย"]:
             completed += orm.count
         elif orm.label in ["ดำเนินการ", "ค้างรายงานผล"]:
-            waited += orm.count
+            waiting += orm.count
         elif orm.label == "ยกเลิก":
             cancel += orm.count
 
     return Summary(
         data=[
             SummaryItem(key="COMPLETED", label="ตรวจสอบสำเร็จ", value=completed),
-            SummaryItem(key="WAITED", label="รอตรวจสอบ", value=waited),
+            SummaryItem(key="WAITING", label="รอตรวจสอบ", value=waiting),
             SummaryItem(key="CANCELLED", label="ยกเลิก", value=cancel),
         ]
     )
@@ -72,20 +72,27 @@ def _to_error_summary(orms) -> Summary:
     )
 
 def _to_annual_error_summary(rows) -> Summary:
-    month_map = {row.month.month: row.count for row in rows}
+    month_map = {
+        (row.month.year, row.month.month): row.count
+        for row in rows
+    }
 
-    current_month = datetime.now().month  
+    now = datetime.now()
+    current_month = now.month
+    current_year = now.year
 
     ordered_months = list(range(current_month + 1, 13)) + list(range(1, current_month + 1))
 
     data = []
 
     for m in ordered_months:
+        year = current_year if m <= current_month else current_year - 1
+
         data.append(
             SummaryItem(
-                key=str(m),
-                label=month_abbr[m],
-                value=str(month_map.get(m, 0))
+                key=f"{year}-{m:02d}",
+                label=f"{month_abbr[m]} {year}",
+                value=str(month_map.get((year, m), 0))
             )
         )
 

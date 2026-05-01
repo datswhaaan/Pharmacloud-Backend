@@ -83,11 +83,11 @@ def _to_order_drug_infer_dto(ordered: OrderDrug, match_type: str) -> OrderDrugIn
 
 def _status_mapper(status_id: str) -> str:
     mapping = {
-        '1': "completed",
-        '2': "waiting",
-        '6': "completed",
-        '4': "waiting",
-        '3': "completed",
-        '5': "cancelled"
+        '1': "COMPLETED",
+        '2': "WAITING",
+        '6': "COMPLETED",
+        '4': "WAITING",
+        '3': "COMPLETED",
+        '5': "CANCELLED"
     }
-    return mapping.get(status_id, "unknown")
+    return mapping.get(status_id, "UNKNOWN")

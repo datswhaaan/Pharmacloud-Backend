@@ -11,7 +11,9 @@ class StatisticsRepository:
         limit: str,
         skip: str,
         order: str,
-        status: str
+        statuses: list[str],
+        error_type: str,
+        month_key: str
     ) -> DetectionLog:
         '''Retrieve paginated detection logs with optional filtering by search, time range, status, and sorting order.'''
         raise
