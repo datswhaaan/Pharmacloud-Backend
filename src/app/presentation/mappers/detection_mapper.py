@@ -83,11 +83,11 @@ def _to_detection_input_dto(order_id: str, request: DetectionCreateRequest) -> D
         ]
     )
 
-def _to_detection_update_dto(detection_id: str, request: DetectionUpdateRequest) -> DetectionUpdateDTO:
+def _to_detection_update_dto(detection_id: str, verified_by: str, request: DetectionUpdateRequest) -> DetectionUpdateDTO:
     return DetectionUpdateDTO(
         detection_id=detection_id,
         status=request.status,
-        verified_by=request.verified_by,
+        verified_by=verified_by,
         drug_list=[
             DetectionItemUpdateDTO(
                 detection_item_id=item.detection_item_id,

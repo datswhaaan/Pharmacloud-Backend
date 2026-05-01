@@ -3,8 +3,10 @@ from app.application.use_cases.detection_service import DetectionService
 from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.dependencies import get_detection_service
 from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_infer_response, _to_detection_response, _to_detection_update_dto
+from app.presentation.dependencies import get_current_user_id
 
-router = APIRouter(prefix="/detection", tags=["detection"])
+router = APIRouter(prefix="/detection", tags=["detection"],
+    dependencies=[Depends(get_current_user_id)])
 
 @router.get("/{order_id}")
 def get_order_and_detections_by_order_id(
@@ -21,10 +23,11 @@ def get_order_and_detections_by_order_id(
 def update_detection(
     detection_id: str,
     request: DetectionUpdateRequest,
+    verified_by: str = Depends(get_current_user_id),
     service: DetectionService = Depends(get_detection_service)
 ):
     try:
-        detection_update_dto = _to_detection_update_dto(detection_id, request)
+        detection_update_dto = _to_detection_update_dto(detection_id, verified_by, request)
         detection_response = service.update_detection(detection_update_dto)
         return _to_detection_response(detection_response)
     except Exception as e:

@@ -5,8 +5,10 @@ from app.presentation.schemas.drug_request import DeleteImagesRequest
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
 from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto, _to_drug_image_list_response
+from app.presentation.dependencies import get_current_user_id
 
-router = APIRouter(prefix="/drugs", tags=["drugs"])
+router = APIRouter(prefix="/drugs", tags=["drugs"],
+    dependencies=[Depends(get_current_user_id)])
 
 @router.get("/{id}", response_model=DrugResponse)
 def get_drug(

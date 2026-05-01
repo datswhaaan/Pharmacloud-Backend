@@ -14,5 +14,4 @@ class DetectionItemUpdateRequest(BaseModel):
     error_type: str | None = None
 class DetectionUpdateRequest(BaseModel):
     status: str
-    verified_by: str
     drug_list: list[DetectionItemUpdateRequest]

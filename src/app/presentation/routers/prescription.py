@@ -2,8 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.application.use_cases.prescription_service import PrescriptionService
 from app.presentation.dependencies import get_prescription_service
 from app.presentation.mappers.prescription_mapper import _to_prescription_response, _to_prescription_list_response
+from app.presentation.dependencies import get_current_user_id
 
-router = APIRouter(prefix="/prescriptions", tags=["prescriptions"])
+router = APIRouter(prefix="/prescriptions", tags=["prescriptions"],
+    dependencies=[Depends(get_current_user_id)])
 
 @router.get("/{id}")
 def get_prescription(
