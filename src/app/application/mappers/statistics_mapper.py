@@ -1,4 +1,4 @@
-from app.application.dto.statistics_dto import DetectionLogDTO, DetectionLogItemDTO, StatisticsDTO, SummaryDTO
+from app.application.dto.statistics_dto import DetectionLogDTO, DetectionLogItemDTO, StatisticsDTO, SummaryDTO, SummaryItemDTO
 from app.domain.entities.statistics import DetectionLog, DetectionLogItem, Summary
 
 def _to_detection_log_item_dto(log: DetectionLogItem) -> DetectionLogItemDTO:
@@ -22,9 +22,13 @@ def _to_detection_log_dto(detection: DetectionLog) -> DetectionLogDTO:
 
 def _to_summary_dto(summary: Summary) -> SummaryDTO:
     return SummaryDTO(
-        label=summary.label,
-        value=summary.value
-    )
+        data=[
+            SummaryItemDTO(
+                key=si.key, 
+                label=si.label, 
+                value=si.value
+            ) for si in summary.data
+        ])
     
 def _to_statistics_dto(status: Summary, error: Summary, annual: Summary) -> StatisticsDTO:
     return StatisticsDTO(

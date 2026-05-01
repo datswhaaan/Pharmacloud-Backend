@@ -18,9 +18,14 @@ class DetectionLogDTO:
     size: int
 
 @dataclass
+class SummaryItemDTO:
+    key: str
+    label: str
+    value: int
+
+@dataclass
 class SummaryDTO:
-    label: list[str]
-    value: list[int]
+    data: list[SummaryItemDTO]
 
 @dataclass
 class StatisticsDTO:

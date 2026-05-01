@@ -15,9 +15,13 @@ class DetectionLogResponse(BaseModel):
     page: int
     size: int
 
+class SummaryItemResponse(BaseModel):
+    key: str
+    label: str
+    value: int
+
 class SummaryResponse(BaseModel):
-    label: list[str]
-    value: list[int]
+    data: list[SummaryItemResponse]
 
 class StatisticsResponse(BaseModel):
     status_summary: SummaryResponse

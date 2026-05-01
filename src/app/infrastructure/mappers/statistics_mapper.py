@@ -1,5 +1,7 @@
+from calendar import month_abbr
+from datetime import datetime
 from app.infrastructure.models.detection import DetectionORM
-from app.domain.entities.statistics import DetectionLog, DetectionLogItem, Summary
+from app.domain.entities.statistics import DetectionLog, DetectionLogItem, Summary, SummaryItem
 
 def _to_detection_log_item(log: DetectionORM) -> DetectionLogItem:
     return DetectionLogItem(
@@ -37,19 +39,22 @@ def _to_status_summary(orms) -> Summary:
             cancel += orm.count
 
     return Summary(
-        label=["ตรวจสอบสำเร็จ", "รอตรวจสอบ", "ยกเลิก"],
-        value=[completed, waited, cancel]
+        data=[
+            SummaryItem(key="COMPLETED", label="ตรวจสอบสำเร็จ", value=completed),
+            SummaryItem(key="WAITED", label="รอตรวจสอบ", value=waited),
+            SummaryItem(key="CANCELLED", label="ยกเลิก", value=cancel),
+        ]
     )
 
 def _to_error_summary(orms) -> Summary:
-    wrong_name = 0
+    wrong_drug_name = 0
     wrong_strength = 0
     wrong_quantity = 0
     wrong_form = 0
 
     for orm in orms:
         if orm.label == "WRONG_DRUG_NAME":
-            wrong_name = orm.count
+            wrong_drug_name = orm.count
         elif orm.label == "WRONG_STRENGTH":
             wrong_strength = orm.count
         elif orm.label == "WRONG_QUANTITY":
@@ -58,12 +63,30 @@ def _to_error_summary(orms) -> Summary:
             wrong_form = orm.count
 
     return Summary(
-        label=["ผิดชื่อยา", "ผิดความแรง", "ผิดจำนวน", "ผิดรูปแบบ"],
-        value=[wrong_name, wrong_strength, wrong_quantity, wrong_form]
+        data=[
+            SummaryItem(key="WRONG_DRUG_NAME", label="ผิดชื่อยา", value=wrong_drug_name),
+            SummaryItem(key="WRONG_STRENGTH", label="ผิดความแรง", value=wrong_strength),
+            SummaryItem(key="WRONG_QUANTITY", label="ผิดจำนวน", value=wrong_quantity),
+            SummaryItem(key="WRONG_FORM", label="ผิดรูปแบบ", value=wrong_form),
+        ]
     )
 
 def _to_annual_error_summary(rows) -> Summary:
-    return Summary(
-        label=[row.month.strftime("%b") for row in rows],
-        value=[row.count for row in rows]
-    )
+    month_map = {row.month.month: row.count for row in rows}
+
+    current_month = datetime.now().month  
+
+    ordered_months = list(range(current_month + 1, 13)) + list(range(1, current_month + 1))
+
+    data = []
+
+    for m in ordered_months:
+        data.append(
+            SummaryItem(
+                key=str(m),
+                label=month_abbr[m],
+                value=str(month_map.get(m, 0))
+            )
+        )
+
+    return Summary(data=data)

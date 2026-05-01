@@ -42,7 +42,7 @@ class StatisticsRepositoryImpl(StatisticsRepository):
                 EmployeeORM.employee_lastname.ilike(f"%{search}%")
             )
 
-        if status:
+        if status != "ALL":
             query = query.filter(DetectionORM.status == status)
 
         if start_time:

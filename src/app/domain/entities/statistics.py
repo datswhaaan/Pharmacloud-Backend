@@ -21,6 +21,11 @@ class DetectionLog:
     size: int
 
 @dataclass
+class SummaryItem:
+    key: str
+    label: str
+    value: int
+
+@dataclass
 class Summary:
-    label: list[str]
-    value: list[int]
+    data: list[SummaryItem]
