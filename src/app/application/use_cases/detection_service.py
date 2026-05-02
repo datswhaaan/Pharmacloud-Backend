@@ -2,7 +2,7 @@ from app.application.dto.prescription_dto import OrderDrugInferDTO
 from app.domain.repositories.detection import DetectionRepository
 from app.domain.repositories.prescription import PrescriptionRepository
 from app.domain.external.medication_vision_inference import MedicationVisionInferenceService
-from app.application.dto.detection_dto import DetectionListDTO, DetectionDTO, DetectionInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO, DetectionItemInputDTO, DetectionInferDTO
+from app.application.dto.detection_dto import DetectionListDTO, DetectionDTO, DetectionInputDTO, DetectionUpdateDTO, DetectionItemUpdateDTO, DetectionItemInputDTO, DetectionInferDTO, DetectionImageInputDTO
 from app.application.mappers.detection_mapper import _to_detection_item_compare_dto, _to_detection_dto, _to_detection_item_dto, _to_detection_list_dto, _to_detection_item_input, _to_detection, _to_detection_image, _to_detection_update, _to_infer_detection_dto
 from app.application.mappers.prescription_mapper import _to_order_drug_infer_dto
 
@@ -89,11 +89,11 @@ class DetectionService:
 
         return detection.detections, is_edited
     
-    def detection(self, order_id: str, image: bytes) -> DetectionDTO:
-        image_infer = _to_detection_image(image, isBytes=False)
-        detected_items = self.medication_vision.infer(image_infer.content)
+    def detection(self, order_id: str, image: DetectionImageInputDTO) -> DetectionDTO:
+        image_infer = _to_detection_image(image)
+        detected_items = self.medication_vision.infer(image_infer)
 
-        detection_image = _to_detection_image(detected_items, isBytes=True)
+        detection_image = _to_detection_image(detected_items)
 
         compared_detected_items, compared_ordered_items = self.compare_drug_list(order_id, detected_items.detected_items)
         detection = _to_detection(order_id, compared_detected_items)

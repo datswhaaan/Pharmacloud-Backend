@@ -62,3 +62,8 @@ class DetectionUpdateDTO:
     status: str
     verified_by: str
     drug_list: list[DetectionItemUpdateDTO]
+
+@dataclass
+class DetectionImageInputDTO:
+    content: bytes
+    content_type: str

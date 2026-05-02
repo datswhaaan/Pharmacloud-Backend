@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from app.domain.entities.detection import DetectionList, DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
 from app.domain.entities.prescription import OrderList, OrderDrugItem
-from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInferDTO, DetectionUpdateDTO
+from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInferDTO, DetectionUpdateDTO, DetectionImageInputDTO
 from app.application.dto.prescription_dto import OrderDrugDTO, OrderDrugInferDTO
 
 def _to_detection_item_compare_dto(
@@ -81,17 +81,10 @@ def _to_detection(
         detections=detection_items
     )
 
-def _to_detection_image(image, isBytes: bool) -> DetectionImageInput:
-    if isBytes:
-        content = image.image
-        content_type = image.image_type
-    else:
-        content = image.file.read()
-        content_type = image.content_type
-
+def _to_detection_image(image: DetectionImageInputDTO) -> DetectionImageInput:
     return DetectionImageInput(
-        content=content,
-        content_type=content_type
+        content=image.content,
+        content_type=image.content_type
     )
 
 def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate], is_edited: bool) -> DetectionUpdate:

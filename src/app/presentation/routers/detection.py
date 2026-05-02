@@ -1,8 +1,10 @@
+from PIL import Image
+import io
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File
 from app.application.use_cases.detection_service import DetectionService
 from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.dependencies import get_detection_service
-from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_infer_response, _to_detection_response, _to_detection_update_dto
+from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_infer_response, _to_detection_response, _to_detection_update_dto, _to_detection_image_input_dto
 from app.presentation.dependencies import get_current_user_id
 
 router = APIRouter(prefix="/detection", tags=["detection"],
@@ -40,7 +42,20 @@ async def infer_detection(
     service: DetectionService = Depends(get_detection_service)
 ):
     try:
-        response = service.detection(order_id, image)
+        if image.content_type not in ["image/jpeg", "image/png"]:
+            raise HTTPException(status_code=400, detail="Invalid file type")
+
+        image_bytes = await image.read()
+
+        img = Image.open(io.BytesIO(image_bytes))
+        if img.format not in ["JPEG", "PNG"]:
+            raise HTTPException(status_code=400, detail="Invalid image content")
+        
+        image_input_dto = _to_detection_image_input_dto(image_bytes, image.content_type)
+
+        response = service.detection(order_id, image_input_dto)
+
         return _to_detection_infer_response(response)
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

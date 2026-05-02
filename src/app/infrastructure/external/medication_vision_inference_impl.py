@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 import io
-from app.domain.entities.detection import DetectedMedicationItem, DetectedMedication
+from app.domain.entities.detection import DetectedMedicationItem, DetectedMedication, DetectionImageInput
 from app.infrastructure.mappers.external.medication_vision_inference_mapper import _to_detected_medication
 from app.domain.external.medication_vision_inference import MedicationVisionInferenceService
 
@@ -8,8 +8,8 @@ class MedicationVisionInferenceImpl(MedicationVisionInferenceService):
     def __init__(self, model):
         self.model = model
 
-    def infer(self, image: bytes) -> DetectedMedication:
-        img = Image.open(io.BytesIO(image)).convert("RGB")
+    def infer(self, image: DetectionImageInput) -> DetectedMedication:
+        img = Image.open(io.BytesIO(image.content)).convert("RGB")
         draw = ImageDraw.Draw(img)
 
         detected_items = [
@@ -33,7 +33,7 @@ class MedicationVisionInferenceImpl(MedicationVisionInferenceService):
         processed_image = buffer.getvalue()
 
         return DetectedMedication(
-            image=processed_image, 
-            image_type=Image.MIME[img.format] if img.format in Image.MIME else "image/jpeg",
+            content=processed_image, 
+            content_type=Image.MIME[img.format] if img.format in Image.MIME else "image/jpeg",
             detected_items=detected_items
         )

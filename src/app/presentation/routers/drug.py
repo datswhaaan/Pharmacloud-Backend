@@ -54,25 +54,42 @@ async def add_drug_image(
                 detail="images and metadatas length mismatch"
             )
         
-        image_objs = []
+        valid_images = []
+        errors = []
 
         for i, image in enumerate(images):
-            meta = metadata_list[i]
+            try:
+                if image.content_type not in ["image/jpeg", "image/png"]:
+                    raise ValueError("Invalid file type")
 
-            drug_image = _to_drug_image_input_dto(
-                            image=image,
-                            view_type=meta.get("view_type") if meta else None,
-                            position=meta.get("position") if meta else None,
-                            lighting=meta.get("lighting") if meta else None
-                        )
+                meta = metadata_list[i]
 
-            image_objs.append(drug_image)
+                drug_image = _to_drug_image_input_dto(
+                    image=image,
+                    view_type=meta.get("view_type") if meta else None,
+                    position=meta.get("position") if meta else None,
+                    lighting=meta.get("lighting") if meta else None
+                )
 
-        drug_images = _to_drug_image_list_dto(drug_id, image_objs, trade_name)
+                valid_images.append(drug_image)
+
+            except Exception as e:
+                errors.append({
+                    "index": i,
+                    "filename": image.filename,
+                    "error": str(e)
+                })
+
+        drug_images = _to_drug_image_list_dto(drug_id, valid_images, trade_name)
         
         response = service.add_drug_image(drug_images, trade_name)
         
-        return _to_drug_image_list_response(response)
+        return {
+            "success": len(valid_images),
+            "failed": len(errors),
+            "errors": errors,
+            "data": _to_drug_image_list_response(response) if response else None
+        }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

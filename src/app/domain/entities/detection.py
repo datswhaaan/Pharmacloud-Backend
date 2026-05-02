@@ -71,6 +71,6 @@ class DetectedMedicationItem:
 
 @dataclass
 class DetectedMedication:
-    image: bytes 
-    image_type: str
+    content: bytes 
+    content_type: str
     detected_items: list[DetectedMedicationItem]
