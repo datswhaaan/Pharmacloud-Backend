@@ -81,11 +81,17 @@ def _to_detection(
         detections=detection_items
     )
 
-def _to_detection_image(image: bytes) -> DetectionImageInput:
-    content = image.file.read()
+def _to_detection_image(image, isBytes: bool) -> DetectionImageInput:
+    if isBytes:
+        content = image.image
+        content_type = image.image_type
+    else:
+        content = image.file.read()
+        content_type = image.content_type
+
     return DetectionImageInput(
         content=content,
-        content_type=image.content_type
+        content_type=content_type
     )
 
 def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate], is_edited: bool) -> DetectionUpdate:

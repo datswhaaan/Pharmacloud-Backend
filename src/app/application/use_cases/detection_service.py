@@ -90,9 +90,11 @@ class DetectionService:
         return detection.detections, is_edited
     
     def detection(self, order_id: str, image: bytes) -> DetectionDTO:
-        detected_items = self.medication_vision.infer(image)
+        image_infer = _to_detection_image(image, isBytes=False)
+        detected_items = self.medication_vision.infer(image_infer.content)
 
-        detection_image = _to_detection_image(image)
+        detection_image = _to_detection_image(detected_items, isBytes=True)
+
         compared_detected_items, compared_ordered_items = self.compare_drug_list(order_id, detected_items.detected_items)
         detection = _to_detection(order_id, compared_detected_items)
         response = self.detection_repo.create_detection(

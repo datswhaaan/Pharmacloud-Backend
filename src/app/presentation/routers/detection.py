@@ -34,7 +34,7 @@ def update_detection(
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.post("/{order_id}/infer")
-def infer_detection(
+async def infer_detection(
     order_id: str,
     image: UploadFile = File(...),
     service: DetectionService = Depends(get_detection_service)
