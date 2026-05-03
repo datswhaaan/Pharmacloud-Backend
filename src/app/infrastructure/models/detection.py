@@ -12,7 +12,7 @@ class DetectionORM(Base):
     verified_by = Column(String, ForeignKey("b_employee.b_employee_id"))
     verified_at = Column(DateTime)
     status = Column(Enum("UNVERIFIED", "APPROVED", "REJECTED", "MODIFIED", "CANCELLED", name="detection_status_enum"))
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, server_default=func.now())
 
     orders = relationship("OrderORM", back_populates="detection")
     detection_item = relationship("DetectionItemORM", back_populates="detection")
