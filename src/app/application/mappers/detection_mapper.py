@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from app.domain.entities.detection import DetectionList, DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate
+from app.domain.entities.detection import DetectionList, DetectionItem, Detection, DetectionItemInput, DetectionImageInput, DetectionCreate, DetectionUpdate, DetectionItemUpdate, DetectedMedicationItem
 from app.domain.entities.prescription import OrderList, OrderDrugItem
 from app.application.dto.detection_dto import DetectionDTO, DetectionListDTO, DetectionItemDTO, DetectionInferDTO, DetectionUpdateDTO, DetectionImageInputDTO
 from app.application.dto.prescription_dto import OrderDrugDTO, OrderDrugInferDTO
@@ -14,7 +14,7 @@ def _to_detection_item_compare_dto(
         detection_item_id=detected.detection_item_id if detected else "",
         item_common_name=ordered.item_common_name if ordered else detected.item_common_name,
         confidence=detected.confidence if detected else "0",
-        confidence_level=_confidence_level_mapper(detected.confidence) if detected else "",
+        confidence_level="Low" if detected.flag else "High",
         quantity=detected.quantity if detected else ordered.quantity,
         unit=ordered.unit if ordered else detected.unit,
         is_manually_edited=detected.is_manually_edited if detected else False,
@@ -27,7 +27,7 @@ def _to_detection_item_dto(di: DetectionItem) -> DetectionItemDTO:
         detection_item_id=di.detection_item_id,
         item_common_name=di.item_common_name,
         confidence=di.confidence,
-        confidence_level=_confidence_level_mapper(di.confidence),
+        confidence_level="Low" if di.flag else "High",
         quantity=di.quantity,
         unit=di.unit,
         is_manually_edited=di.is_manually_edited,
@@ -60,15 +60,18 @@ def _to_detection_list_dto(order_list: OrderList, detection_list: DetectionList)
 
 def _to_detection_item_input(
     ordered: OrderDrugItem | None,
-    detected: DetectionItem | None,
-    match_type: str
+    detected: DetectedMedicationItem | None,
+    match_type: str,
+    item_id: str
 ) -> DetectionItemInput:
     return DetectionItemInput(
         t_order_drug_id=ordered.t_order_drug_id if ordered else None,
-        b_item_id=detected.b_item_id,
+        b_item_id=item_id,
         confidence=detected.confidence,
         quantity=ordered.quantity if ordered else None,
-        match_type=match_type
+        match_type=match_type,
+        flag=detected.flag,
+        obb_box=detected.obb_box
     )
 
 def _to_detection(
@@ -118,10 +121,3 @@ def _to_infer_detection_dto(detection: Detection, detected_drug_list: list[Detec
         ordered_drugs=ordered_drug_list,
         drug_list=detected_drug_list
     )
-
-def _confidence_level_mapper(confidence_level: float) -> str:
-    if confidence_level >= 0.80:
-        return "High"
-    elif confidence_level >=0.60:
-        return "Medium"
-    else: return "Low"

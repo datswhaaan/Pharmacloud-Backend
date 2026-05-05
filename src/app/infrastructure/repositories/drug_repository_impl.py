@@ -41,6 +41,29 @@ class DrugRepositoryImpl(DrugRepository):
             )
         
         return _to_drug(row)
+    
+    def get_by_drug_code(self, drug_code: str) -> Drug | None:
+        row = (
+            self.session
+            .query(DrugORM)
+            .options(
+                selectinload(DrugORM.images)
+                    .selectinload(DrugImageORM.variant),
+                selectinload(DrugORM.instructions),
+                selectinload(DrugORM.subgroup),
+                selectinload(DrugORM.billing_subgroup),
+                selectinload(DrugORM.group_16)
+            )
+            .filter(DrugORM.item_number == drug_code)
+            .first()
+        )
+
+        if row is None:
+            raise DrugNotFoundError(
+                f"Drug with drug code: {drug_code} not found"
+            )
+        
+        return _to_drug(row)
 
     def get_all(
         self,
@@ -175,7 +198,7 @@ class DrugRepositoryImpl(DrugRepository):
             )
 
             if not images:
-                raise DrugNotFoundError(f"Image with ids: {image_ids} not found")
+                raise DrugNotFoundError(f"Image wimth ids: {image_ids} not found")
 
             
             for img in images:
@@ -183,7 +206,7 @@ class DrugRepositoryImpl(DrugRepository):
                     self.storage.delete(file_id=img.file_id)
                 except HttpError as e:
                     if e.resp.status != 404:
-                        raise
+                        raise DrugNotFoundError(f"Image wimth ids: {image_ids} not found")
             
             (
                 self.session.query(DrugImageORM)

@@ -5,4 +5,4 @@ class MedicationVisionInferenceService:
     @abstractmethod
     def infer(self, image: DetectionImageInput) -> DetectedMedication:
         """Perform medication detection inference on the provided image and return a list of detected medication items."""
-        raise
+        raise NotImplementedError

@@ -16,7 +16,7 @@ class StatisticsRepository:
         month_key: str
     ) -> DetectionLog:
         '''Retrieve paginated detection logs with optional filtering by search, time range, status, and sorting order.'''
-        raise
+        raise NotImplementedError
 
     @abstractmethod
     def get_order_status_statistics(
@@ -25,7 +25,7 @@ class StatisticsRepository:
         end_time: str,
     ) -> Summary:
         """Return aggregated order status counts within the specified time range."""
-        raise
+        raise NotImplementedError
 
     @abstractmethod
     def get_error_statistics(
@@ -34,9 +34,9 @@ class StatisticsRepository:
         end_time: str,
     ) -> Summary:
         """Return summary of error types (e.g., wrong name, quantity) within the specified time range."""
-        raise
+        raise NotImplementedError
 
     @abstractmethod
     def get_annual_error_statistics(self) -> Summary:
         """Return monthly error trends for the past 12 months."""
-        raise
+        raise NotImplementedError

@@ -1,5 +1,5 @@
 from app.infrastructure.models.detection import DetectionORM, DetectionItemORM
-from app.domain.entities.detection import DetectionList, Detection, DetectionItem, DetectionCreate
+from app.domain.entities.detection import DetectionList, Detection, DetectionItem, DetectionItemInput, DetectionCreate
 
 def _to_detection(orm: DetectionORM) -> Detection:
     return Detection(
@@ -16,6 +16,7 @@ def _to_detection(orm: DetectionORM) -> Detection:
                     b_item_id=di.b_item_id,
                     item_common_name=di.item.item_common_name,
                     confidence=di.confidence,
+                    flag=di.flag,
                     quantity=di.quantity,
                     unit=di.item.item_drug[0].item_drug_uom.item_drug_uom_description if di.item.item_drug else "หน่วย",
                     is_manually_edited=di.is_manually_edited,
@@ -38,7 +39,7 @@ def _to_detection_orm(d: DetectionCreate, image_url: str) -> DetectionORM:
         image_url=image_url
     )
 
-def _to_detection_item_orm(detection_list: list[DetectionItem], detection_id: str) -> list[DetectionItemORM]:
+def _to_detection_item_orm(detection_list: list[DetectionItemInput], detection_id: str) -> list[DetectionItemORM]:
     return [
         DetectionItemORM(
             t_order_drug_id=di.t_order_drug_id,
@@ -46,6 +47,8 @@ def _to_detection_item_orm(detection_list: list[DetectionItem], detection_id: st
             b_item_id=di.b_item_id,
             confidence=di.confidence,
             quantity=di.quantity,
-            match_type=di.match_type
+            match_type=di.match_type,
+            obb_box=di.obb_box,
+            flag=di.flag
         ) for di in detection_list
     ]

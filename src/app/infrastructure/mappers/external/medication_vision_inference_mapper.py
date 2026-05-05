@@ -9,9 +9,9 @@ def _to_detected_medication(prediction) -> DetectedMedication:
 def _to_detected_medication_items(preds) -> list[DetectedMedicationItem]:
         return [
             DetectedMedicationItem(
-                b_item_id=p.b_item_id,
+                drug_code=p.b_item_id,
                 confidence=p.confidence,
-                bbox=p.bbox
+                obb_box=p.bbox
             )
             for p in preds
         ]

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, Float, DateTime, Integer, Boolean, Enum, text, func
+from sqlalchemy import Column, ForeignKey, String, Float, DateTime, Integer, Boolean, Enum, text, func, JSON
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -29,6 +29,8 @@ class DetectionItemORM(Base):
     is_manually_edited = Column(Boolean, server_default=text("false"))
     match_type = Column(Enum("MATCHED", "EXTRA", name="match_type_enum"))
     error_type = Column(Enum("WRONG_DRUG_NAME", "WRONG_STRENGTH", "WRONG_QUANTITY", "WRONG_FORM", name="error_type_enum"))
+    obb_box = Column(JSON)
+    flag = Column(Boolean)
 
     detection = relationship("DetectionORM", back_populates="detection_item")
     order_drugs = relationship("OrderDrugORM", back_populates="detection_item")

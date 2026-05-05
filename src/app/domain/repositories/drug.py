@@ -5,6 +5,11 @@ class DrugRepository(ABC):
 
     @abstractmethod
     def get_by_id(self, id: str) -> Drug | None:
+        """Return a drug by its drug id or None if not found"""
+        raise 
+    
+    @abstractmethod
+    def get_by_drug_code(self, drug_code: str) -> Drug | None:
         """Return a drug by its drug code or None if not found"""
         raise NotImplementedError
 

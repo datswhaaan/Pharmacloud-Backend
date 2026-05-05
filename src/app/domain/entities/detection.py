@@ -8,6 +8,7 @@ class DetectionItem:
     b_item_id: str
     item_common_name: str
     confidence: str
+    flag: bool
     quantity: str
     unit: str
     is_manually_edited: bool
@@ -39,6 +40,8 @@ class DetectionItemInput:
     b_item_id: str
     confidence: str
     match_type: str
+    flag: bool
+    obb_box: list[tuple[float, float]]
     quantity: str | None = None
 
 @dataclass
@@ -65,9 +68,10 @@ class DetectionUpdate:
 
 @dataclass
 class DetectedMedicationItem:
-    b_item_id: str
+    drug_code: str
     confidence: float
-    bbox: tuple[int, int, int, int] | None = None
+    flag: bool
+    obb_box: list[tuple[float, float]]
 
 @dataclass
 class DetectedMedication:

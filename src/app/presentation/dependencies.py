@@ -21,6 +21,7 @@ from app.application.use_cases.detection_service import DetectionService
 from app.infrastructure.external.medication_vision_inference_impl import MedicationVisionInferenceImpl
 from app.application.use_cases.statistics_service import StatisticsService
 from app.infrastructure.repositories.statistics_repository_impl import StatisticsRepositoryImpl
+from app.infrastructure.external.medication_vision_api_client import MedicationVisionAPIClient
 from fastapi.security import APIKeyHeader
 from jose import JWTError
 
@@ -34,6 +35,7 @@ GOOGLE_DRIVE_DETECTION_IMAGE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_DETECTION_IMAGE
 GOOGLE_SERVICE_ACCOUNT_PATH="service-account.json"
 
 GOOGLE_OAUTH_CREDENTIALS_PATH = os.getenv("GOOGLE_OAUTH_CREDENTIALS_PATH")
+MEDICATION_VISION_API = os.getenv("MEDICATION_VISION_API")
 
 manager = ConnectionManager()
 
@@ -73,11 +75,14 @@ def get_auth_service(db: Session = Depends(get_db)):
     user = UserRepositoryImpl(db)
     return AuthService(password, token, user)
 
+medication_vision_api_client = MedicationVisionAPIClient(MEDICATION_VISION_API)
+
 def get_detection_service(db: Session = Depends(get_db)):
     detection_repo = DetectionRepositoryImpl(db, detection_storage)
     prescription_repo = PrescriptionRepositoryImpl(db)
-    medication_vision_service = MedicationVisionInferenceImpl(model=None)
-    return DetectionService(detection_repo, prescription_repo, medication_vision_service)
+    drug_repo = DrugRepositoryImpl(db, drug_storage)
+    medication_vision_service = MedicationVisionInferenceImpl(medication_vision_api_client)
+    return DetectionService(detection_repo, prescription_repo, drug_repo, medication_vision_service)
 
 def get_notify_service():
     return NotifyService(manager)
