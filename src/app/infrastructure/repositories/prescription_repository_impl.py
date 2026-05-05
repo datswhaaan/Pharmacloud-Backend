@@ -139,11 +139,7 @@ class PrescriptionRepositoryImpl(PrescriptionRepository):
         )
 
         total = (
-            self.session.query(VisitORM.t_visit_id)
-            .join(VisitORM.patient)
-            .join(VisitORM.orders)
-            .join(OrderORM.status)
-            .count()
+            query.count()
         )
 
         page = (skip // limit) + 1 if limit else 1

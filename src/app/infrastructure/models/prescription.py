@@ -119,9 +119,6 @@ class OrderORM(Base):
     t_order_id = Column(String, primary_key=True, index=True)
     t_visit_id = Column(String, ForeignKey("t_visit.t_visit_id", ondelete="CASCADE"), index=True)
     b_item_id = Column(String, ForeignKey("b_item.b_item_id", ondelete="CASCADE"), index=True)
-    order_secret = Column(String)
-    order_common_name = Column(String)
-    order_qty = Column(Float)
     f_order_status_id = Column(String, ForeignKey("f_order_status.f_order_status_id", ondelete="CASCADE"), index=True)
 
     visit = relationship("VisitORM", back_populates="orders")
@@ -135,7 +132,7 @@ class OrderDrugORM(Base):
     t_order_drug_id = Column(String, primary_key=True, index=True)
     t_order_id = Column(String, ForeignKey("t_order.t_order_id", ondelete="CASCADE"), index=True)
     b_item_id = Column(String, ForeignKey("b_item.b_item_id", ondelete="CASCADE"), index=True)
-    b_item_drug_uom_id_purch = Column(String, ForeignKey("b_item_drug_uom.b_item_drug_uom_id", ondelete="CASCADE"), index=True)
+    b_item_drug_uom_id_use = Column(String, ForeignKey("b_item_drug_uom.b_item_drug_uom_id", ondelete="CASCADE"), index=True)
     order_drug_dose = Column(Float)
 
     orders = relationship("OrderORM", back_populates="order_drugs")

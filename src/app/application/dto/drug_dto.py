@@ -20,7 +20,6 @@ class DrugImageInputDTO:
 @dataclass
 class DrugImageListInputDTO:
     b_item_id: str
-    trade_name: str
     images: list[DrugImageInputDTO]
 
 @dataclass

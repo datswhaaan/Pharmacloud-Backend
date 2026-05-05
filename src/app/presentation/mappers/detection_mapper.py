@@ -87,6 +87,7 @@ def _to_detection_update_dto(detection_id: str, verified_by: str, request: Detec
     return DetectionUpdateDTO(
         detection_id=detection_id,
         status=request.status,
+        is_edited=request.is_edited,
         verified_by=verified_by,
         drug_list=[
             DetectionItemUpdateDTO(

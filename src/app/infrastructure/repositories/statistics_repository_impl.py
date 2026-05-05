@@ -31,6 +31,7 @@ class StatisticsRepositoryImpl(StatisticsRepository):
             .join(VisitORM.patient)
             .outerjoin(PatientORM.prefix) 
             .outerjoin(EmployeeORM, DetectionORM.verified_by == EmployeeORM.b_employee_id)
+            .filter(DetectionORM.status != "UNVERIFIED")
         )
         
         if search:

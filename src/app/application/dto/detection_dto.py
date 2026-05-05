@@ -61,6 +61,7 @@ class DetectionUpdateDTO:
     detection_id: str
     status: str
     verified_by: str
+    is_edited: bool
     drug_list: list[DetectionItemUpdateDTO]
 
 @dataclass

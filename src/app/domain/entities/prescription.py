@@ -9,7 +9,7 @@ class RiskFactor:
 class OrderDrug:
     b_item_id: str
     item_common_name: str
-    b_item_drug_uom_id_purch: str
+    b_item_drug_uom_id_use: str
     order_drug_dose: str
 
 @dataclass

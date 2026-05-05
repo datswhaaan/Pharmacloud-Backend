@@ -31,9 +31,9 @@ class DetectionService:
         return _to_detection_dto(response, response.detections)
     
     def update_detection(self, detection: DetectionUpdateDTO) -> DetectionDTO:
-        drug_list, is_edited = self._update_detection_items(detection.detection_id, detection.drug_list)
-        detection_update = _to_detection_update(detection, drug_list, is_edited)
-            
+        drug_list = self._update_detection_items(detection.detection_id, detection.drug_list)
+        detection_update = _to_detection_update(detection, drug_list)
+
         response = self.detection_repo.update_detection(detection_update)
         return _to_detection_dto(response, response.detections)
 
@@ -65,7 +65,6 @@ class DetectionService:
         detection_items: list[DetectionItemUpdateDTO]
     ):
         detection = self.detection_repo.get_detections_by_detection_id(detection_id)
-        is_edited = False
 
         item_map = {item.detection_item_id: item for item in detection_items}
 
@@ -80,14 +79,12 @@ class DetectionService:
             if dto.is_checked and d_item.match_type == "EXTRA":
                 d_item.is_manually_edited = True
                 d_item.match_type = "MATCHED"
-                is_edited = True
 
             elif not dto.is_checked and d_item.match_type == "MATCHED":
                 d_item.is_manually_edited = True
                 d_item.match_type = "EXTRA"
-                is_edited = True
 
-        return detection.detections, is_edited
+        return detection.detections
     
     def detection(self, order_id: str, image: DetectionImageInputDTO) -> DetectionDTO:
         image_infer = _to_detection_image(image)

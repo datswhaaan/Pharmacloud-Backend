@@ -15,3 +15,4 @@ class DetectionItemUpdateRequest(BaseModel):
 class DetectionUpdateRequest(BaseModel):
     status: str
     drug_list: list[DetectionItemUpdateRequest]
+    is_edited: bool

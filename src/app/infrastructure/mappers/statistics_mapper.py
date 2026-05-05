@@ -14,7 +14,7 @@ def _to_detection_log_item(log: DetectionORM) -> DetectionLogItem:
         patient_lastname=log.orders.visit.patient.patient_lastname,
         employee_firstname=log.employee.employee_firstname if log.employee else "",
         employee_lastname=log.employee.employee_lastname if log.employee else "",
-        verified_at=log.verified_at if log.verified_at else ""
+        verified_at=log.verified_at.strftime("%Y-%m-%d %H:%M:%S") if log.verified_at else ""
     )
 
 def _to_detection_log(detections: list[DetectionORM], total: int, page: int, size: int) -> DetectionLog:

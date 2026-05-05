@@ -15,7 +15,7 @@ def _to_order_drug(orm: OrderORM) -> list[OrderDrug]:
         OrderDrug(
             b_item_id=od.item.b_item_id,
             item_common_name=od.item.item_common_name,
-            b_item_drug_uom_id_purch=od.item_drug_uom.item_drug_uom_description,
+            b_item_drug_uom_id_use=od.item_drug_uom.item_drug_uom_description,
             order_drug_dose=od.order_drug_dose
         )
         for od in orm.order_drugs

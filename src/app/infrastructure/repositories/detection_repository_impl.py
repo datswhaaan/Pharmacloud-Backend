@@ -108,7 +108,7 @@ class DetectionRepositoryImpl(DetectionRepository):
             detection_orm.verified_by = detection.verified_by
             detection_orm.verified_at = detection.verified_at
 
-            if detection.status == "APPROVED":
+            if detection.status == "APPROVED" or detection.status == "MODIFIED":
                 prescription_orm = (
                     self.session.query(OrderORM)
                     .filter(OrderORM.t_order_id == detection_orm.t_order_id)

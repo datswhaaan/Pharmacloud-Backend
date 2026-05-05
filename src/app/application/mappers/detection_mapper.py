@@ -87,10 +87,10 @@ def _to_detection_image(image: DetectionImageInputDTO) -> DetectionImageInput:
         content_type=image.content_type
     )
 
-def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate], is_edited: bool) -> DetectionUpdate:
+def _to_detection_update(detection: DetectionUpdateDTO, drug_list: list[DetectionItemUpdate]) -> DetectionUpdate:
     return DetectionUpdate(
         detection_id=detection.detection_id,
-        status=detection.status,
+        status="MODIFIED" if detection.is_edited else detection.status,
         verified_by=detection.verified_by,
         verified_at=datetime.now(timezone.utc),
         drug_list=_to_detection_item_update_list(drug_list)
