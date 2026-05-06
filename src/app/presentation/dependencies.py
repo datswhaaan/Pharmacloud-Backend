@@ -3,9 +3,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from app.infrastructure.db.database import SessionLocal
-from app.infrastructure.repositories.drug_metadata_repository_impl import DrugMetadataRepositoryImpl
 from app.infrastructure.repositories.drug_repository_impl import DrugRepositoryImpl
-from app.application.use_cases.drug_metadata_service import DrugMetadataService
 from app.application.use_cases.drug_service import DrugService
 from app.infrastructure.repositories.prescription_repository_impl import PrescriptionRepositoryImpl
 from app.application.use_cases.prescription_service import PrescriptionService
@@ -45,10 +43,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-def get_drug_metadata_service(db: Session = Depends(get_db)):
-    repo = DrugMetadataRepositoryImpl(db)
-    return DrugMetadataService(repo)
 
 def get_google_drive_storage(folder_id: str):
     credentials_path = GOOGLE_OAUTH_CREDENTIALS_PATH
