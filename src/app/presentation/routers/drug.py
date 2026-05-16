@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, Request
 import json
 from app.presentation.schemas.drug_response import  DrugResponse, DrugListResponse
 from app.presentation.schemas.drug_request import DeleteImagesRequest
@@ -40,6 +40,7 @@ def get_all_drugs(
 @router.post("/{drug_id}/images")
 @limiter.limit("5/minute")
 async def add_drug_image(
+    request: Request,
     drug_id: str,
     trade_name: str,
     images: list[UploadFile],
