@@ -1,11 +1,12 @@
 from PIL import Image
 import io
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from app.application.use_cases.detection_service import DetectionService
 from app.presentation.schemas.detection_request import DetectionCreateRequest, DetectionUpdateRequest
 from app.presentation.dependencies import get_detection_service
 from app.presentation.mappers.detection_mapper import _to_detection_list_response, _to_detection_infer_response, _to_detection_response, _to_detection_update_dto, _to_detection_image_input_dto
 from app.presentation.dependencies import get_current_user_id
+from app.presentation.dependencies import limiter
 
 router = APIRouter(prefix="/detection", tags=["detection"],
     dependencies=[Depends(get_current_user_id)])
@@ -36,7 +37,9 @@ def update_detection(
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.post("/{order_id}/infer")
+@limiter.limit("5/minute")
 async def infer_detection(
+    request: Request,
     order_id: str,
     image: UploadFile = File(...),
     service: DetectionService = Depends(get_detection_service)

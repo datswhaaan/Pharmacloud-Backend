@@ -5,7 +5,7 @@ from app.presentation.schemas.drug_request import DeleteImagesRequest
 from app.presentation.dependencies import get_drug_service
 from app.application.use_cases.drug_service import DrugService
 from app.presentation.mappers.drug_mapper import _to_drug_image_list_dto, _to_drug_list_response, _to_drug_response, _to_drug_image_input_dto, _to_drug_image_list_response
-from app.presentation.dependencies import get_current_user_id
+from app.presentation.dependencies import get_current_user_id, limiter
 
 router = APIRouter(prefix="/drugs", tags=["drugs"],
     dependencies=[Depends(get_current_user_id)])
@@ -38,6 +38,7 @@ def get_all_drugs(
     
 
 @router.post("/{drug_id}/images")
+@limiter.limit("5/minute")
 async def add_drug_image(
     drug_id: str,
     trade_name: str,

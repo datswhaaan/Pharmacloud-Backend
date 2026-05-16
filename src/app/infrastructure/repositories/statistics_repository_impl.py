@@ -145,13 +145,13 @@ class StatisticsRepositoryImpl(StatisticsRepository):
 
         query = (
             self.session.query(
-                func.date_trunc("month", DetectionORM.created_at).label("month"),
+                func.date_trunc("month", DetectionORM.verified_at).label("month"),
                 func.count().label("count")
             )
             .join(DetectionORM.detection_item)
             .filter(
-                DetectionORM.created_at >= start_date,
-                DetectionORM.created_at <= end_date
+                DetectionORM.verified_at >= start_date,
+                DetectionORM.verified_at <= end_date
             )
             .group_by("month")
             .order_by("month")

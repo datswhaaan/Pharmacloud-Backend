@@ -22,8 +22,11 @@ from app.infrastructure.repositories.statistics_repository_impl import Statistic
 from app.infrastructure.external.medication_vision_api_client import MedicationVisionAPIClient
 from fastapi.security import APIKeyHeader
 from jose import JWTError
-
 from app.infrastructure.storage.google_drive_storage import GoogleDriveStorage
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 api_key_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 

@@ -1,15 +1,15 @@
-from fastapi import APIRouter, HTTPException, status, Response, Depends
-from datetime import timedelta
+from fastapi import APIRouter, HTTPException, Request, status, Response, Depends
 from app.application.use_cases.auth_service import AuthService
 from app.presentation.schemas.auth import LoginRequest
 from app.domain.exception.security import AuthenticationError
-from ..dependencies import get_current_user_id
-from ..dependencies import get_auth_service
+from ..dependencies import get_current_user_id, get_auth_service, limiter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
+    request: Request,
     form_data: LoginRequest,
     service: AuthService = Depends(get_auth_service)
 ):
@@ -34,5 +34,9 @@ def logout(response: Response):
     return {"message": "Logged out successfully"}
 
 @router.get("/protected")
-def protected_route(user_id = Depends(get_current_user_id)):
+@limiter.limit("3/minute")
+def protected_route(    
+    request: Request,
+    user_id = Depends(get_current_user_id
+)):
     return {"message": f"Hello user id: {user_id}"}
